@@ -26,8 +26,9 @@ public class Belong extends BaseTime {
     @JoinColumn(name = "user_idx", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
+
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_idx", nullable = false)
+    @JoinColumn(name = "place_idx", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Place place;
 }

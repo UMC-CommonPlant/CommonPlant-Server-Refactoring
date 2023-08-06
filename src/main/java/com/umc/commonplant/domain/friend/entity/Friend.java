@@ -21,14 +21,14 @@ public class Friend extends BaseTime {
     @Column(name = "friend_idx")
     private Long friendIdx;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_idx", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User sender;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_idx", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User receiver;
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "user_idx", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private User sender;
+//
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "user_idx", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private User receiver;
 
 }

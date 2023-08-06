@@ -1,4 +1,4 @@
-package com.umc.commonplant.domain.like.entity;
+package com.umc.commonplant.domain.heart.entity;
 
 import com.umc.commonplant.domain.BaseTime;
 import com.umc.commonplant.domain.user.entity.User;
@@ -10,14 +10,14 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Getter
-@Table(name = "like")
+@Table(name = "heart")
 @NoArgsConstructor
 @Entity
-public class Like extends BaseTime {
+public class Heart extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "like_idx")
-    private Long likeIdx;
+    @Column(name = "heart_idx")
+    private Long heartIdx;
 
     @ManyToOne
     @JoinColumn(name = "user_idx", nullable = false)
