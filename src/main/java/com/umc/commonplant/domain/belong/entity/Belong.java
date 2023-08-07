@@ -3,6 +3,7 @@ package com.umc.commonplant.domain.belong.entity;
 import com.umc.commonplant.domain.BaseTime;
 import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.user.entity.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -31,4 +32,10 @@ public class Belong extends BaseTime {
     @JoinColumn(name = "place_idx", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Place place;
+
+    @Builder
+    public Belong(User user, Place place) {
+        this.user = user;
+        this.place = place;
+    }
 }
