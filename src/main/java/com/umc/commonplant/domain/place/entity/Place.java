@@ -1,6 +1,7 @@
 package com.umc.commonplant.domain.place.entity;
 
 import com.umc.commonplant.domain.user.entity.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -27,7 +28,7 @@ public class Place {
     private User user;
 
     @Column(nullable = true)
-    private String girdX;    // 경도 (x)
+    private String gridX;    // 경도 (x)
 
     @Column(nullable = true)
     private String gridY;     // 위도 (y)
@@ -40,4 +41,15 @@ public class Place {
 
     @Column(nullable = false)
     private String code;
+
+    @Builder
+    public Place(String name, User user, String gridX, String gridY, String address, String imgUrl, String code) {
+        this.name = name;
+        this.user = user;
+        this.gridX = gridX;
+        this.gridY = gridY;
+        this.address = address;
+        this.imgUrl = imgUrl;
+        this.code = code;
+    }
 }
