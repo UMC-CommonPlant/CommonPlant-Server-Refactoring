@@ -15,7 +15,7 @@ import java.util.List;
 @Configuration
 public class FCMConfig {
     private final ClassPathResource firebaseResource = new ClassPathResource(
-            "firebase/commonplant-8463a-firebase-adminsdk-me65f-52b19519c4.json");
+            "firebase/serviceAccountKey.json");
 
     @Bean
     FirebaseApp firebaseApp() throws IOException {
@@ -38,7 +38,7 @@ public class FCMConfig {
 //
 //    @Bean
 //    FirebaseMessaging firebaseMessaging() throws IOException {
-//        ClassPathResource resource = new ClassPathResource("firebase/commonplant-8463a-firebase-adminsdk-me65f-52b19519c4.json");
+//        ClassPathResource resource = new ClassPathResource("firebase/serviceAccountKey.json".json");
 //
 //        InputStream refreshToken = resource.getInputStream();
 //
