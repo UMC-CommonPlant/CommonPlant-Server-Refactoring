@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Getter
 @Table(name = "image")
@@ -21,12 +22,13 @@ public class Image extends BaseTime {
 
     private String category;
 
-    private Long category_idx;
+    @Column(name = "category_idx")
+    private Long categoryIdx;
 
     @Builder
     public Image(String imgUrl, String category, Long category_idx){
         this.imgUrl = imgUrl;
         this.category = category;
-        this.category_idx = category_idx;
+        this.categoryIdx = category_idx;
     }
 }

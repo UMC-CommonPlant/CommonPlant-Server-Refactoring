@@ -3,7 +3,6 @@ package com.umc.commonplant.domain.image.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.umc.commonplant.domain.image.dto.ImageDto;
-import com.umc.commonplant.domain.image.dto.ImagesDto;
 import com.umc.commonplant.domain.image.entity.Image;
 import com.umc.commonplant.domain.image.entity.ImageRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,55 +23,77 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final AmazonS3Client amazonS3Client;
 
+    //여러 파일 - S3와 DB Table에 저장
     @Transactional
-    public String saveImage(MultipartFile multipartFile, ImageDto.ImageRequest request) {
-        String originalName = multipartFile.getOriginalFilename();
-        String filename = getFileName(originalName);
-
-        try {
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentType(multipartFile.getContentType());
-            objectMetadata.setContentLength(multipartFile.getInputStream().available());
-
-            amazonS3Client.putObject(bucketName, filename, multipartFile.getInputStream(), objectMetadata);
-
-            String accessUrl = amazonS3Client.getUrl(bucketName, filename).toString();
-
-            Image image = Image.builder()
-                    .imgUrl(accessUrl)
-                    .category(request.getCategory())
-                    .category_idx(request.getCategory_idx())
-                    .build();
-
-            imageRepository.save(image);
-
-            return image.getImgUrl();
-
-        } catch(IOException e) {
-            return null;
-        }
-    }
-
-    @Transactional
-    public List<String> saveImages(ImagesDto multipartFiles, ImageDto.ImageRequest request) {
+    public List<String> createImages(ImageDto.ImagesRequest multipartFiles, ImageDto.ImageRequest request) {
         List<String> resultList = new ArrayList<>();
 
         for(MultipartFile multipartFile : multipartFiles.getImages()) {
-            String value = saveImage(multipartFile, request);
+            String value = createImage(multipartFile, request);
             resultList.add(value);
         }
 
         return resultList;
     }
 
-    public static String extractExtension(String originName) {
+    //단일 파일 - S3와 DB Table에 저장
+    @Transactional
+    public String createImage(MultipartFile multipartFile, ImageDto.ImageRequest request) {
+        Image image = new Image();
+
+        String imageUrl = saveImage(multipartFile);
+        image = Image.builder()
+                .imgUrl(imageUrl)
+                .category(request.getCategory())
+                .category_idx(request.getCategory_idx())
+                .build();
+
+        imageRepository.save(image);
+
+        return image.getImgUrl();
+    }
+
+    //단일 파일 - S3에만 저장, imageURL 반환
+    @Transactional
+    public String saveImage(MultipartFile multipartFile) {
+        String originalName = multipartFile.getOriginalFilename();
+        String filename = getFileName(originalName);
+        String imageUrl = null;
+
+        try {
+            InputStream inputStream = multipartFile.getInputStream();
+
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(multipartFile.getContentType());
+            objectMetadata.setContentLength(inputStream.available());
+
+            amazonS3Client.putObject(bucketName, filename, inputStream, objectMetadata);
+
+            imageUrl = amazonS3Client.getUrl(bucketName, filename).toString();
+
+            inputStream.close();
+
+        } catch(IOException e) {
+
+        }
+
+        return imageUrl;
+    }
+
+    @Transactional
+    public List<String> findImageUrlByCategory(ImageDto.ImageRequest request) {
+        List<String> imageUrls = imageRepository.findUrlsByCategoryAndCategoryIdx(request.getCategory(), request.getCategory_idx());
+
+        return imageUrls;
+    }
+
+    public String extractExtension(String originName) {
         int index = originName.lastIndexOf('.');
 
         return originName.substring(index, originName.length());
     }
 
-    // 이미지 파일의 이름을 저장하기 위한 이름으로 변환하는 메소드
-    public static String getFileName(String originName) {
+    public String getFileName(String originName) {
         return UUID.randomUUID() + "." + extractExtension(originName);
     }
 
