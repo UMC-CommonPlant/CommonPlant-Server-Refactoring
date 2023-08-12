@@ -6,6 +6,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.umc.commonplant.domain.image.dto.ImageDto;
 import com.umc.commonplant.domain.image.entity.Image;
 import com.umc.commonplant.domain.image.entity.ImageRepository;
+import com.umc.commonplant.global.exception.BadRequestException;
+import com.umc.commonplant.global.exception.ErrorResponseStatus;
+import com.umc.commonplant.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,9 @@ public class ImageService {
     //여러 파일 - S3와 DB Table에 저장
     @Transactional
     public List<String> createImages(ImageDto.ImagesRequest multipartFiles, ImageDto.ImageRequest request) {
+        //multipart null exception 생성
+        if(multipartFiles.getImages().isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
+
         List<String> resultList = new ArrayList<>();
 
         for(MultipartFile multipartFile : multipartFiles.getImages()) {
@@ -42,7 +48,10 @@ public class ImageService {
     //단일 파일 - S3와 DB Table에 저장
     @Transactional
     public String createImage(MultipartFile multipartFile, ImageDto.ImageRequest request) {
-        Image image = new Image();
+        //multipart null exception 생성
+        if(multipartFile.isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
+
+        Image image;
 
         String imageUrl = saveImage(multipartFile);
         image = Image.builder()
@@ -59,6 +68,9 @@ public class ImageService {
     //단일 파일 - S3에만 저장, imageURL 반환
     @Transactional
     public String saveImage(MultipartFile multipartFile) {
+        //multipart null exception 생성
+        if(multipartFile.isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
+
         String originalName = multipartFile.getOriginalFilename();
         String filename = getFileName(originalName);
         String imageUrl = null;
@@ -76,8 +88,8 @@ public class ImageService {
 
             inputStream.close();
 
-        } catch(IOException e) {
-
+        } catch(Exception e) {
+            throw new GlobalException(ErrorResponseStatus.SERVER_ERROR);
         }
 
         return imageUrl;
@@ -102,8 +114,10 @@ public class ImageService {
     @Transactional
     public void deleteFileInS3(String imageUrl) {
         String splitStr = ".com/";
-        String fileName = imageUrl.substring(imageUrl.lastIndexOf(splitStr) + splitStr.length());
-        System.out.println("잘되나?");
+        int lastIndex = imageUrl.lastIndexOf(splitStr);
+        if(lastIndex == -1) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
+
+        String fileName = imageUrl.substring(lastIndex + splitStr.length());
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
     }
 
