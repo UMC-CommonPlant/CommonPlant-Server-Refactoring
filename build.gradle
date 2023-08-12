@@ -38,7 +38,10 @@ dependencies {
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 
-	//cloud-aws
+	//random string
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+  //cloud-aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
