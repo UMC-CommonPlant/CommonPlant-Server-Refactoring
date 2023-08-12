@@ -1,11 +1,13 @@
 package com.umc.commonplant.domain.image.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.umc.commonplant.domain.image.dto.ImageDto;
 import com.umc.commonplant.domain.image.entity.Image;
 import com.umc.commonplant.domain.image.entity.ImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +21,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ImageService {
-    private static String bucketName = "commonplantbucket";
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
     private final ImageRepository imageRepository;
     private final AmazonS3Client amazonS3Client;
 
@@ -85,6 +88,23 @@ public class ImageService {
         List<String> imageUrls = imageRepository.findUrlsByCategoryAndCategoryIdx(request.getCategory(), request.getCategory_idx());
 
         return imageUrls;
+    }
+
+    @Transactional
+    public void deleteFileInDatabase(ImageDto.ImageRequest request) {
+        List<String> imageUrls = findImageUrlByCategory(request);
+        for(String imgUrl : imageUrls) {
+            deleteFileInS3(imgUrl);
+        }
+        imageRepository.deleteByCategoryAndCategoryIdx(request.getCategory(), request.getCategory_idx());
+    }
+
+    @Transactional
+    public void deleteFileInS3(String imageUrl) {
+        String splitStr = ".com/";
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf(splitStr) + splitStr.length());
+        System.out.println("ÀßµÇ³ª?");
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
     }
 
     public String extractExtension(String originName) {

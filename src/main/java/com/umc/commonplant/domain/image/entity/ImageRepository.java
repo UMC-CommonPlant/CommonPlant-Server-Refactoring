@@ -11,4 +11,6 @@ import java.util.List;
 public interface ImageRepository extends JpaRepository<Image, Long> {
     @Query("SELECT i.imgUrl FROM Image i WHERE i.category = :category AND i.categoryIdx = :categoryIdx")
     List<String> findUrlsByCategoryAndCategoryIdx(@Param("category") String category, @Param("categoryIdx") Long categoryIdx);
+
+    void deleteByCategoryAndCategoryIdx(String category, Long categoryIdx);
 }

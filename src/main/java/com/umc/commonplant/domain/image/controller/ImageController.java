@@ -19,12 +19,18 @@ public class ImageController { //이미지 테스트용 controller
     @PostMapping("/image")
     @ResponseStatus(HttpStatus.OK)
     public List<String> saveImage(@ModelAttribute ImageDto.ImagesRequest images) {
-        return imageService.createImages(images, new ImageDto.ImageRequest("test2", 2L));
+        return imageService.createImages(images, new ImageDto.ImageRequest("codetest", 2L));
     }
 
     @GetMapping("/get")
     @ResponseStatus(HttpStatus.OK)
     public List<String> getImage(){
-        return imageService.findImageUrlByCategory(new ImageDto.ImageRequest("codetest", 1L));
+        return imageService.findImageUrlByCategory(new ImageDto.ImageRequest("codetest", 2L));
+    }
+
+    @DeleteMapping("/delete/image")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteImage(){
+        imageService.deleteFileInDatabase(new ImageDto.ImageRequest("codetest", 2L));
     }
 }
