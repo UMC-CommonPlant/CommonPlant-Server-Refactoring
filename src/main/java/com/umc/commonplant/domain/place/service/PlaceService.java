@@ -17,18 +17,19 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
     private final BelongRepository belongRepository;
 
-
     public String create(User user, PlaceDto.create req, MultipartFile image) {
         String newCode = RandomStringUtils.random(6,33,125,true,false);
 
         //TODO : 카카오맵 API로 좌표 받아오기 구현
+
+        //TODO : imageService
 
         Place place = Place.builder()
                 .address(req.getAddress())
                 .code(newCode)
                 .gridX(null) //수정 필요
                 .gridY(null) //수정 필요
-                .imgUrl("https://firebasestorage.googleapis.com/v0/b/common-plant.appspot.com/o/commonPlant_plant/몬테123_HPJjiN?alt=media")  //수정 필요
+                .imgUrl("https://firebasestorage.googleapis.com/v0/b/common-plant.appspot.com/o/commonPlant_plant/monte123_HPJjiN?alt=media")  //수정 필요
                 .user(user).build();
         placeRepository.save(place);
 

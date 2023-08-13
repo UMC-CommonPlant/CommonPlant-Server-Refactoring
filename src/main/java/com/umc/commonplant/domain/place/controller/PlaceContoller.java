@@ -19,10 +19,15 @@ public class PlaceContoller {
     private final PlaceService placeService;
     private final UserService userService;
 
+
+    //장소 추가
     @PostMapping("/create")
     public ResponseEntity<JsonResponse> createPlace(@RequestPart("place") PlaceDto.create req, @RequestPart("image") MultipartFile image){
         User user = userService.getUser(1L);
         String placeCode = placeService.create(user, req, image);
         return ResponseEntity.ok(new JsonResponse(true, 200, "createPlace", placeCode));
     }
+
+
+
 }
