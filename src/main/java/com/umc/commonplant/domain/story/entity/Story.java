@@ -19,10 +19,10 @@ public class Story extends BaseTime {
     @Column(name = "story_idx")
     private Long storyIdx;
 
-    @ManyToOne
-    @JoinColumn(name = "user_idx", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
-    private String content;
-    private String is_public;
+//    @ManyToOne
+//    @JoinColumn(name = "user_idx", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private User user;
+//    private String content;
+//    private String is_public;
 }

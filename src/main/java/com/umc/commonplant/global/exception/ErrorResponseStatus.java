@@ -3,6 +3,7 @@ package com.umc.commonplant.global.exception;
 public enum ErrorResponseStatus {
     // 2000 : Request 오류
     REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
+    FAILED_TO_LOGIN_JWT(false,2004,"token을 확인하세요."),
 
 
     // 3000 : Response 오류
@@ -11,6 +12,9 @@ public enum ErrorResponseStatus {
 
     //4000 : Database, Server 오류
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
+    EXIST_USER(false, 4002, "이미 등록된 유저가 있습니다."),
+    NOT_FOUND_USER(false, 4003, "등록된 유저가 없습니다."),
+    EXPIRED_JWT(false, 4007, "만료된 토큰입니다."),
 
 
     //5000 : Server connection 오류
