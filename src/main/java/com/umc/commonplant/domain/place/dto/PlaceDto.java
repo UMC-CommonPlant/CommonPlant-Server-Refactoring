@@ -12,6 +12,5 @@ public class PlaceDto {
     public static class create{
         private String name;
         private String address;
-
     }
 }
