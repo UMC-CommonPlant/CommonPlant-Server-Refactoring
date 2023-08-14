@@ -38,6 +38,8 @@ public class PlaceService {
 
         String imgUrl = imageService.saveImage(image);
 
+        //TODO : imageService
+
         Place place = Place.builder()
                 .name(req.getName())
                 .address(req.getAddress())

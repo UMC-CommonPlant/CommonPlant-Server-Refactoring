@@ -27,6 +27,8 @@ public class PlaceContoller {
 
     private final OpenApiService openApiService;
 
+
+    //장소 추가
     @PostMapping("/create")
     public ResponseEntity<JsonResponse> createPlace(@RequestPart("place") PlaceDto.createPlaceReq req, @RequestPart("image") MultipartFile image)
     {
