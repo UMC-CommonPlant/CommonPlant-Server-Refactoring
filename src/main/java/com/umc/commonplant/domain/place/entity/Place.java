@@ -25,7 +25,7 @@ public class Place {
     @ManyToOne
     @JoinColumn(name = "user_idx", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    private User owner;
 
     @Column(nullable = true)
     private String gridX;    // 경도 (x)
@@ -42,10 +42,11 @@ public class Place {
     @Column(nullable = false)
     private String code;
 
+
     @Builder
-    public Place(String name, User user, String gridX, String gridY, String address, String imgUrl, String code) {
+    public Place(String name, User owner, String gridX, String gridY, String address, String imgUrl, String code) {
         this.name = name;
-        this.user = user;
+        this.owner = owner;
         this.gridX = gridX;
         this.gridY = gridY;
         this.address = address;
