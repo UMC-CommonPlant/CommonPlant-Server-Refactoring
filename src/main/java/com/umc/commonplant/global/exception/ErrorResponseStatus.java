@@ -16,6 +16,7 @@ public enum ErrorResponseStatus {
     NOT_FOUND_USER(false, 4003, "등록된 유저가 없습니다."),
     EXPIRED_JWT(false, 4007, "만료된 토큰입니다."),
 
+    NOT_FOUND_PLACE_CODE(false, 4100, "등록된 code가 없습니다."),
 
     //5000 : Server connection 오류
     SERVER_ERROR(false, 5000, "서버와의 연결에 실패하였습니다."),

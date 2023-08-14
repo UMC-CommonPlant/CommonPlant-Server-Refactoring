@@ -1,6 +1,5 @@
 package com.umc.commonplant.global.utils.openAPI;
 
-
 import org.springframework.stereotype.Service;
 
 @Service
