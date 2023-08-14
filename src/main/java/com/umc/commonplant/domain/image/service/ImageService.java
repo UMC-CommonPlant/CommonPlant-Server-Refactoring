@@ -29,10 +29,8 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final AmazonS3Client amazonS3Client;
 
-    //咯矾 颇老 - S3客 DB Table俊 历厘
     @Transactional
     public List<String> createImages(ImageDto.ImagesRequest multipartFiles, ImageDto.ImageRequest request) {
-        //multipart null exception 积己
         if(multipartFiles.getImages().isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
 
         List<String> resultList = new ArrayList<>();
@@ -45,10 +43,8 @@ public class ImageService {
         return resultList;
     }
 
-    //窜老 颇老 - S3客 DB Table俊 历厘
     @Transactional
     public String createImage(MultipartFile multipartFile, ImageDto.ImageRequest request) {
-        //multipart null exception 积己
         if(multipartFile.isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
 
         Image image;
@@ -65,10 +61,8 @@ public class ImageService {
         return image.getImgUrl();
     }
 
-    //窜老 颇老 - S3俊父 历厘, imageURL 馆券
     @Transactional
     public String saveImage(MultipartFile multipartFile) {
-        //multipart null exception 积己
         if(multipartFile.isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
 
         String originalName = multipartFile.getOriginalFilename();

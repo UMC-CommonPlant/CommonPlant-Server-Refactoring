@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class ImageController { //이미지 테스트용 controller
+public class ImageController {
 
     private final ImageService imageService;
 
