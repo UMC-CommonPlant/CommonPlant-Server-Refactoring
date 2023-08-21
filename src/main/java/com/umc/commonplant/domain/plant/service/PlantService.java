@@ -1,7 +1,6 @@
 package com.umc.commonplant.domain.plant.service;
 
 import com.umc.commonplant.domain.image.service.ImageService;
-import com.umc.commonplant.domain.info.entity.Info;
 import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.place.entity.PlaceRepository;
 import com.umc.commonplant.domain.place.service.PlaceService;
