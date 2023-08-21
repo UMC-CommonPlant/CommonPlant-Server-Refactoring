@@ -17,6 +17,12 @@ public enum ErrorResponseStatus {
     EXPIRED_JWT(false, 4007, "만료된 토큰입니다."),
 
     NOT_FOUND_PLACE_CODE(false, 4100, "등록된 code가 없습니다."),
+    NOT_FOUND_PLACE_NAME(false, 4101, "등록된 장소 이름이 없습니다."),
+
+    NOT_FOUND_PLANT(false, 4200, "등록된 식물이 없습니다."),
+    NO_PLANT_NICKNAME(false, 4201, "식물의 애칭을 입력해 주세요!"),
+    LONG_PLANT_NICKNAME(false, 4202, "식물의 애칭은 10자 이하로 설정해주세요!"),
+    NO_SELECTED_PLANT_IMAGE(false,4203, "식물의 이미지를 선택해주세요!"),
 
     //5000 : Server connection 오류
     SERVER_ERROR(false, 5000, "서버와의 연결에 실패하였습니다."),
