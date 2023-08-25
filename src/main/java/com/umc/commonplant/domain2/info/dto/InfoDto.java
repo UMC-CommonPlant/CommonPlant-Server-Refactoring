@@ -93,4 +93,19 @@ public class InfoDto {
             this.water_type = water_type;
         }
     }
+
+    @NoArgsConstructor
+    @Data
+    public static class SearchInfoResponse {
+        private String name;
+        private String scientific_name;
+        private String imgUrl;
+
+        @Builder
+        public SearchInfoResponse(String name, String scientific_name, String imgUrl) {
+            this.name = name;
+            this.scientific_name = scientific_name;
+            this.imgUrl = imgUrl;
+        }
+    }
 }

@@ -6,10 +6,7 @@ import com.umc.commonplant.global.dto.JsonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -27,12 +24,18 @@ public class InfoController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "addPlantInfo", null));
     }
 
-//    @PostMapping("/getPlantInfo")
-//    public ResponseEntity<JsonResponse> findInfo(@RequestPart("name") String name) {
+    @GetMapping("/getPlantInfo")
+    public ResponseEntity<JsonResponse> findInfo(@RequestPart("name") String name) {
+
+        InfoDto.InfoResponse infoResponse = infoService.findInfo(name);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlantInfo", infoResponse));
+    }
+
+//    @GetMapping("/searchInfo")
+//    public ResponseEntity<JsonResponse> searchInfo(@RequestPart("name") String name) {
 //
-//        InfoDto.InfoResponse infoResponse = infoService.findInfo(name);
-//
-//        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlantInfo", infoResponse));
+//        return ResponseEntity.ok(new JsonResponse(true, 200, "searchInfo", ))
 //    }
 
 }
