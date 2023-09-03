@@ -19,30 +19,4 @@ public class PlaceInfo {
         public double x;
         public double y;
     }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class weatherInfo
-    {
-        private String highestTemp;    // 최고기온
-        private String minimumTemp;   // 최저기온
-        private String humidity;     // 습도
-    }
-
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public class GeoInfo {
-        @SerializedName("lon") private double lon;
-        @SerializedName("lat") private double lat;
-        private String nowDate;
-        private String nowTime;
-        private String callDate;
-
-        @Override
-        public String toString() {
-            return "GeoInfo{" + "lon=" + lon + ", lat=" + lat + ", nowDate='" + nowDate + '\'' + ", nowTime='" + nowTime + '\'' + ", callDate='" + callDate + '\'' + '}'; }
-    }
 }

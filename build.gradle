@@ -41,9 +41,7 @@ dependencies {
 	//random string
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-	//openAPI
-
-  //cloud-aws
+  	//cloud-aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -52,6 +50,11 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+	//json-parser
+	implementation 'com.googlecode.json-simple:json-simple:1.1'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+
 }
 
 tasks.named('test') {

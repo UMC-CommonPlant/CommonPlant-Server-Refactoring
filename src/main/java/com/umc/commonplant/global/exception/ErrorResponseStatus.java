@@ -5,7 +5,6 @@ public enum ErrorResponseStatus {
     REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
     FAILED_TO_LOGIN_JWT(false,2004,"token을 확인하세요."),
 
-
     // 3000 : Response 오류
     RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
 
@@ -18,6 +17,10 @@ public enum ErrorResponseStatus {
 
     NOT_FOUND_PLACE_CODE(false, 4100, "등록된 code가 없습니다."),
     NOT_FOUND_PLACE_NAME(false, 4101, "등록된 장소 이름이 없습니다."),
+    OBJECT_MAPPER_FAIL(false, 4102,"Json 변환에 실패했습니다."),
+    GET_HUMIDITY_FAIL(false, 4103,"습도를 조회하는데 실패했습니다."),
+    NOT_FOUNT_USER_ON_PLACE(false, 4104,"place에 속하지 않은 유저입니다."),
+
 
     NOT_FOUND_PLANT(false, 4200, "등록된 식물이 없습니다."),
     NO_PLANT_NICKNAME(false, 4201, "식물의 애칭을 입력해 주세요!"),

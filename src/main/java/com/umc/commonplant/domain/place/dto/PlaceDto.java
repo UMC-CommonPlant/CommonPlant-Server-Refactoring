@@ -27,9 +27,6 @@ public class PlaceDto {
         private String name;
         private String code;
         private String address;
-        private String humidity;
-        private String maxTemp;
-        private String minTemp;
         private boolean isOwner;
         private List<getPlaceResUser> userList;
 //        private List<Plant> plantList;
@@ -42,5 +39,23 @@ public class PlaceDto {
     public static class getPlaceResUser{
         private String name;
         private String image;
+    }
+
+
+    @Data
+    @Builder
+    public static class getWeatherRes{
+        private String maxTemp;
+        private String minTemp;
+        private String humidity;
+    }
+
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getPlaceGridRes {
+        private String nx;
+        private String ny;
     }
 }

@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.umc.commonplant.domain.weather.entity.Weather;
+import com.umc.commonplant.global.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,10 +25,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.umc.commonplant.global.exception.ErrorResponseStatus.OBJECT_MAPPER_FAIL;
 
 @RequiredArgsConstructor
 @Service
@@ -118,55 +125,78 @@ public class OpenApiService {
     }
 
     //===================================
-    // 날씨 API
+    // 기상청 날씨 API
 
-//    private final String BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?";
-//    private final String dataType = "pageNo=1&dataType=JSON";
-//    private final String serviceKey = "&serviceKey=NCQVHIPVNbjiBU6M6d8NBB0UKhwS299XrWuFSw7N1bVxkj6mHLDNNbJi4ZhEH0IgKev0UyTOHPXXVV4dezZDpw==";
-//    // private final String defaultQueryParam = "&MobileOS=ETC&MobileApp=AppTest&_type=json";
-//    private final String numOfRows = "&numOfRows=10";
-//    private final String baseDate = "&base_date=";
-//    private final String baseTime = "&base_time=";
-//    private final String nx = "&nx=";
-//    private final String ny = "&ny=";
-//
-//    public String makeUrl(String x, String y) throws UnsupportedEncodingException {
-//
-//        String date = "20230202";
-//        String time = "0600";
-//
-//        return BASE_URL + dataType + baseDate + date + baseTime + time + nx + x + serviceKey + numOfRows +ny + y;
-//    }
-//
-//
-//    public ResponseEntity<?> fetch(String url) throws UnsupportedEncodingException {
-//        System.out.println(url);
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpEntity<?> entity = new HttpEntity<>(new HttpHeaders());
-//        ResponseEntity<Map> resultMap = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
-//        System.out.println(resultMap.getBody());
-//        System.out.println(resultMap.toString());
-//
-//        return resultMap;
-//
-    public PlaceInfo.GeoInfo getTime(){
-        PlaceInfo.GeoInfo gi = null;
-        System.out.println("test");
+    private final ObjectMapper objectMapper;
 
-        SimpleDateFormat dateSdf = new SimpleDateFormat("yyyyMMdd");//년월일 받아오는 부분
-        SimpleDateFormat timeSdf = new SimpleDateFormat("HH"); //현재시간 받아오는 부분
-        Calendar cal = Calendar.getInstance(); //현재시간을 받아온다.
+    @Value("${value.openAPI.baseUrl}")
+    private String BASE_URL;
+    @Value("${value.openAPI.serviceKey}")
+    private String serviceKey;
+    private final String dataType = "&pageNo=1&dataType=JSON";
+    private final String numOfRows = "&numOfRows=400";
+    private final String baseDate = "&base_date=";
+    private final String baseTime = "&base_time=";
+    private final String nx = "&nx=";
+    private final String ny = "&ny=";
 
-        gi.setNowDate(dateSdf.format(cal.getTime())); //날짜 세팅
-        gi.setNowTime(timeSdf.format(cal.getTime())); //시간 세팅
+    public String makeUrl(String x, String y){
 
-        /* * 하루 전체의 기상예보를 받아오려면 전날 23시에 266개의 날씨정보를 호출해와야 한다. * 따라서 호출 값은 현재 날짜보다 1일전으로 세팅해줘야 한다. * */
-        cal.add(Calendar.DATE,-1); //1일전 날짜를 구하기 위해 현재 날짜에서 -1 시켜주는 부분
-        gi.setCallDate(dateSdf.format(cal.getTime())); //1일전 값으로 호출값 생성
+        String yestDate = getYestDate();
+        String time = "2300";
 
-        System.out.println("date : " + gi.getNowDate());
-        System.out.println("time : " + gi.getNowTime());
-        System.out.println("Call Date" + gi.getCallDate());
-        return gi;
+        return BASE_URL + serviceKey + numOfRows + dataType + baseDate + yestDate + baseTime + time + nx + x +ny + y;
+    }
+
+
+    public Weather openAPIfetch(String url){
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<?> entity = new HttpEntity<>(new HttpHeaders());
+
+        WeatherResult.items response;
+
+        try{
+            ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            response = objectMapper.readValue(result.getBody(), WeatherResult.items.class);
+        }catch (IOException e){
+            throw new BadRequestException(OBJECT_MAPPER_FAIL);
+        }
+
+        Weather weather = new Weather(response);
+        System.out.println(ToStringBuilder.reflectionToString(weather));
+        return weather;
+    }
+
+    public Weather getWeather(String nx, String ny){
+        Weather weather = openAPIfetch(makeUrl(nx, ny));
+        return weather;
+    }
+
+    public String getYestDate()
+    {
+        SimpleDateFormat dateSdf = new SimpleDateFormat("yyyyMMdd");
+        Calendar cal = Calendar.getInstance();
+
+        cal.add(Calendar.DATE,-1);
+
+        return dateSdf.format(cal.getTime());
+    }
+
+    public String getNowDate()
+    {
+        LocalDateTime now = LocalDateTime.now();
+        String currentDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        return currentDate;
+    }
+
+    public int getNowTime()
+    {
+        LocalDateTime now = LocalDateTime.now();
+
+        int currentHour = now.getHour();
+        System.out.println("date : "+currentHour);
+
+        return currentHour;
     }
 }
