@@ -55,9 +55,15 @@ public class PlaceService {
         return newCode;
     }
 
-    @Transactional
-    public PlaceDto.getPlaceRes getPlace(User user, String code) {
+    public void userOnPlace(User user, String code)
+    {
+        if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
+            throw new BadRequestException(NOT_FOUNT_USER_ON_PLACE);
+    }
 
+    @Transactional
+    public PlaceDto.getPlaceRes getPlace(User user, String code) 
+    {
         belongUserOnPlace(user, code);
         Place place = getPlaceByCode(code);
         List<PlaceDto.getPlaceResUser> userList = belongRepository.getUserListByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE))

@@ -39,6 +39,7 @@ public class PlaceContoller {
     {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
+        placeService.userOnPlace(user, code);
         PlaceDto.getPlaceRes res = placeService.getPlace(user, code);
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlace", res));
     }
