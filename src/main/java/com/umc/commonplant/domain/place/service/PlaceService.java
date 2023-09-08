@@ -25,7 +25,6 @@ import static com.umc.commonplant.global.exception.ErrorResponseStatus.NOT_FOUNT
 @RequiredArgsConstructor
 @Service
 public class PlaceService {
-
     private final PlaceRepository placeRepository;
     private final BelongRepository belongRepository;
 
@@ -56,17 +55,11 @@ public class PlaceService {
         return newCode;
     }
 
-    public void userOnPlace(User user, String code)
-    {
-        if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
-            throw new BadRequestException(NOT_FOUNT_USER_ON_PLACE);
-    }
-
     @Transactional
     public PlaceDto.getPlaceRes getPlace(User user, String code) {
 
-        Place place = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
-
+        belongUserOnPlace(user, code);
+        Place place = getPlaceByCode(code);
         List<PlaceDto.getPlaceResUser> userList = belongRepository.getUserListByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE))
                 .stream().map(u -> new PlaceDto.getPlaceResUser(u.getName(), u.getImgUrl())).collect(Collectors.toList());
 
@@ -85,8 +78,25 @@ public class PlaceService {
         return res;
     }
 
-    public PlaceDto.getPlaceGridRes getPlaceGrid(String code) {
+    public PlaceDto.getPlaceGridRes getPlaceGrid(User user, String code) {
+        belongUserOnPlace(user, code);
         Place place = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
         return new PlaceDto.getPlaceGridRes(place.getGridX(), place.getGridY());
+    }
+
+    // ----- API 외 메서드 -----
+
+    public void belongUserOnPlace(User user, String code)
+    {
+        if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
+            throw new BadRequestException(NOT_FOUNT_USER_ON_PLACE);
+    }
+
+    public Place getPlaceByCode(String code){
+        return placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
+    }
+
+    public List<Place> getPlaceListByUser(User user){
+        return belongRepository.getPlaceListByUser(user.getUuid());
     }
 }
