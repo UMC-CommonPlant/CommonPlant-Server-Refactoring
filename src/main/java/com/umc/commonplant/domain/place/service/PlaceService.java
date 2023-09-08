@@ -19,14 +19,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
+import static com.umc.commonplant.global.exception.ErrorResponseStatus.NOT_FOUND_PLACE_CODE;
+import static com.umc.commonplant.global.exception.ErrorResponseStatus.NOT_FOUNT_USER_ON_PLACE;
 
 @RequiredArgsConstructor
 @Service
 public class PlaceService {
-    private final OpenApiService openApiService;
+
     private final PlaceRepository placeRepository;
     private final BelongRepository belongRepository;
+
+    private final OpenApiService openApiService;
     private final ImageService imageService;
 
 
@@ -37,8 +40,6 @@ public class PlaceService {
         HashMap<String, String> gridXY = openApiService.getGridXYFromAddress(req.getAddress());
 
         String imgUrl = imageService.saveImage(image);
-
-        //TODO : imageService
 
         Place place = Place.builder()
                 .name(req.getName())
@@ -55,23 +56,26 @@ public class PlaceService {
         return newCode;
     }
 
+    public void userOnPlace(User user, String code)
+    {
+        if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
+            throw new BadRequestException(NOT_FOUNT_USER_ON_PLACE);
+    }
+
     @Transactional
     public PlaceDto.getPlaceRes getPlace(User user, String code) {
 
         Place place = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
 
-        List<PlaceDto.getPlaceResUser> userList = belongRepository.getUserByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE))
+        List<PlaceDto.getPlaceResUser> userList = belongRepository.getUserListByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE))
                 .stream().map(u -> new PlaceDto.getPlaceResUser(u.getName(), u.getImgUrl())).collect(Collectors.toList());
 
-
+        System.out.println("placeDto");
         PlaceDto.getPlaceRes res = PlaceDto.getPlaceRes.builder()
                 .name(place.getName())
                 .address(place.getAddress())
                 .code(place.getCode())
                 .isOwner(false)
-                .humidity("")
-                .maxTemp("")
-                .minTemp("")
                 .userList(userList)
                 .build();
 
@@ -79,5 +83,10 @@ public class PlaceService {
             res.setOwner(true);
 
         return res;
+    }
+
+    public PlaceDto.getPlaceGridRes getPlaceGrid(String code) {
+        Place place = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
+        return new PlaceDto.getPlaceGridRes(place.getGridX(), place.getGridY());
     }
 }
