@@ -24,7 +24,6 @@ public class PlaceContoller {
     private final JwtService jwtService;
     private final WeatherService weatherService;
 
-
     //장소 추가
     @PostMapping("/create")
     public ResponseEntity<JsonResponse> createPlace(@RequestPart("place") PlaceDto.createPlaceReq req, @RequestPart("image") MultipartFile image)
@@ -50,7 +49,7 @@ public class PlaceContoller {
     {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
-        PlaceDto.getPlaceGridRes placeGrid = placeService.getPlaceGrid(code);
+        PlaceDto.getPlaceGridRes placeGrid = placeService.getPlaceGrid(user, code);
         PlaceDto.getWeatherRes res = weatherService.getPlaceWeather(placeGrid);
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceWeather", res));
     }
