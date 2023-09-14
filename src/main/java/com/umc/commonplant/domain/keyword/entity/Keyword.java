@@ -2,6 +2,7 @@ package com.umc.commonplant.domain.keyword.entity;
 
 import com.umc.commonplant.domain.BaseTime;
 import com.umc.commonplant.domain.story.entity.Story;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -25,5 +26,11 @@ public class Keyword extends BaseTime {
     private Story story;
 
     private String keyword;
+
+    @Builder
+    public Keyword(Story story, String keyword) {
+        this.story = story;
+        this.keyword = keyword;
+    }
 
 }

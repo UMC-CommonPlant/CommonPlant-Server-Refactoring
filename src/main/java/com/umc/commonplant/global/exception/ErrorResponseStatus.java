@@ -27,6 +27,9 @@ public enum ErrorResponseStatus {
     LONG_PLANT_NICKNAME(false, 4202, "식물의 애칭은 10자 이하로 설정해주세요!"),
     NO_SELECTED_PLANT_IMAGE(false,4203, "식물의 이미지를 선택해주세요!"),
 
+    NO_SELECTED_STORY_IMAGE(false, 4300,"story의 이미지는 최소 1장, 최대 5장 입니다."),
+    NOT_FOUND_STORY(false, 4200, "등록된 스토리가 없습니다."),
+
     //5000 : Server connection 오류
     SERVER_ERROR(false, 5000, "서버와의 연결에 실패하였습니다."),
 
