@@ -39,7 +39,7 @@ public class Comment extends BaseTime {
     private Comment parent;
 
     @OneToMany(mappedBy = "parent", orphanRemoval = true)
-    private List<Comment> children = new ArrayList<>();
+    private List<Comment> child = new ArrayList<>();
 
     private String category;
 
@@ -60,5 +60,17 @@ public class Comment extends BaseTime {
     public void updateParent(Comment parentComment) {
         this.depth = 2;
         this.parent = parentComment;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "commentIdx=" + commentIdx +
+                ", user=" + user +
+                ", depth=" + depth +
+                ", category='" + category + '\'' +
+                ", categoryIdx=" + categoryIdx +
+                ", content='" + content + '\'' +
+                '}';
     }
 }
