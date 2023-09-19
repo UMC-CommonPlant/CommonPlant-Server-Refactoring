@@ -61,4 +61,10 @@ public class StoryService {
             res.setIsOwner(true);
         return res;
     }
+
+// ----- API 외 메서드 -----
+
+    public Story findStoryByIdx(Long storyIdx){
+        return storyRepository.findById(storyIdx).orElseThrow(() -> new BadRequestException(NOT_FOUND_STORY));
+    }
 }
