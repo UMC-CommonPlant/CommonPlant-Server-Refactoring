@@ -1,5 +1,6 @@
 package com.umc.commonplant.domain.story.dto;
 
+import com.umc.commonplant.domain.comment.dto.CommentDto;
 import com.umc.commonplant.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,16 +27,17 @@ public class StoryDto {
         private List<String> keywords;
         private List<String> images;
         private int like;
-//        private List<Comment> commentList;
+        private List<CommentDto.storyComment> comments;
         private boolean isOwner;
 
         @Builder
-        public getStoryRes(Long storyIdx, String content, User owner, List<String> keywords, List<String> images, int like) {
+        public getStoryRes(Long storyIdx, String content, User owner, List<String> keywords, List<String> images, int like, List<CommentDto.storyComment> comments) {
             this.storyIdx = storyIdx;
             this.content = content;
             this.owner = new getStoryUserRes(owner.getImgUrl(), owner.getName());
             this.keywords = keywords;
             this.images = images;
+            this.comments = comments;
             this.like = like;
             this.isOwner = false;
         }

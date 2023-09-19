@@ -35,10 +35,4 @@ public class CommentController {
         commentService.createStoryComment(user, req);
         return ResponseEntity.ok(new JsonResponse(true, 200, "createStoryComment", null));
     }
-
-    @GetMapping("/story/{storyIdx}")
-    public ResponseEntity<JsonResponse> getCommentListTest(@PathVariable Long storyIdx){
-        List<CommentDto.storyComment> res = commentService.getCommentByStory(storyIdx);
-        return ResponseEntity.ok(new JsonResponse(true, 200, "getCommentListTest", res));
-    }
 }

@@ -1,5 +1,7 @@
 package com.umc.commonplant.domain.story.service;
 
+import com.umc.commonplant.domain.comment.dto.CommentDto;
+import com.umc.commonplant.domain.comment.service.CommentService;
 import com.umc.commonplant.domain.image.dto.ImageDto;
 import com.umc.commonplant.domain.image.entity.Image;
 import com.umc.commonplant.domain.image.service.ImageService;
@@ -25,6 +27,7 @@ import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 public class StoryService {
     private final StoryRepository storyRepository;
     private final KeywordService keywordService;
+    private final CommentService commentService;
 
     private final ImageService imageService;
 
@@ -50,12 +53,13 @@ public class StoryService {
         List<String> keywords = keywordService.getKeywordListByStory(storyIdx);
         List<String> images = imageService.findImageUrlByCategory(new ImageDto.ImageRequest("STORY", storyIdx));
         //TODO : comment
+        List<CommentDto.storyComment> comments = commentService.getCommentByStory(storyIdx);
 
         //TODO : like
 
         StoryDto.getStoryRes res = StoryDto.getStoryRes.builder()
                 .storyIdx(story.getStoryIdx()).content(story.getContent()).owner(story.getUser())
-                .like(10)
+                .like(10).comments(comments)
                 .images(images).keywords(keywords).build();
         if(user.getUuid().equals(story.getUser().getUuid()))
             res.setIsOwner(true);
