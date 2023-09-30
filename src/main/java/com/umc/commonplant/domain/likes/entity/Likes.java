@@ -1,7 +1,8 @@
-package com.umc.commonplant.domain.heart.entity;
+package com.umc.commonplant.domain.likes.entity;
 
 import com.umc.commonplant.domain.BaseTime;
 import com.umc.commonplant.domain.user.entity.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -10,14 +11,14 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Getter
-@Table(name = "heart")
+@Table(name = "likes")
 @NoArgsConstructor
 @Entity
-public class Heart extends BaseTime {
+public class Likes extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "heart_idx")
-    private Long heartIdx;
+    @Column(name = "like_idx")
+    private Long likeIdx;
 
     @ManyToOne
     @JoinColumn(name = "user_idx", nullable = false)
@@ -27,4 +28,10 @@ public class Heart extends BaseTime {
     private String category;
     private Long categoryIdx;
 
+    @Builder
+    public Likes(User user, String category, Long categoryIdx) {
+        this.user = user;
+        this.category = category;
+        this.categoryIdx = categoryIdx;
+    }
 }
