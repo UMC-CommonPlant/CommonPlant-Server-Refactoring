@@ -52,18 +52,20 @@ public class StoryService {
         Story story = storyRepository.findById(storyIdx).orElseThrow(()-> new BadRequestException(NOT_FOUND_STORY));
         List<String> keywords = keywordService.getKeywordListByStory(storyIdx);
         List<String> images = imageService.findImageUrlByCategory(new ImageDto.ImageRequest("STORY", storyIdx));
-        //TODO : comment
+
         List<CommentDto.storyComment> comments = commentService.getCommentByStory(storyIdx);
 
-        //TODO : like
         int countLike = likeService.countLikeByStory(storyIdx);
+        boolean isLike = likeService.isUserLikeStory(user.getUserIdx(), storyIdx);
 
         StoryDto.getStoryRes res = StoryDto.getStoryRes.builder()
                 .storyIdx(story.getStoryIdx()).content(story.getContent()).owner(story.getUser())
-                .like(countLike).comments(comments)
+                .like(countLike).isLike(isLike)
+                .comments(comments)
                 .images(images).keywords(keywords).build();
         if(user.getUuid().equals(story.getUser().getUuid()))
             res.setIsOwner(true);
+
         return res;
     }
 

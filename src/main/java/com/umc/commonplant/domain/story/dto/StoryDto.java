@@ -27,11 +27,13 @@ public class StoryDto {
         private List<String> keywords;
         private List<String> images;
         private int like;
+        private Boolean isLike;
         private List<CommentDto.storyComment> comments;
-        private boolean isOwner;
+        private Boolean isOwner;
 
         @Builder
-        public getStoryRes(Long storyIdx, String content, User owner, List<String> keywords, List<String> images, int like, List<CommentDto.storyComment> comments) {
+        public getStoryRes(Long storyIdx, String content, User owner, List<String> keywords, List<String> images,
+                           int like, boolean isLike, List<CommentDto.storyComment> comments) {
             this.storyIdx = storyIdx;
             this.content = content;
             this.owner = new getStoryUserRes(owner.getImgUrl(), owner.getName());
@@ -39,6 +41,7 @@ public class StoryDto {
             this.images = images;
             this.comments = comments;
             this.like = like;
+            this.isLike = isLike;
             this.isOwner = false;
         }
 

@@ -25,6 +25,8 @@ public class LikeService {
         }
     }
 
+
+    // ----- API 외 메서드 -----
     public boolean isUserLikeStory(Long userIdx, Long storyIdx){
         if(likeRepository.findHeartByStory(userIdx, storyIdx)!=null)
             return true;
