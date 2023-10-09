@@ -33,7 +33,7 @@ public class InfoController {
     }
 
     @GetMapping("/getPlantInfo")
-    public ResponseEntity<JsonResponse> findInfo(@RequestPart("name") String name) {
+    public ResponseEntity<JsonResponse> findInfo(@RequestParam("name") String name) {
 
         InfoDto.InfoResponse infoResponse = infoService.findInfo(name);
 

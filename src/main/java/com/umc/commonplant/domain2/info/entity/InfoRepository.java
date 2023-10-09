@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InfoRepository extends JpaRepository<Info, Long> {
@@ -12,4 +13,6 @@ public interface InfoRepository extends JpaRepository<Info, Long> {
     List<Info> findByName(String name);
 
     List<Info> findByScientificName(String scientificName);
+
+    Optional<Info> findByNameOrScientificName(String name, String scientificName);
 }

@@ -5,6 +5,7 @@ import com.umc.commonplant.domain.image.service.ImageService;
 import com.umc.commonplant.domain2.info.dto.InfoDto;
 import com.umc.commonplant.domain2.info.entity.Info;
 import com.umc.commonplant.domain2.info.entity.InfoRepository;
+import com.umc.commonplant.global.exception.ErrorResponse;
 import com.umc.commonplant.global.exception.ErrorResponseStatus;
 import com.umc.commonplant.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +34,12 @@ public class InfoService {
             info.setImgUrl(imgUrl);
         }
 
+        List<Info> exsitingInfoList = infoRepository.findByName(infoRequest.getName());
+        if((!exsitingInfoList.isEmpty())) {
+            throw new GlobalException(ErrorResponseStatus.ALREADY_EXIST_INFO);
+        }
         try {
-            List<Info> exsitingInfoList = infoRepository.findByName(infoRequest.getName());
-            if((!exsitingInfoList.isEmpty())) {
-                throw new Exception(); //create failed - already exist
-            } else {
-                infoRepository.save(info);
-            }
+            infoRepository.save(info);
         } catch (Exception e) {
             throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
         }
@@ -55,52 +55,46 @@ public class InfoService {
             info.setImgUrl(imgUrl);
         }
 
-        try {
-            List<Info> exsitingInfoList = infoRepository.findByName(infoRequest.getName());
-            if((!exsitingInfoList.isEmpty())) {
-                Info exsitingInfo = exsitingInfoList.get(0);
-                info.setId(exsitingInfo.getInfoIdx());
+        List<Info> exsitingInfoList = infoRepository.findByName(infoRequest.getName());
+        if((!exsitingInfoList.isEmpty())) {
+            Info exsitingInfo = exsitingInfoList.get(0);
+            info.setId(exsitingInfo.getInfoIdx());
 
+            try{
                 infoRepository.save(info);
-            } else {
-                throw new Exception(); //update failed - not exist
+            } catch (Exception e) {
+                throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
             }
-        } catch (Exception e) {
-            throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
+        } else {
+            throw new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO);
         }
     }
 
     public InfoDto.InfoResponse findInfo(String name) {
 
-        Info info = null;
+        Optional<Info> infoOptional = infoRepository.findByNameOrScientificName(name, name);
 
-        Optional<Info> OptionalInfo = infoRepository.findByName(name)
-                .stream()
-                .findFirst()
-                .or(() -> infoRepository.findByScientificName(name).stream().findFirst());
+        if (infoOptional.isPresent()) {
+            Info info = infoOptional.get();
+            historyService.searchInfo(name);
+            String waterType = getWaterTypeByMonth(info);
 
-        if (OptionalInfo.isPresent()) {
-            info = OptionalInfo.get();
+            return InfoDto.InfoResponse.builder()
+                    .name(info.getName())
+                    .humidity(info.getHumidity())
+                    .management(info.getManagement())
+                    .place(info.getPlace())
+                    .scientific_name(info.getScientificName())
+                    .water_day(info.getWater_day())
+                    .sunlight(info.getSunlight())
+                    .temp_max(info.getTemp_max())
+                    .temp_min(info.getTemp_min())
+                    .tip(info.getTip())
+                    .water_type(waterType)
+                    .build();
         } else {
-            throw new GlobalException(ErrorResponseStatus.RESPONSE_ERROR);
+            throw new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO);
         }
-
-        historyService.searchInfo(name);
-        String waterType = getWaterTypeByMonth(info);
-
-        return InfoDto.InfoResponse.builder()
-                .name(info.getName())
-                .humidity(info.getHumidity())
-                .management(info.getManagement())
-                .place(info.getPlace())
-                .scientific_name(info.getScientificName())
-                .water_day(info.getWater_day())
-                .sunlight(info.getSunlight())
-                .temp_max(info.getTemp_max())
-                .temp_min(info.getTemp_min())
-                .tip(info.getTip())
-                .water_type(waterType)
-                .build();
     }
 
     private String getWaterTypeByMonth(Info info) {

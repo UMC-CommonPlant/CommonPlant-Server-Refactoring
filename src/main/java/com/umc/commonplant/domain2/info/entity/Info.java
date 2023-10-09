@@ -60,4 +60,5 @@ public class Info extends BaseTime {
     }
 
     public void setId(Long id) { this.infoIdx = id; }
+    public void setVerified(Boolean verified) { this.verified = verified; }
 }
