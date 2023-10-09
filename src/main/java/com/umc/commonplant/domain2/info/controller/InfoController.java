@@ -24,6 +24,14 @@ public class InfoController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "addPlantInfo", null));
     }
 
+    @PatchMapping("/updatePlantInfo")
+    public ResponseEntity<JsonResponse> updateInfo(@RequestPart("infoRequest") InfoDto.InfoRequest infoRequest, @RequestPart("image") MultipartFile multipartFile) {
+
+        infoService.updateInfo(infoRequest, multipartFile);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "updatePlantInfo", null));
+    }
+
     @GetMapping("/getPlantInfo")
     public ResponseEntity<JsonResponse> findInfo(@RequestPart("name") String name) {
 

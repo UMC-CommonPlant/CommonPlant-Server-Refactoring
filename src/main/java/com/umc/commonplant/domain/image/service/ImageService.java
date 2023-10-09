@@ -29,9 +29,8 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final AmazonS3Client amazonS3Client;
 
-    @Transactional
     public List<String> createImages(ImageDto.ImagesRequest multipartFiles, ImageDto.ImageRequest request) {
-        if(multipartFiles.getImages().isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
+        if(multipartFiles.getImages().isEmpty()) throw new BadRequestException(ErrorResponseStatus.NO_SELECT_IMAGE);
 
         List<String> resultList = new ArrayList<>();
 
@@ -43,9 +42,8 @@ public class ImageService {
         return resultList;
     }
 
-    @Transactional
     public String createImage(MultipartFile multipartFile, ImageDto.ImageRequest request) {
-        if(multipartFile.isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
+        if(multipartFile.isEmpty()) throw new BadRequestException(ErrorResponseStatus.NO_SELECT_IMAGE);
 
         Image image;
 
@@ -56,12 +54,15 @@ public class ImageService {
                 .category_idx(request.getCategory_idx())
                 .build();
 
-        imageRepository.save(image);
+        try{
+            imageRepository.save(image);
+        } catch (Exception e){
+            throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
+        }
 
         return image.getImgUrl();
     }
 
-    @Transactional
     public String saveImage(MultipartFile multipartFile) {
         if(multipartFile.isEmpty()) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
 
@@ -83,36 +84,43 @@ public class ImageService {
             inputStream.close();
 
         } catch(Exception e) {
-            throw new GlobalException(ErrorResponseStatus.SERVER_ERROR);
+            throw new GlobalException(ErrorResponseStatus.IMAGE_UPLOAD_FAIL);
         }
 
         return imageUrl;
     }
 
-    @Transactional
     public List<String> findImageUrlByCategory(ImageDto.ImageRequest request) {
         List<String> imageUrls = imageRepository.findUrlsByCategoryAndCategoryIdx(request.getCategory(), request.getCategory_idx());
 
         return imageUrls;
     }
 
-    @Transactional
     public void deleteFileInDatabase(ImageDto.ImageRequest request) {
         List<String> imageUrls = findImageUrlByCategory(request);
-        for(String imgUrl : imageUrls) {
-            deleteFileInS3(imgUrl);
+
+        try {
+            for(String imgUrl : imageUrls) {
+                imageRepository.deleteByImgUrl(imgUrl);
+                deleteFileInS3(imgUrl);
+            }
+
+        } catch(Exception e) {
+            throw new GlobalException(ErrorResponseStatus.IMAGE_DELETE_FAIL);
         }
-        imageRepository.deleteByCategoryAndCategoryIdx(request.getCategory(), request.getCategory_idx());
     }
 
-    @Transactional
     public void deleteFileInS3(String imageUrl) {
         String splitStr = ".com/";
         int lastIndex = imageUrl.lastIndexOf(splitStr);
-        if(lastIndex == -1) throw new BadRequestException(ErrorResponseStatus.REQUEST_ERROR);
+        if(lastIndex == -1) throw new BadRequestException(ErrorResponseStatus.INVALID_IMAGE_URL);
 
-        String fileName = imageUrl.substring(lastIndex + splitStr.length());
-        amazonS3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+        try {
+            String fileName = imageUrl.substring(lastIndex + splitStr.length());
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+        } catch (Exception e) {
+            throw new GlobalException(ErrorResponseStatus.IMAGE_DELETE_FAIL);
+        }
     }
 
     public String extractExtension(String originName) {

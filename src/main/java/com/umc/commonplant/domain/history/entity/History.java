@@ -1,6 +1,7 @@
 package com.umc.commonplant.domain.history.entity;
 
 import com.umc.commonplant.domain.BaseTime;
+import com.umc.commonplant.domain2.info.entity.Info;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +16,11 @@ public class History extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "history_idx")
     private Long historyIdx;
-    private String word;
+//    @OneToOne
+//    @JoinColumn(name = "info_idx")
+    private String name;
+    @Column(name = "scientific_name")
+    private String scientificName;
     private int count;
 
 

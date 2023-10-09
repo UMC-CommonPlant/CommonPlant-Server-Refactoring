@@ -1,5 +1,6 @@
 package com.umc.commonplant.domain2.info.service;
 
+import com.umc.commonplant.domain.history.service.HistoryService;
 import com.umc.commonplant.domain.image.service.ImageService;
 import com.umc.commonplant.domain2.info.dto.InfoDto;
 import com.umc.commonplant.domain2.info.entity.Info;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +22,7 @@ public class InfoService {
 
     private final InfoRepository infoRepository;
     private final ImageService imageService;
+    private final HistoryService historyService;
 
     public void createInfo(InfoDto.InfoRequest infoRequest, MultipartFile multipartFile) {
         String imgUrl = null;
@@ -33,11 +36,34 @@ public class InfoService {
         try {
             List<Info> exsitingInfoList = infoRepository.findByName(infoRequest.getName());
             if((!exsitingInfoList.isEmpty())) {
-                Info exsitingInfo = exsitingInfoList.get(0);
-
-                infoRepository.save(exsitingInfo);
+                throw new Exception(); //create failed - already exist
             } else {
                 infoRepository.save(info);
+            }
+        } catch (Exception e) {
+            throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
+        }
+
+    }
+
+    public void updateInfo(InfoDto.InfoRequest infoRequest, MultipartFile multipartFile) {
+        String imgUrl = null;
+        Info info = infoRequest.toEntity();
+
+        if(!(multipartFile.isEmpty())) {
+            imgUrl = imageService.saveImage(multipartFile);
+            info.setImgUrl(imgUrl);
+        }
+
+        try {
+            List<Info> exsitingInfoList = infoRepository.findByName(infoRequest.getName());
+            if((!exsitingInfoList.isEmpty())) {
+                Info exsitingInfo = exsitingInfoList.get(0);
+                info.setId(exsitingInfo.getInfoIdx());
+
+                infoRepository.save(info);
+            } else {
+                throw new Exception(); //update failed - not exist
             }
         } catch (Exception e) {
             throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
@@ -46,19 +72,28 @@ public class InfoService {
 
     public InfoDto.InfoResponse findInfo(String name) {
 
-        Info info = infoRepository.findByName(name)
+        Info info = null;
+
+        Optional<Info> OptionalInfo = infoRepository.findByName(name)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new GlobalException(ErrorResponseStatus.RESPONSE_ERROR));
+                .or(() -> infoRepository.findByScientificName(name).stream().findFirst());
 
-            String waterType = getWaterTypeByMonth(info);
+        if (OptionalInfo.isPresent()) {
+            info = OptionalInfo.get();
+        } else {
+            throw new GlobalException(ErrorResponseStatus.RESPONSE_ERROR);
+        }
+
+        historyService.searchInfo(name);
+        String waterType = getWaterTypeByMonth(info);
 
         return InfoDto.InfoResponse.builder()
                 .name(info.getName())
                 .humidity(info.getHumidity())
                 .management(info.getManagement())
                 .place(info.getPlace())
-                .scientific_name(info.getScientific_name())
+                .scientific_name(info.getScientificName())
                 .water_day(info.getWater_day())
                 .sunlight(info.getSunlight())
                 .temp_max(info.getTemp_max())
@@ -81,5 +116,17 @@ public class InfoService {
             return info.getWater_winter();
         }
     }
+
+
+    //식물 리스트 조회 (단어 포함되는 식물의 이름, url, 학술명)
+    //단, 이름의 일부 / 학술명의 일부 둘다 가능해야 함
+    //이건 사용자의 입력이 존재하므로 특수문자 처리 해줘야함
+//    public List<InfoDto.SearchInfoResponse> searchInfo(String name) {
+//
+//
+//
+//    }
+
+    //추천식물 리스트 조회? (테이블 따로였나
 
 }
