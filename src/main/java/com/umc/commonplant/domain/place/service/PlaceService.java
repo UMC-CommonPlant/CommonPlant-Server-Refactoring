@@ -7,6 +7,7 @@ import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.place.entity.PlaceRepository;
 import com.umc.commonplant.domain.user.entity.User;
+import com.umc.commonplant.domain.user.repository.UserRepository;
 import com.umc.commonplant.global.exception.BadRequestException;
 import com.umc.commonplant.global.utils.openAPI.OpenApiService;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +18,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.umc.commonplant.global.exception.ErrorResponseStatus.NOT_FOUND_PLACE_CODE;
-import static com.umc.commonplant.global.exception.ErrorResponseStatus.NOT_FOUNT_USER_ON_PLACE;
+import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 
 @RequiredArgsConstructor
 @Service
 public class PlaceService {
     private final PlaceRepository placeRepository;
     private final BelongRepository belongRepository;
+    private final UserRepository userRepository;
 
     private final OpenApiService openApiService;
     private final ImageService imageService;
@@ -89,6 +91,25 @@ public class PlaceService {
         Place place = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
         return new PlaceDto.getPlaceGridRes(place.getGridX(), place.getGridY());
     }
+    public String newFriend(String name, String code){
+        User newUser = userRepository.findByname(name).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+        Place place = getPlaceByCode(code);
+
+        //장소에 이미 있을 경우 Exception
+        belongUserOnPlace(newUser, code);
+
+
+        Belong belong = Belong.builder().user(newUser).place(place).build();
+        belongRepository.save(belong);
+
+        return place.getCode();
+    }
+
+    public Optional<User> getFriends(String inputName) {
+        Optional<User> users = Optional.ofNullable(userRepository.findByname(inputName).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER)));
+
+        return users;
+    }
 
     // ----- API 외 메서드 -----
 
@@ -105,4 +126,5 @@ public class PlaceService {
     public List<Place> getPlaceListByUser(User user){
         return belongRepository.getPlaceListByUser(user.getUuid());
     }
+
 }

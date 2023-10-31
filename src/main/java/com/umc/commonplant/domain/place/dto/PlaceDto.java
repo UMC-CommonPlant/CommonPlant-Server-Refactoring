@@ -58,4 +58,18 @@ public class PlaceDto {
         private String nx;
         private String ny;
     }
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class newFriendsReq{
+        private String name;
+        private String code;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class getFriendsReq{
+        private String name;
+    }
 }
