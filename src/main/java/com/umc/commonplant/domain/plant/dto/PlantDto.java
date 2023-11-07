@@ -1,6 +1,7 @@
 package com.umc.commonplant.domain.plant.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.umc.commonplant.domain.plant.entity.Plant;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,9 +12,7 @@ public class PlantDto {
     @NoArgsConstructor
     @Data
     public static class createPlantReq{
-        // private String plantImage;
-        // TODO: 종 이름을 추가할 때 나중에 Information 에서 불러오기 때문에 추후 수정/삭제
-        // private String scientificName;
+        private String plantName;
         private String nickname;
         // TODO: 장소를 추가할 때 장소 리스트에서 선택하는 것이기 때문에 추후 수정/삭제
         private String place;
@@ -26,7 +25,6 @@ public class PlantDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-    // @Builder
     public static class getPlantRes{
         private String name;
         private String nickname;
@@ -53,4 +51,53 @@ public class PlantDto {
         private LocalDateTime wateredDate;
     }
 
+    /**
+     * Main Page, My Calendar에 보여줄 Plant 리스트
+     */
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class getPlantListRes{
+        private String nickname;
+        private String imgUrl;
+
+        @Builder
+        public getPlantListRes(Plant plant){
+            this.nickname = plant.getNickname();
+            this.imgUrl = plant.getImgUrl();
+        }
+    }
+
+    /**
+     * My Garden에 보여줄 Plant 리스트
+     */
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class getMyGardenPlantListRes{
+        private String plantName;
+        private String nickname;
+        private String imgUrl;
+        private String recentMemo;
+        private Long remainderDate;
+        @JsonFormat(pattern = "yyyy.MM.dd")
+        private LocalDateTime wateredDate;
+
+        @Builder
+        public getMyGardenPlantListRes(Plant plant, Long remainderDate, String recentMemo){
+            this.plantName = plant.getPlantName();
+            this.nickname = plant.getNickname();
+            this.imgUrl = plant.getImgUrl();
+            this.wateredDate = plant.getWateredDate();
+            this.remainderDate = remainderDate;
+            this.recentMemo = recentMemo;
+        }
+    }
+
+//    @AllArgsConstructor
+//    @NoArgsConstructor
+//    @Data
+//    public static class updatePlantReq{
+//        private String nickname;
+//    }
 }

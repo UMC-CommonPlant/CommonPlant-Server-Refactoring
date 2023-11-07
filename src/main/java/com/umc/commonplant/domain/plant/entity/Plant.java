@@ -26,15 +26,22 @@ public class Plant extends BaseTime {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Place place;
 
-    private String name;
+    @Column(nullable = false)
+    private String plantName;
+    @Column(nullable = false, length = 10)
+    private String nickname;
+
+    @Column(nullable = false)
     private String imgUrl;
+    private int waterCycle;
     private LocalDateTime wateredDate;
 
     @Builder
-    public Plant(Place place, String name, String imgUrl, LocalDateTime wateredDate){
+    public Plant(Place place, String plantName, String nickname, int waterCycle, String imgUrl, LocalDateTime wateredDate){
         this.place = place;
-        // this.info = info;
-        this.name = name;
+        this.plantName = plantName;
+        this.nickname = nickname;
+        this.waterCycle = waterCycle;
         this.imgUrl = imgUrl;
         this.wateredDate = wateredDate;
     }
@@ -42,9 +49,16 @@ public class Plant extends BaseTime {
     /**
      * 식물 수정 API 관련 메소드
      */
-    public void updatePlant(String imgUrl, String name) {
+    public void updatePlant(String imgUrl, String nickname) {
         this.imgUrl = imgUrl;
-        this.name = name;
+        this.nickname = nickname;
+    }
+
+    /**
+     * 식물 D-Day 수정 API 관련 메소드
+     */
+    public void setWateredDate(LocalDateTime wateredDate){
+        this.wateredDate = wateredDate;
     }
 
 }
