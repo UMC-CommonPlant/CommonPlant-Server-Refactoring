@@ -44,4 +44,14 @@ public class MemoController {
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "updateMemo", null));
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<JsonResponse> deleteMemo(@RequestParam("memo_idx") Long memo_idx) {
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        memoService.deleteMemo(user, memo_idx);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "deleteMemo", null));
+    }
 }

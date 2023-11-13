@@ -88,4 +88,20 @@ public class MemoService {
             throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
         }
     }
+
+    public void deleteMemo(User user, Long memoIdx) {
+        Optional<Memo> existingMemoOptional = memoRepository.findById(memoIdx);
+        if(existingMemoOptional.isEmpty()) throw new GlobalException(ErrorResponseStatus.NOT_EXIST_MEMO);
+        Memo existingMemo = existingMemoOptional.get();
+
+        if(!Objects.equals(existingMemo.getUser().getUserIdx(), user.getUserIdx())) {
+            throw new GlobalException(ErrorResponseStatus.UNAUTHORIZED_DELETE_MEMO);
+        }
+
+        try {
+            memoRepository.deleteById(memoIdx);
+        } catch (Exception e) {
+            throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
+        }
+    }
 }
