@@ -4,6 +4,8 @@ import com.umc.commonplant.domain.BaseTime;
 import com.umc.commonplant.domain2.info.entity.Info;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -18,6 +20,7 @@ public class History extends BaseTime {
     private Long historyIdx;
     @ManyToOne
     @JoinColumn(name = "info_idx")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Info info;
     private int count;
 
