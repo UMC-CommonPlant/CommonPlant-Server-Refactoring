@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -122,7 +123,8 @@ public class InfoService {
     }
 
     public List<InfoDto.SearchInfoResponse> searchInfo(String name) {
-        List<Info> infoList = infoRepository.findByNameOrScientificNameContaining(name);
+        List<Info> infoList = infoRepository.findByNameOrScientificNameContainingAndVerified(name);
+
         return infoList.stream()
                 .map(info -> InfoDto.SearchInfoResponse.builder()
                         .name(info.getName())

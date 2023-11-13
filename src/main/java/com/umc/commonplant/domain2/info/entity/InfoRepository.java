@@ -17,6 +17,6 @@ public interface InfoRepository extends JpaRepository<Info, Long> {
 
     Optional<Info> findByNameOrScientificName(String name, String scientificName);
 
-    @Query("SELECT i FROM Info i WHERE i.name LIKE %:keyword% OR i.scientificName LIKE %:keyword%")
-    List<Info> findByNameOrScientificNameContaining(@Param("keyword") String keyword);
+    @Query("SELECT i FROM Info i WHERE (i.name LIKE %:keyword% OR i.scientificName LIKE %:keyword%) AND i.verified = true")
+    List<Info> findByNameOrScientificNameContainingAndVerified(@Param("keyword") String keyword);
 }
