@@ -83,6 +83,9 @@ public class InfoService {
 
         if (infoOptional.isPresent()) {
             Info info = infoOptional.get();
+            if(!info.getVerified()) {
+                throw new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO);
+            }
             historyService.searchInfo(name);
             String waterType = getWaterTypeByMonth(info);
 
@@ -98,6 +101,7 @@ public class InfoService {
                     .temp_min(info.getTemp_min())
                     .tip(info.getTip())
                     .water_type(waterType)
+                    .imgUrl(info.getImgUrl())
                     .build();
         } else {
             throw new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO);

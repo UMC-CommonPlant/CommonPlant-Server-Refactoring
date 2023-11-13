@@ -80,10 +80,10 @@ public class InfoDto {
         private Long temp_min;
         private String tip;
         private String water_type;
-        private Boolean verified;
+        private String imgUrl;
 
         @Builder
-        public InfoResponse(String name, String humidity, String management, String place, String scientific_name, Long water_day, String sunlight, Long temp_max, Long temp_min, String tip, String water_type, Boolean verified) {
+        public InfoResponse(String name, String humidity, String management, String place, String scientific_name, Long water_day, String sunlight, Long temp_max, Long temp_min, String tip, String water_type, String imgUrl) {
             this.name = name;
             this.humidity = humidity;
             this.management = management;
@@ -95,7 +95,7 @@ public class InfoDto {
             this.temp_min = temp_min;
             this.tip = tip;
             this.water_type = water_type;
-            this.verified = verified;
+            this.imgUrl = imgUrl;
         }
     }
 
