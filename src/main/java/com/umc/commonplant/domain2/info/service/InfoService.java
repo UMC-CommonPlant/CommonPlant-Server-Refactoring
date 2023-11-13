@@ -30,7 +30,7 @@ public class InfoService {
         String imgUrl = null;
         Info info = infoRequest.toEntity();
 
-        if(!(multipartFile.isEmpty())) {
+        if(multipartFile != null && !multipartFile.isEmpty()) {
             imgUrl = imageService.saveImage(multipartFile);
             info.setImgUrl(imgUrl);
         }
@@ -62,7 +62,7 @@ public class InfoService {
 
         Info info = infoRequest.toEntity();
 
-        if(!(multipartFile.isEmpty())) {
+        if(multipartFile != null && !multipartFile.isEmpty()) {
             String imgUrl = imageService.saveImage(multipartFile);
             info.setImgUrl(imgUrl);
         }
