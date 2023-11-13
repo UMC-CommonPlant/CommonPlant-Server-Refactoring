@@ -54,4 +54,17 @@ public class MemoController {
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "deleteMemo", null));
     }
+
+    @GetMapping("/one-memo")
+    public ResponseEntity<JsonResponse> getOneMemo(@RequestParam("memo_idx") Long memo_idx) {
+        MemoDto.GetOneMemo memoResponse = memoService.getOneMemo(memo_idx);
+        return ResponseEntity.ok(new JsonResponse(true, 200, "get one-memo", memoResponse));
+    }
+
+    @GetMapping("/get-plantmemo")
+    public ResponseEntity<JsonResponse> getPlantMemo(@RequestParam("plant_idx") Long plant_idx) {
+        List<MemoDto.GetAllMemo> memoResponseList = memoService.getAllMemoByPlant(plant_idx);
+        return ResponseEntity.ok(new JsonResponse(true, 200, "get one-memo", memoResponseList));
+    }
+
 }

@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -103,5 +103,42 @@ public class MemoService {
         } catch (Exception e) {
             throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
         }
+    }
+
+
+    public MemoDto.GetOneMemo getOneMemo(Long memoIdx) {
+        Optional<Memo> existingMemoOptional = memoRepository.findById(memoIdx);
+        if(existingMemoOptional.isEmpty()) throw new GlobalException(ErrorResponseStatus.NOT_EXIST_MEMO);
+        Memo existingMemo = existingMemoOptional.get();
+
+        return MemoDto.GetOneMemo.builder()
+                .memo_idx(existingMemo.getMemoIdx())
+                .plant_idx(existingMemo.getPlant().getPlantIdx())
+                .content(existingMemo.getContent())
+                .imgUrl(existingMemo.getImgUrl())
+                .build();
+    }
+
+    public List<MemoDto.GetAllMemo> getAllMemoByPlant(Long plantIdx) {
+        List<Memo> existingMemo = memoRepository.findByPlantIdx(plantIdx);
+        List<Memo> sortedMemos = existingMemo.stream()
+                .sorted(Comparator.comparing(Memo::getCreatedAt).reversed())
+                .collect(Collectors.toList());
+
+        List<MemoDto.GetAllMemo> memoResponseList = new ArrayList<>();
+
+        for(Memo memo : sortedMemos) {
+            MemoDto.GetAllMemo getAllMemo = MemoDto.GetAllMemo.builder()
+                    .memo_idx(memo.getMemoIdx())
+                    .content(memo.getContent())
+                    .imgUrl(memo.getImgUrl())
+                    .writer(memo.getUser().getName())
+                    .created_at(memo.getCreatedAt())
+                    .build();
+
+            memoResponseList.add(getAllMemo);
+        }
+
+        return memoResponseList;
     }
 }
