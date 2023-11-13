@@ -42,6 +42,8 @@ public enum ErrorResponseStatus {
     ALREADY_EXIST_RECOMMEND(false, 4414, "이미 존재하는 조합입니다"),
     NOT_EXIST_RECOMMEND(false, 4415, "존재하지 않는 조합입니다"),
 
+    PROCESS_INTERRUPTED(false, 4416, "RACE CONDITION 충돌 발생"),
+    DATABASE_CONFLICT_ERROR(false, 4417, "RACE CONDITION 해결 실패"),
     // 4500 : QnA
 
     // 4600 : Calendar

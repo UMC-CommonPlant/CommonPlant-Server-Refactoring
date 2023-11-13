@@ -24,6 +24,9 @@ public class History extends BaseTime {
     private Info info;
     private int count;
 
+    @Version
+    private Long version;
+
     public void setCount(int count) { this.count = count; }
     public void setInfo(Info info) {this.info = info; }
 }

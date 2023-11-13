@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 public class HistoryService {
     private final HistoryRepository historyRepository;
 
+    private static final int MAX_RETRIES = 3;
+    private static final long WAIT_DURATION = 100;
+
     public HistoryDto.HistoryResponse getWordList() {
         LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
         List<History> historyList = historyRepository.findAll();
@@ -42,24 +45,39 @@ public class HistoryService {
 
         return new HistoryDto.HistoryResponse(firstDayOfMonth, eachHistoryDtoList);
     }
+
+    @Transactional
     public void searchInfo(Info info) {
-        try {
-            Optional<History> OptionalHistory = historyRepository.findByInfo(info).stream().findFirst();
+        for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
+            try {
+                Optional<History> optionalHistory = historyRepository.findByInfo(info).stream().findFirst();
 
-            History history;
-            if (OptionalHistory.isPresent()) {
-                history = OptionalHistory.get();
-                history.setCount(history.getCount()+1);
-            } else {
-                history = new History();
-                history.setInfo(info);
-                history.setCount(1);
+                History history;
+                if (optionalHistory.isPresent()) {
+                    history = optionalHistory.get();
+                    history.setCount(history.getCount() + 1);
+                } else {
+                    history = new History();
+                    history.setInfo(info);
+                    history.setCount(1);
+                }
+
+                historyRepository.save(history);
+                return;
+            } catch (OptimisticLockException e) {
+                if (attempt < MAX_RETRIES - 1) {
+                    try {
+                        Thread.sleep(WAIT_DURATION);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt(); // 인터럽트 상태 복원
+                        throw new GlobalException(ErrorResponseStatus.PROCESS_INTERRUPTED);
+                    }
+                } else {
+                    throw new GlobalException(ErrorResponseStatus.DATABASE_CONFLICT_ERROR);
+                }
+            } catch (Exception e) {
+                throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
             }
-            historyRepository.save(history);
-        } catch (OptimisticLockException e) {
-
-        } catch (Exception e) {
-            throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
         }
 
     }
