@@ -10,9 +10,13 @@ import com.umc.commonplant.global.dto.JsonResponse;
 import com.umc.commonplant.global.exception.ErrorResponseStatus;
 import com.umc.commonplant.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.PersistenceException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +46,17 @@ public class RecommendationService {
 
         try {
             recommendationRepository.save(recommendation);
+        } catch (DataIntegrityViolationException e) {
+            Throwable rootCause = e.getMostSpecificCause();
+            if (rootCause instanceof SQLIntegrityConstraintViolationException) {
+                SQLIntegrityConstraintViolationException sqlException = (SQLIntegrityConstraintViolationException) rootCause;
+                if (sqlException.getErrorCode() == 1062) {
+                    throw new GlobalException(ErrorResponseStatus.ALREADY_EXIST_RECOMMEND);
+                }
+                else {
+                    throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
+                }
+            }
         } catch (Exception e) {
             throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
         }
@@ -76,5 +91,23 @@ public class RecommendationService {
         }
 
         return infoResponseList;
+    }
+
+    public void deleteRecommendation(Long infoIdx, String category) {
+        RecommendationCategory recommendationCategory;
+        try {
+            recommendationCategory = RecommendationCategory.valueOf(category.toUpperCase());
+
+        } catch (IllegalArgumentException e) {
+            throw new GlobalException(ErrorResponseStatus.INVALID_CATEGORY_INFO);
+        }
+
+        //찾고
+
+
+        //없으면 오류
+
+        //있으면 지우기
+
     }
 }

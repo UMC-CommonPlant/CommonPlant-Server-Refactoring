@@ -12,10 +12,12 @@ import javax.persistence.*;
 
 @Getter
 @Builder
-@Table(name = "recommendation")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "recommendation", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"info_id", "category"})
+})
 public class Recommendation {
 
     @Id

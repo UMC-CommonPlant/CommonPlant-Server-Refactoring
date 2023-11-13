@@ -31,6 +31,13 @@ public class RecommendationController {
     public ResponseEntity<JsonResponse> addRecommendation(@RequestParam("category") String category) {
         List<InfoDto.SearchInfoResponse> infoResponseList = recommendationService.getRecommendation(category);
 
-        return ResponseEntity.ok(new JsonResponse(true, 200, "addRecommendation", infoResponseList));
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getRecommendation", infoResponseList));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<JsonResponse> deleteRecommendation(@RequestParam("info_idx") Long info_idx,
+                                                             @RequestParam("category") String category) {
+        recommendationService.deleteRecommendation(info_idx, category);
+        return ResponseEntity.ok(new JsonResponse(true, 200, "deleteRecommendation", null));
     }
 }

@@ -39,6 +39,7 @@ public enum ErrorResponseStatus {
     NOT_EXIST_INFO(false, 4411, "존재하지 않는 식물 정보입니다."),
     INVALID_CATEGORY_INFO(false, 4412, "잘못된 카테고리 이름입니다"),
     REJECT_INVALID_INFO(false, 4413, "검증되지 않은 식물 정보는 등록될 수 없습니다"),
+    ALREADY_EXIST_RECOMMEND(false, 4414, "이미 존재하는 조합입니다"),
 
     // 4500 : QnA
 
