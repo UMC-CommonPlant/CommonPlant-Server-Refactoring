@@ -28,7 +28,15 @@ public enum ErrorResponseStatus {
 
     // 4300 : Memo
 
-    // 4400 : Information
+    // 4400 : Image
+    NO_SELECT_IMAGE(false, 4400, "이미지가 선택되지 않았습니다."),
+    INVALID_IMAGE_URL(false, 4402, "유효하지 않은 이미지 URL 입니다."),
+    IMAGE_DELETE_FAIL(false, 4403, "이미지 삭제에 실패했습니다."),
+    IMAGE_UPLOAD_FAIL(false, 4404, "이미지 업로드에 실패했습니다."),
+
+    // 4410 : Information
+    ALREADY_EXIST_INFO(false, 4410, "이미 존재하는 식물 정보입니다."),
+    NOT_EXIST_INFO(false, 4411, "존재하지 않는 식물 정보입니다."),
 
     // 4500 : QnA
 

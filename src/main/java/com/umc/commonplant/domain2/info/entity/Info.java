@@ -16,7 +16,6 @@ public class Info extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "info_idx")
     private Long infoIdx;
-
     private String name;
     private String humidity;
     private String management;

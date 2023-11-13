@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -36,9 +37,15 @@ public class InfoService {
 
         List<Info> exsitingInfoList = infoRepository.findByName(infoRequest.getName());
         if((!exsitingInfoList.isEmpty())) {
+            if(!exsitingInfoList.get(0).getVerified()) {
+                return ;
+            }
             throw new GlobalException(ErrorResponseStatus.ALREADY_EXIST_INFO);
         }
         try {
+            if(info.getVerified() == null) {
+                info.setVerified(false);
+            }
             infoRepository.save(info);
         } catch (Exception e) {
             throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
@@ -111,16 +118,14 @@ public class InfoService {
         }
     }
 
-
-    //식물 리스트 조회 (단어 포함되는 식물의 이름, url, 학술명)
-    //단, 이름의 일부 / 학술명의 일부 둘다 가능해야 함
-    //이건 사용자의 입력이 존재하므로 특수문자 처리 해줘야함
-//    public List<InfoDto.SearchInfoResponse> searchInfo(String name) {
-//
-//
-//
-//    }
-
-    //추천식물 리스트 조회? (테이블 따로였나
-
+    public List<InfoDto.SearchInfoResponse> searchInfo(String name) {
+        List<Info> infoList = infoRepository.findByNameOrScientificNameContaining(name);
+        return infoList.stream()
+                .map(info -> InfoDto.SearchInfoResponse.builder()
+                        .name(info.getName())
+                        .scientific_name(info.getScientificName())
+                        .imgUrl(info.getImgUrl())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
