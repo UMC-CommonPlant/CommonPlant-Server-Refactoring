@@ -54,58 +54,51 @@ public class InfoService {
     }
 
     public void updateInfo(InfoDto.InfoRequest infoRequest, MultipartFile multipartFile) {
-        String imgUrl = null;
+        List<Info> existingInfoList = infoRepository.findByName(infoRequest.getName());
+        if(existingInfoList.isEmpty()) {
+            throw new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO);
+        }
+        Info existingInfo = existingInfoList.get(0);
+
         Info info = infoRequest.toEntity();
 
         if(!(multipartFile.isEmpty())) {
-            imgUrl = imageService.saveImage(multipartFile);
+            String imgUrl = imageService.saveImage(multipartFile);
             info.setImgUrl(imgUrl);
         }
+        info.setId(existingInfo.getInfoIdx());
+        info.setVerified(true);
 
-        List<Info> exsitingInfoList = infoRepository.findByName(infoRequest.getName());
-        if((!exsitingInfoList.isEmpty())) {
-            Info exsitingInfo = exsitingInfoList.get(0);
-            info.setId(exsitingInfo.getInfoIdx());
-
-            try{
-                infoRepository.save(info);
-            } catch (Exception e) {
-                throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
-            }
-        } else {
-            throw new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO);
+        try {
+            infoRepository.save(info);
+        } catch (Exception e) {
+            throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
         }
     }
 
     public InfoDto.InfoResponse findInfo(String name) {
 
-        Optional<Info> infoOptional = infoRepository.findByNameOrScientificName(name, name);
+        return infoRepository.findVerifiedByNameOrScientificName(name)
+                .map(info -> {
+                    historyService.searchInfo(info);
+                    String waterType = getWaterTypeByMonth(info);
 
-        if (infoOptional.isPresent()) {
-            Info info = infoOptional.get();
-            if(!info.getVerified()) {
-                throw new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO);
-            }
-            historyService.searchInfo(info);
-            String waterType = getWaterTypeByMonth(info);
-
-            return InfoDto.InfoResponse.builder()
-                    .name(info.getName())
-                    .humidity(info.getHumidity())
-                    .management(info.getManagement())
-                    .place(info.getPlace())
-                    .scientific_name(info.getScientificName())
-                    .water_day(info.getWater_day())
-                    .sunlight(info.getSunlight())
-                    .temp_max(info.getTemp_max())
-                    .temp_min(info.getTemp_min())
-                    .tip(info.getTip())
-                    .water_type(waterType)
-                    .imgUrl(info.getImgUrl())
-                    .build();
-        } else {
-            throw new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO);
-        }
+                    return InfoDto.InfoResponse.builder()
+                            .name(info.getName())
+                            .humidity(info.getHumidity())
+                            .management(info.getManagement())
+                            .place(info.getPlace())
+                            .scientific_name(info.getScientificName())
+                            .water_day(info.getWater_day())
+                            .sunlight(info.getSunlight())
+                            .temp_max(info.getTemp_max())
+                            .temp_min(info.getTemp_min())
+                            .tip(info.getTip())
+                            .water_type(waterType)
+                            .imgUrl(info.getImgUrl())
+                            .build();
+                })
+                .orElseThrow(() -> new GlobalException(ErrorResponseStatus.NOT_EXIST_INFO));
     }
 
     private String getWaterTypeByMonth(Info info) {
