@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Optional;
+
 
 @Slf4j
 @RequestMapping("/place")
@@ -53,5 +56,28 @@ public class PlaceContoller {
         PlaceDto.getWeatherRes res = weatherService.getPlaceWeather(placeGrid);
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceWeather", res));
     }
+//    //친구 요청
+    @PostMapping("/friends")
+    public ResponseEntity<JsonResponse> newFriends(@RequestBody PlaceDto.newFriendsReq req){
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        String placeCode = placeService.newFriend(req.getName(), req.getCode());
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "newFriend", placeCode));
+    }
+
+    //친구 검색
+    @GetMapping("/friends")
+    public ResponseEntity<JsonResponse> getFriends(@RequestBody PlaceDto.getFriendsReq req){
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        String inputName = req.getName();
+        Optional<User> users = placeService.getFriends(inputName);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getFriends", users));
+    }
+
 
 }

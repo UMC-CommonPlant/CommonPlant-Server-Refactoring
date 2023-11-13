@@ -47,12 +47,47 @@ public class PlantController {
     }
 
     /**
+     * [GET] 식물 조회
+     * @return 식물 객체
+     */
+    @GetMapping("/plant/{plantIdx}")
+    public ResponseEntity<JsonResponse> getPlantCard(@PathVariable Long plantIdx) {
+
+        log.info("=============GET PLANT===============");
+
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        PlantDto.getPlantRes plant = plantService.getPlant(user, plantIdx);
+
+        // TODO: 추후에 메모 리스트를 포함해서 반환되도록 수정
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlant", plant));
+    }
+
+    /**
+     * [GET] 같은 사람이 키우는 식물 리스트 조회
+     * @return 같은 사람이 키우는 식물 리스트
+     */
+    @GetMapping("/user/plantList")
+    public ResponseEntity<JsonResponse> getPlantList() {
+
+        log.info("=============GET PLANT LIST===============");
+
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        List<PlantDto.getPlantListRes> plantList = plantService.getPlantList(user);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlantList", plantList));
+    }
+
+    /**
      * [GET] 같은 장소에 있는 식물 리스트 조회
      * @param placeCode: 장소 코드
      * @return 같은 장소에 있는 식물 리스트
      */
-    @GetMapping("/plant/plantList/{placeCode}")
-    public ResponseEntity<JsonResponse> getPlantList(@PathVariable String placeCode) {
+    @GetMapping("/place/plantList/{placeCode}")
+    public ResponseEntity<JsonResponse> getMyGardenPlantList(@PathVariable String placeCode) {
 
         log.info("=============GET PLANT LIST===============");
 
@@ -62,16 +97,34 @@ public class PlantController {
         // Place place = placeService.getPlace(user, placeCode);
         String place = placeService.getPlace(user, placeCode).getCode();
 
-        List<Plant> plantList = plantService.getPlantList(place);
+        List<PlantDto.getMyGardenPlantListRes> plantList = plantService.getMyGardenPlantList(place);
 
-        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlantList", plantList));
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getMyGardenPlantList", plantList));
     }
 
     /**
-     * [PATCH] /plant/update
+     * [PUT] 식물의 D-Day 업데이트
+     * @param plantIdx
+     * @return
+     */
+    @PutMapping("/plant/update/wateredDate/{plantIdx}")
+    public ResponseEntity<JsonResponse> updateWateredDate(@PathVariable Long plantIdx){
+
+        System.out.println("=============UPDATE PLANT WATERED DATE===============");
+
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        String nickname = plantService.updateWateredDate(plantIdx, user);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "updateWateredDate", nickname));
+    }
+
+    /**
+     * [PUT] /plant/update
      * @return 수정한 식물의 애칭
      */
-    @PatchMapping("/plant/update/{plantIdx}")
+    @PutMapping("/plant/update/{plantIdx}")
     public ResponseEntity<JsonResponse> updatePlant(@PathVariable Long plantIdx,
                                                     @RequestPart("nickname") String nickname,
                                                     @RequestPart("image") MultipartFile file){
