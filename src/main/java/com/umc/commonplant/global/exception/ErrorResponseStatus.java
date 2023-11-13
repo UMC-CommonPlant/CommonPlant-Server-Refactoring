@@ -32,6 +32,7 @@ public enum ErrorResponseStatus {
     EMPTY_CONTENT_MEMO(false, 4302, "메모의 내용을 입력해 주세요"),
     OVERFLOW_CONTENT_MEMO(false, 4303, "메모의 내용은 200자 이내로 입력해 주세요"),
     EMPTY_INPUT_MEMO(false, 4304, "메모를 입력해주세요"),
+    UNAUTHORIZED_USER_MEMO(false, 4305, "메모 작성자만 수정이 가능합니다"),
 
     // 4400 : Information
 

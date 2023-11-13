@@ -10,10 +10,7 @@ import com.umc.commonplant.global.dto.JsonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -38,4 +35,13 @@ public class MemoController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "createMemo", null));
     }
 
+    @PatchMapping("/update")
+    public ResponseEntity<JsonResponse> updateMemo(@RequestPart("memoRequest")MemoDto.MemoUpdateRequest memoUpdateRequest, @RequestPart("image") MultipartFile multipartFile) {
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        memoService.updateMemo(user, memoUpdateRequest, multipartFile);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "updateMemo", null));
+    }
 }

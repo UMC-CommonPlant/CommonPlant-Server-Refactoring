@@ -23,4 +23,22 @@ public class MemoDto {
 
     }
 
+    @NoArgsConstructor
+    @Data
+    public static class MemoUpdateRequest {
+        private Long memo_idx;
+        private Long plant_idx;
+        private String content;
+        private String imgUrl;
+
+        @Builder
+        public MemoUpdateRequest(Long memo_idx, Long plant_idx, String content, String imgUrl) {
+            this.memo_idx = memo_idx;
+            this.plant_idx = plant_idx;
+            this.content = content;
+            this.imgUrl = imgUrl;
+        }
+
+    }
+
 }
