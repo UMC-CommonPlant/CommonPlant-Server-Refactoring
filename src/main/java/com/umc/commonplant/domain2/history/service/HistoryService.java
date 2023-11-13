@@ -1,5 +1,6 @@
 package com.umc.commonplant.domain2.history.service;
 
+import com.umc.commonplant.domain2.history.dto.HistoryDto;
 import com.umc.commonplant.domain2.history.entity.History;
 import com.umc.commonplant.domain2.history.entity.HistoryRepository;
 import com.umc.commonplant.domain2.info.entity.Info;
@@ -12,12 +13,35 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.OptimisticLockException;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class HistoryService {
     private final HistoryRepository historyRepository;
+
+    public HistoryDto.HistoryResponse getWordList() {
+        LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
+        List<History> historyList = historyRepository.findAll();
+        List<HistoryDto.EachHistoryDto> eachHistoryDtoList = historyList
+                .stream().map(history -> {
+                    Info info = history.getInfo();
+                    return HistoryDto.EachHistoryDto.builder()
+                            .name(info.getName())
+                            .scientific_name(info.getScientificName())
+                            .imgUrl(info.getImgUrl())
+                            .count(history.getCount())
+                            .build();
+                })
+                .sorted(Comparator.comparing(HistoryDto.EachHistoryDto::getCount).reversed())
+                .collect(Collectors.toList());
+
+        return new HistoryDto.HistoryResponse(firstDayOfMonth, eachHistoryDtoList);
+    }
     public void searchInfo(Info info) {
         try {
             Optional<History> OptionalHistory = historyRepository.findByInfo(info).stream().findFirst();
@@ -46,4 +70,5 @@ public class HistoryService {
     public void autoDelete() {
         historyRepository.deleteAll();
     }
+
 }
