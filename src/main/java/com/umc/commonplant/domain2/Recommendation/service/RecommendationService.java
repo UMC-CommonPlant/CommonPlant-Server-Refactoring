@@ -19,6 +19,7 @@ import javax.persistence.PersistenceException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -102,12 +103,18 @@ public class RecommendationService {
             throw new GlobalException(ErrorResponseStatus.INVALID_CATEGORY_INFO);
         }
 
-        //찾고
-
-
-        //없으면 오류
-
-        //있으면 지우기
+        try {
+            Optional<Recommendation> recommendationOpt = recommendationRepository.findByInfoIdAndCategory(infoIdx, recommendationCategory);
+            if (recommendationOpt.isPresent()) {
+                recommendationRepository.delete(recommendationOpt.get());
+            } else {
+                throw new GlobalException(ErrorResponseStatus.NOT_EXIST_RECOMMEND);
+            }
+        } catch (GlobalException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
+        }
 
     }
 }
