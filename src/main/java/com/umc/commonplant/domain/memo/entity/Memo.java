@@ -3,6 +3,8 @@ package com.umc.commonplant.domain.memo.entity;
 import com.umc.commonplant.domain.BaseTime;
 import com.umc.commonplant.domain.plant.entity.Plant;
 import com.umc.commonplant.domain.user.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -11,8 +13,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Getter
+@Builder
 @Table(name = "memo")
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Memo extends BaseTime {
     @Id
