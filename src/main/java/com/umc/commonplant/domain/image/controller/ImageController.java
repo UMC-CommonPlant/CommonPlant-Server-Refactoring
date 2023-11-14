@@ -44,7 +44,7 @@ public class ImageController {
     @DeleteMapping("/delete/image")
     @ResponseStatus(HttpStatus.OK)
     public void deleteImage(){
-        imageService.deleteFileInDatabase(new ImageDto.ImageRequest("codetest", 2L));
+        imageService.deleteFileInDatabase(new ImageDto.ImageRequest("test2", 2L));
     }
 
     @DeleteMapping("/delete/one")

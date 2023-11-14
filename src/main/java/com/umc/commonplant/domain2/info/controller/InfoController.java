@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @RequestMapping("/info")
 @RequiredArgsConstructor
@@ -24,18 +26,28 @@ public class InfoController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "addPlantInfo", null));
     }
 
+    @PatchMapping("/updatePlantInfo")
+    public ResponseEntity<JsonResponse> updateInfo(@RequestPart("infoRequest") InfoDto.InfoRequest infoRequest, @RequestPart("image") MultipartFile multipartFile) {
+
+        infoService.updateInfo(infoRequest, multipartFile);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "updatePlantInfo", null));
+    }
+
     @GetMapping("/getPlantInfo")
-    public ResponseEntity<JsonResponse> findInfo(@RequestPart("name") String name) {
+    public ResponseEntity<JsonResponse> findInfo(@RequestParam("name") String name) {
 
         InfoDto.InfoResponse infoResponse = infoService.findInfo(name);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlantInfo", infoResponse));
     }
 
-//    @GetMapping("/searchInfo")
-//    public ResponseEntity<JsonResponse> searchInfo(@RequestPart("name") String name) {
-//
-//        return ResponseEntity.ok(new JsonResponse(true, 200, "searchInfo", ))
-//    }
+    @GetMapping("/searchInfo")
+    public ResponseEntity<JsonResponse> searchInfo(@RequestParam("name") String name) {
+
+        List<InfoDto.SearchInfoResponse> infoList = infoService.searchInfo(name);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "searchInfo", infoList));
+    }
 
 }

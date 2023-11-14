@@ -24,9 +24,10 @@ public class InfoDto {
         private String water_autumn;
         private String water_winter;
         private String water_summer;
+        private Boolean verified;
 
         @Builder
-        public InfoRequest(String name, String humidity, String management, String place, String scientific_name, Long water_day, String sunlight, Long temp_max, Long temp_min, String tip, String water_spring, String water_autumn, String water_winter, String water_summer) {
+        public InfoRequest(String name, String humidity, String management, String place, String scientific_name, Long water_day, String sunlight, Long temp_max, Long temp_min, String tip, String water_spring, String water_autumn, String water_winter, String water_summer, Boolean verified) {
             this.name = name;
             this.humidity = humidity;
             this.management = management;
@@ -41,6 +42,7 @@ public class InfoDto {
             this.water_autumn = water_autumn;
             this.water_winter = water_winter;
             this.water_summer = water_summer;
+            this.verified = verified;
         }
 
         public Info toEntity(){
@@ -59,6 +61,7 @@ public class InfoDto {
                     .water_autumn(water_autumn)
                     .water_winter(water_winter)
                     .water_summer(water_summer)
+                    .verified(verified)
                     .build();
         }
     }
@@ -77,9 +80,10 @@ public class InfoDto {
         private Long temp_min;
         private String tip;
         private String water_type;
+        private String imgUrl;
 
         @Builder
-        public InfoResponse(String name, String humidity, String management, String place, String scientific_name, Long water_day, String sunlight, Long temp_max, Long temp_min, String tip, String water_type) {
+        public InfoResponse(String name, String humidity, String management, String place, String scientific_name, Long water_day, String sunlight, Long temp_max, Long temp_min, String tip, String water_type, String imgUrl) {
             this.name = name;
             this.humidity = humidity;
             this.management = management;
@@ -91,6 +95,7 @@ public class InfoDto {
             this.temp_min = temp_min;
             this.tip = tip;
             this.water_type = water_type;
+            this.imgUrl = imgUrl;
         }
     }
 
@@ -107,5 +112,6 @@ public class InfoDto {
             this.scientific_name = scientific_name;
             this.imgUrl = imgUrl;
         }
+
     }
 }
