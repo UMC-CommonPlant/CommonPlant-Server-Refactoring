@@ -290,9 +290,9 @@ public class PlantService {
             String recentMemo = null;
 
             if(memoService.getRecentMemoByPlant(plant.getPlantIdx()) == null){
-                recentMemo += "";
+                recentMemo = "";
             } else {
-                recentMemo += memoService.getRecentMemoByPlant(plant.getPlantIdx()).getContent();
+                recentMemo = memoService.getRecentMemoByPlant(plant.getPlantIdx()).getContent();
             }
 
             plantList.add(new PlantDto.getMyGardenPlantListRes(plant, remainderDate, recentMemo));
