@@ -1,10 +1,8 @@
 package com.umc.commonplant.domain.plant.controller;
 
 import com.umc.commonplant.domain.Jwt.JwtService;
-import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.place.service.PlaceService;
 import com.umc.commonplant.domain.plant.dto.PlantDto;
-import com.umc.commonplant.domain.plant.entity.Plant;
 import com.umc.commonplant.domain.plant.service.PlantService;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
@@ -36,7 +34,7 @@ public class PlantController {
     public ResponseEntity<JsonResponse> createPlant(@RequestPart("plant") PlantDto.createPlantReq createPlantReq,
                                                     @RequestPart("image") MultipartFile file) {
 
-        log.info("=============CREATE PLANT===============");
+        // log.info("=============CREATE PLANT===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -53,7 +51,7 @@ public class PlantController {
     @GetMapping("/plant/{plantIdx}")
     public ResponseEntity<JsonResponse> getPlantCard(@PathVariable Long plantIdx) {
 
-        log.info("=============GET PLANT===============");
+        // log.info("=============GET PLANT===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -71,7 +69,7 @@ public class PlantController {
     @GetMapping("/user/plantList")
     public ResponseEntity<JsonResponse> getPlantList() {
 
-        log.info("=============GET PLANT LIST===============");
+        // log.info("=============GET PLANT LIST===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -89,7 +87,7 @@ public class PlantController {
     @GetMapping("/place/plantList/{placeCode}")
     public ResponseEntity<JsonResponse> getMyGardenPlantList(@PathVariable String placeCode) {
 
-        log.info("=============GET PLANT LIST===============");
+        // log.info("=============GET PLANT LIST===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -110,7 +108,7 @@ public class PlantController {
     @PutMapping("/plant/update/wateredDate/{plantIdx}")
     public ResponseEntity<JsonResponse> updateWateredDate(@PathVariable Long plantIdx){
 
-        System.out.println("=============UPDATE PLANT WATERED DATE===============");
+        // System.out.println("=============UPDATE PLANT WATERED DATE===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -118,6 +116,21 @@ public class PlantController {
         String nickname = plantService.updateWateredDate(plantIdx, user);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "updateWateredDate", nickname));
+    }
+
+    /**
+     * [GET] /plant/update
+     * @return 수정할 식물의 애칭
+     */
+    @GetMapping("/plant/update/{plantIdx}")
+    public ResponseEntity<JsonResponse> getUpdatedPlant(@PathVariable Long plantIdx){
+
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        String nickname = plantService.getUpdatedPlant(user, plantIdx).getNickname();
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getUpdatedPlant", nickname));
     }
 
     /**
@@ -129,7 +142,7 @@ public class PlantController {
                                                     @RequestPart("nickname") String nickname,
                                                     @RequestPart("image") MultipartFile file){
 
-        log.info("=============UPDATE PLANT===============");
+        // log.info("=============UPDATE PLANT===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -138,4 +151,5 @@ public class PlantController {
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "updatePlant", updatedPlant));
     }
+
 }
