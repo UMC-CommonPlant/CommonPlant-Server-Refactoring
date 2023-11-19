@@ -1,7 +1,6 @@
 package com.umc.commonplant.domain.place.dto;
 
-import com.umc.commonplant.domain.plant.entity.Plant;
-import com.umc.commonplant.domain.user.entity.User;
+import com.umc.commonplant.domain.plant.dto.PlantDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +28,7 @@ public class PlaceDto {
         private String address;
         private boolean isOwner;
         private List<getPlaceResUser> userList;
-//        private List<Plant> plantList;
+        private List<PlantDto.getMyGardenPlantListRes> plantList;
 
     }
 

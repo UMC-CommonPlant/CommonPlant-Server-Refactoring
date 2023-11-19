@@ -3,6 +3,7 @@ package com.umc.commonplant.domain.place.controller;
 import com.umc.commonplant.domain.Jwt.JwtService;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.service.PlaceService;
+import com.umc.commonplant.domain.plant.service.PlantService;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.domain.weather.service.WeatherService;
@@ -26,6 +27,7 @@ public class PlaceContoller {
     private final UserService userService;
     private final JwtService jwtService;
     private final WeatherService weatherService;
+    private final PlantService plantService;
 
     //장소 추가
     @PostMapping("/create")
@@ -44,6 +46,7 @@ public class PlaceContoller {
         User user = userService.getUser(uuid);
         placeService.userOnPlace(user, code);
         PlaceDto.getPlaceRes res = placeService.getPlace(user, code);
+        res.setPlantList(plantService.getMyGardenPlantList(code));
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlace", res));
     }
 
