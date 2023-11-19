@@ -286,7 +286,15 @@ public class PlantService {
 
         for(Plant plant : plants){
             Long remainderDate = getRemainderDate(plant);
+
             String recentMemo = null;
+
+            if(memoService.getRecentMemoByPlant(plant.getPlantIdx()) == null){
+                recentMemo += "";
+            } else {
+                recentMemo += memoService.getRecentMemoByPlant(plant.getPlantIdx()).getContent();
+            }
+
             plantList.add(new PlantDto.getMyGardenPlantListRes(plant, remainderDate, recentMemo));
         }
         
