@@ -126,4 +126,9 @@ public class InfoService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public List<Info> getOneInfo(String name) {
+        List<Info> infoList = infoRepository.findByName(name);
+        return infoList;
+    }
 }

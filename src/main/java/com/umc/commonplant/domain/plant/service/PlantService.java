@@ -10,6 +10,7 @@ import com.umc.commonplant.domain.plant.entity.Plant;
 import com.umc.commonplant.domain.plant.entity.PlantRepository;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain2.info.dto.InfoDto;
+import com.umc.commonplant.domain2.info.entity.Info;
 import com.umc.commonplant.domain2.info.service.InfoService;
 import com.umc.commonplant.global.exception.BadRequestException;
 import com.umc.commonplant.global.exception.ErrorResponseStatus;
@@ -128,7 +129,8 @@ public class PlantService {
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));;
 
-        InfoDto.InfoResponse infoResponse = infoService.findInfo(plant.getPlantName());
+        List<Info> infoResponse = infoService.getOneInfo(plant.getPlantName());
+
         // log.info("식물의 고유 정보는:" + infoResponse.getScientific_name() + infoResponse.getHumidity());
 
         // DateTimeFormatter
@@ -160,12 +162,12 @@ public class PlantService {
                 countDate,
                 remainderDate,
                 getAllMemoList,
-                infoResponse.getScientific_name(),
-                infoResponse.getWater_day(),
-                infoResponse.getSunlight(),
-                infoResponse.getTemp_min(),
-                infoResponse.getTemp_max(),
-                infoResponse.getHumidity(),
+                infoResponse.get(0).getScientificName(),
+                infoResponse.get(0).getWater_day(),
+                infoResponse.get(0).getSunlight(),
+                infoResponse.get(0).getTemp_min(),
+                infoResponse.get(0).getTemp_max(),
+                infoResponse.get(0).getHumidity(),
                 plant.getCreatedAt(),
                 plant.getWateredDate()
         );
