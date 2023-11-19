@@ -10,6 +10,8 @@ import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.global.exception.ErrorResponseStatus;
 import com.umc.commonplant.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -140,5 +142,25 @@ public class MemoService {
         }
 
         return memoResponseList;
+    }
+
+    public MemoDto.GetAllMemo getRecentMemoByPlant(Long plantIdx) {
+        try {
+            Pageable limit = PageRequest.of(0, 1);
+            List<Memo> memos = memoRepository.findLatestMemoByPlantIdx(plantIdx, limit);
+            Memo memo = memos.isEmpty() ? null : memos.get(0);
+
+            assert memo != null;
+
+            return MemoDto.GetAllMemo.builder()
+                    .memo_idx(memo.getMemoIdx())
+                    .content(memo.getContent())
+                    .imgUrl(memo.getImgUrl())
+                    .writer(memo.getUser().getName())
+                    .created_at(memo.getCreatedAt())
+                    .build();
+        } catch (Exception e) {
+            throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
+        }
     }
 }
