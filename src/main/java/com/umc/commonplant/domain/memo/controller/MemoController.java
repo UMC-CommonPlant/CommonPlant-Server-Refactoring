@@ -67,4 +67,10 @@ public class MemoController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "get one-memo", memoResponseList));
     }
 
+    @GetMapping("/recent-memo")
+    public ResponseEntity<JsonResponse> getRecentMemo(@RequestParam("plant_idx") Long plant_idx) {
+        MemoDto.GetAllMemo memoResponse = memoService.getRecentMemoByPlant(plant_idx);
+        return ResponseEntity.ok(new JsonResponse(true, 200, "get-recent-memo", memoResponse));
+    }
+
 }
