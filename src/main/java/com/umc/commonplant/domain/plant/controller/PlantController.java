@@ -34,7 +34,7 @@ public class PlantController {
     public ResponseEntity<JsonResponse> createPlant(@RequestPart("plant") PlantDto.createPlantReq createPlantReq,
                                                     @RequestPart("image") MultipartFile file) {
 
-        log.info("=============CREATE PLANT===============");
+        // log.info("=============CREATE PLANT===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -51,7 +51,7 @@ public class PlantController {
     @GetMapping("/plant/{plantIdx}")
     public ResponseEntity<JsonResponse> getPlantCard(@PathVariable Long plantIdx) {
 
-        log.info("=============GET PLANT===============");
+        // log.info("=============GET PLANT===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -69,7 +69,7 @@ public class PlantController {
     @GetMapping("/user/plantList")
     public ResponseEntity<JsonResponse> getPlantList() {
 
-        log.info("=============GET PLANT LIST===============");
+        // log.info("=============GET PLANT LIST===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -87,7 +87,7 @@ public class PlantController {
     @GetMapping("/place/plantList/{placeCode}")
     public ResponseEntity<JsonResponse> getMyGardenPlantList(@PathVariable String placeCode) {
 
-        log.info("=============GET PLANT LIST===============");
+        // log.info("=============GET PLANT LIST===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -108,7 +108,7 @@ public class PlantController {
     @PutMapping("/plant/update/wateredDate/{plantIdx}")
     public ResponseEntity<JsonResponse> updateWateredDate(@PathVariable Long plantIdx){
 
-        System.out.println("=============UPDATE PLANT WATERED DATE===============");
+        // System.out.println("=============UPDATE PLANT WATERED DATE===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -142,7 +142,7 @@ public class PlantController {
                                                     @RequestPart("nickname") String nickname,
                                                     @RequestPart("image") MultipartFile file){
 
-        log.info("=============UPDATE PLANT===============");
+        // log.info("=============UPDATE PLANT===============");
 
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);

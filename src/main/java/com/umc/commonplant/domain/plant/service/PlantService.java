@@ -129,17 +129,17 @@ public class PlantService {
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));;
 
         InfoDto.InfoResponse infoResponse = infoService.findInfo(plant.getPlantName());
-        log.info("식물의 고유 정보는:" + infoResponse.getScientific_name() + infoResponse.getHumidity());
+        // log.info("식물의 고유 정보는:" + infoResponse.getScientific_name() + infoResponse.getHumidity());
 
         // DateTimeFormatter
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         String parsedCreatedDate = plant.getCreatedAt().format(dateTimeFormatter);
-        log.info("========parsedCreatedDate======== " + parsedCreatedDate);
+        // log.info("========parsedCreatedDate======== " + parsedCreatedDate);
         LocalDateTime createdDateTime = LocalDate.parse(parsedCreatedDate, dateTimeFormatter).atStartOfDay();
 
         String parsedCurrentDate = LocalDate.now().toString();
-        log.info("========parsedCurrentDate======== " + parsedCurrentDate);
+        // log.info("========parsedCurrentDate======== " + parsedCurrentDate);
         LocalDateTime currentDateTime = LocalDate.parse(parsedCurrentDate, dateTimeFormatter).atStartOfDay();
 
         // countDate: 식물이 처음 온 날
@@ -187,20 +187,20 @@ public class PlantService {
 
         // WateredDate: 마지막으로 물 준 날짜, CurrentDate: 오늘 날짜
         String parsedWateredDate = plant.getWateredDate().format(dateTimeFormatter);
-        log.info("========parsedWateredDate======== " + parsedWateredDate);
+        // log.info("========parsedWateredDate======== " + parsedWateredDate);
         LocalDateTime wateredDateTime = LocalDate.parse(parsedWateredDate, dateTimeFormatter).atStartOfDay();
 
         String parsedCurrentDate = LocalDate.now().toString();
-        log.info("========parsedCurrentDate======== " + parsedCurrentDate);
+        // log.info("========parsedCurrentDate======== " + parsedCurrentDate);
         LocalDateTime currentDateTime = LocalDate.parse(parsedCurrentDate, dateTimeFormatter).atStartOfDay();
 
         // remainderDate: D-Day
         Long remainderDate = (Long) infoResponse.getWater_day()
                 - (Long) Duration.between(wateredDateTime, currentDateTime).toDays();
 
-        log.info(parsedWateredDate);
-        log.info(parsedCurrentDate);
-        log.info(String.valueOf(remainderDate));
+        // log.info(parsedWateredDate);
+        // log.info(parsedCurrentDate);
+        // log.info(String.valueOf(remainderDate));
 
         return remainderDate;
     }
@@ -217,7 +217,7 @@ public class PlantService {
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));
 
-        log.info(" 물주기 리셋할 식물은: " + plant.getNickname());
+        // log.info(" 물주기 리셋할 식물은: " + plant.getNickname());
 
         // TODO: 마지막으로 물 준 날짜
         plant.setWateredDate(LocalDateTime.now());
