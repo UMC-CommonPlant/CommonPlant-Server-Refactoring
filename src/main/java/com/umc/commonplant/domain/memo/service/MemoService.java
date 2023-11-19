@@ -150,7 +150,7 @@ public class MemoService {
             List<Memo> memos = memoRepository.findLatestMemoByPlantIdx(plantIdx, limit);
             Memo memo = memos.isEmpty() ? null : memos.get(0);
 
-            assert memo != null;
+            if(memo == null) return null;
 
             return MemoDto.GetAllMemo.builder()
                     .memo_idx(memo.getMemoIdx())
