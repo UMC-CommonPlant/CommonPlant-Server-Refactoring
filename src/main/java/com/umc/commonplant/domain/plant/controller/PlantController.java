@@ -1,10 +1,8 @@
 package com.umc.commonplant.domain.plant.controller;
 
 import com.umc.commonplant.domain.Jwt.JwtService;
-import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.place.service.PlaceService;
 import com.umc.commonplant.domain.plant.dto.PlantDto;
-import com.umc.commonplant.domain.plant.entity.Plant;
 import com.umc.commonplant.domain.plant.service.PlantService;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
@@ -121,6 +119,21 @@ public class PlantController {
     }
 
     /**
+     * [GET] /plant/update
+     * @return 수정할 식물의 애칭
+     */
+    @GetMapping("/plant/update/{plantIdx}")
+    public ResponseEntity<JsonResponse> getUpdatedPlant(@PathVariable Long plantIdx){
+
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        String nickname = plantService.getUpdatedPlant(user, plantIdx).getNickname();
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getUpdatedPlant", nickname));
+    }
+
+    /**
      * [PUT] /plant/update
      * @return 수정한 식물의 애칭
      */
@@ -138,4 +151,5 @@ public class PlantController {
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "updatePlant", updatedPlant));
     }
+
 }

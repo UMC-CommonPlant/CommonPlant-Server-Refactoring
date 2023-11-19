@@ -24,6 +24,7 @@ public enum ErrorResponseStatus {
     NO_PLANT_NICKNAME(false, 4201, "식물의 애칭을 입력해 주세요!"),
     LONG_PLANT_NICKNAME(false, 4202, "식물의 애칭은 10자 이하로 설정해주세요!"),
     NO_SELECTED_PLANT_IMAGE(false,4203, "식물의 이미지를 선택해주세요!"),
+    REGEX_VALIDATION_ERROR(false, 4204, "정확한 물 주기 값을 입력해주세요!"),
 
 
     // 4300 : Memo
