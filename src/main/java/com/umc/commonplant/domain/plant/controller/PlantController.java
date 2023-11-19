@@ -79,26 +79,26 @@ public class PlantController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlantList", plantList));
     }
 
-    /**
-     * [GET] 같은 장소에 있는 식물 리스트 조회
-     * @param placeCode: 장소 코드
-     * @return 같은 장소에 있는 식물 리스트
-     */
-    @GetMapping("/place/plantList/{placeCode}")
-    public ResponseEntity<JsonResponse> getMyGardenPlantList(@PathVariable String placeCode) {
-
-        // log.info("=============GET PLANT LIST===============");
-
-        String uuid = jwtService.resolveToken();
-        User user = userService.getUser(uuid);
-
-        // Place place = placeService.getPlace(user, placeCode);
-        String place = placeService.getPlace(user, placeCode).getCode();
-
-        List<PlantDto.getMyGardenPlantListRes> plantList = plantService.getMyGardenPlantList(place);
-
-        return ResponseEntity.ok(new JsonResponse(true, 200, "getMyGardenPlantList", plantList));
-    }
+//    /**
+//     * [GET] 같은 장소에 있는 식물 리스트 조회
+//     * @param placeCode: 장소 코드
+//     * @return 같은 장소에 있는 식물 리스트
+//     */
+//    @GetMapping("/place/plantList/{placeCode}")
+//    public ResponseEntity<JsonResponse> getMyGardenPlantList(@PathVariable String placeCode) {
+//
+//        // log.info("=============GET PLANT LIST===============");
+//
+//        String uuid = jwtService.resolveToken();
+//        User user = userService.getUser(uuid);
+//
+//        // Place place = placeService.getPlace(user, placeCode);
+//        String place = placeService.getPlace(user, placeCode).getCode();
+//
+//        List<PlantDto.getMyGardenPlantListRes> plantList = plantService.getMyGardenPlantList(place);
+//
+//        return ResponseEntity.ok(new JsonResponse(true, 200, "getMyGardenPlantList", plantList));
+//    }
 
     /**
      * [PUT] 식물의 D-Day 업데이트

@@ -182,7 +182,7 @@ public class PlantService {
      */
     public Long getRemainderDate(Plant plant){
 
-        InfoDto.InfoResponse infoResponse = infoService.findInfo(plant.getPlantName());
+        List<Info> infoResponse = infoService.getOneInfo(plant.getPlantName());
 
         // DateTimeFormatter
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -197,7 +197,7 @@ public class PlantService {
         LocalDateTime currentDateTime = LocalDate.parse(parsedCurrentDate, dateTimeFormatter).atStartOfDay();
 
         // remainderDate: D-Day
-        Long remainderDate = (Long) infoResponse.getWater_day()
+        Long remainderDate = (Long) infoResponse.get(0).getWater_day()
                 - (Long) Duration.between(wateredDateTime, currentDateTime).toDays();
 
         // log.info(parsedWateredDate);
