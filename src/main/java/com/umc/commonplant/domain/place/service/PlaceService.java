@@ -60,7 +60,7 @@ public class PlaceService {
     public void userOnPlace(User user, String code)
     {
         if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
-            throw new BadRequestException(NOT_FOUNT_USER_ON_PLACE);
+            throw new BadRequestException(NOT_FOUND_USER_ON_PLACE);
     }
 
     @Transactional
@@ -95,9 +95,16 @@ public class PlaceService {
         User newUser = userRepository.findByname(name).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
         Place place = getPlaceByCode(code);
 
-        //장소에 이미 있을 경우 Exception
-        belongUserOnPlace(newUser, code);
+        List<PlaceDto.getPlaceResUser> userList = belongRepository.getUserListByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE))
+                .stream().map(u -> new PlaceDto.getPlaceResUser(u.getName(), u.getImgUrl())).collect(Collectors.toList());
 
+        // 장소에 이미 유저가 있을 경우 Exception
+        long userCount = userList.stream().filter(n -> n.getName().equals(name)).count();
+        if(userCount > 0){
+            throw new BadRequestException(IS_USER_ON_PLACE);
+        }
+        // 장소에 유저가 없는 경우
+        belongUserOnPlace(newUser, code);
 
         Belong belong = Belong.builder().user(newUser).place(place).build();
         belongRepository.save(belong);
@@ -116,7 +123,11 @@ public class PlaceService {
     public void belongUserOnPlace(User user, String code)
     {
         if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
-            throw new BadRequestException(NOT_FOUNT_USER_ON_PLACE);
+            throw new BadRequestException(NOT_FOUND_USER_ON_PLACE);
+    }
+
+    public void IsUserOnPlace(User user, String code){
+
     }
 
     public Place getPlaceByCode(String code){
