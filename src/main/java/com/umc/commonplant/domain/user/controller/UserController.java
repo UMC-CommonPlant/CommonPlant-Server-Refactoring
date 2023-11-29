@@ -27,7 +27,7 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "join", token));
     }
-    @GetMapping("/login")
+    @GetMapping("/login/{provider}")
     public ResponseEntity<JsonResponse> login(@RequestParam("accessToken") String accessToken, @PathVariable String provider){
         log.info("accessToken" + accessToken);
 //        System.out.println("accessToken: " + accessToken);

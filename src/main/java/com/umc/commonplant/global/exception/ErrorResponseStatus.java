@@ -17,7 +17,8 @@ public enum ErrorResponseStatus {
     NOT_FOUND_PLACE_CODE(false, 4100, "등록된 code가 없습니다."),
     NOT_FOUND_PLACE_NAME(false, 4101, "등록된 장소 이름이 없습니다."),
     GET_HUMIDITY_FAIL(false, 4103,"습도를 조회하는데 실패했습니다."),
-    NOT_FOUNT_USER_ON_PLACE(false, 4104,"place에 속하지 않은 유저입니다."),
+    NOT_FOUND_USER_ON_PLACE(false, 4104,"place에 속하지 않은 유저입니다."),
+    IS_USER_ON_PLACE(false, 4105, "place에 이미 있는 유저입니다."),
 
     // 4200 : Plant
     NOT_FOUND_PLANT(false, 4200, "등록된 식물이 없습니다."),
