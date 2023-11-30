@@ -59,11 +59,6 @@ public enum ErrorResponseStatus {
 
     // 4700 : Alarm
 
-    // 4800 : Story
-    NO_SELECTED_STORY_IMAGE(false, 4300,"story의 이미지는 최소 1장, 최대 5장 입니다."),
-    NOT_FOUND_STORY(false, 4301, "등록된 스토리가 없습니다."),
-    NOT_FOUNT_PARENT_COMMENT(false, 4401, "등록된 댓글이 없습니다."),
-
     //5000 : Server connection 오류
     SERVER_ERROR(false, 5000, "서버와의 연결에 실패하였습니다."),
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
