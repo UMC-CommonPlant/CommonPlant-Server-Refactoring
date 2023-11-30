@@ -3,7 +3,6 @@ package com.umc.commonplant.domain.memo.controller;
 import com.umc.commonplant.domain.Jwt.JwtService;
 import com.umc.commonplant.domain.memo.dto.MemoDto;
 import com.umc.commonplant.domain.memo.service.MemoService;
-import com.umc.commonplant.domain.story.dto.StoryDto;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.global.dto.JsonResponse;
