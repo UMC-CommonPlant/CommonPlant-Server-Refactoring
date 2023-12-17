@@ -6,11 +6,11 @@ build/
 !**/src/test/**/build/
 
 ### Project Files ###
-src/main/resources/
-*.properties
-*.yml
+#src/main/resources/
+src/main/resources/application.yml
+src/main/resources/firebase/serviceAccountKey.json
 !/gradlew
-
+logs/**
 ### STS ###
 .apt_generated
 .classpath
