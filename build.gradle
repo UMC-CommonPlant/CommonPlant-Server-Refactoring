@@ -55,6 +55,9 @@ dependencies {
 	implementation 'com.googlecode.json-simple:json-simple:1.1'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
 
+	//swagger
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
 }
 
 tasks.named('test') {

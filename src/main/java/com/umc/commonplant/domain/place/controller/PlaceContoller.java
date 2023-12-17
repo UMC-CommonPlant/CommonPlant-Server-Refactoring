@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequestMapping("/place")
 @RequiredArgsConstructor
 @RestController
-public class PlaceContoller {
+public class PlaceContoller{
     private final PlaceService placeService;
     private final UserService userService;
     private final JwtService jwtService;
