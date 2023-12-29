@@ -66,11 +66,17 @@ public class PlantDto {
     public static class getPlantListRes{
         private String nickname;
         private String imgUrl;
+        private String place;
+        private String member;
+        private Long remainderDate;
 
         @Builder
-        public getPlantListRes(Plant plant){
+        public getPlantListRes(Plant plant, String place, String member, Long remainderDate){
             this.nickname = plant.getNickname();
             this.imgUrl = plant.getImgUrl();
+            this.place = place;
+            this.member = member;
+            this.remainderDate = remainderDate;
         }
     }
 

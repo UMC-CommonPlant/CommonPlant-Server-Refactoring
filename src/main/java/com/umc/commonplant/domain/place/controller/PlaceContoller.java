@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.umc.commonplant.domain.plant.dto.PlantDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +82,21 @@ public class PlaceContoller implements PlaceSwagger{
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getFriends", users));
     }
+    // 메인페이지
+    @GetMapping("/myGarden")
+    public ResponseEntity<JsonResponse> getMyGarden(){
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+        String name = user.getName();
+
+        //placeList
+        List<PlaceDto.getPlaceListRes> placeList = placeService.getPlaceList(user);
+        //plantList
+        List<PlantDto.getPlantListRes> plantList = plantService.getPlantList(user);
+        //mainpage
+        PlaceDto.getMainPage mainPage = new PlaceDto.getMainPage(name, placeList, plantList);
 
 
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getMyGarden", mainPage));
+    }
 }
