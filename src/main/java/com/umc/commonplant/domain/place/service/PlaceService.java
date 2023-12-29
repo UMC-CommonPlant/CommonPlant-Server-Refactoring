@@ -6,6 +6,7 @@ import com.umc.commonplant.domain.image.service.ImageService;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.place.entity.PlaceRepository;
+import com.umc.commonplant.domain.plant.entity.PlantRepository;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.repository.UserRepository;
 import com.umc.commonplant.global.exception.BadRequestException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ public class PlaceService {
 
     private final OpenApiService openApiService;
     private final ImageService imageService;
+    private final PlantRepository plantRepository;
 
 
     @Transactional
@@ -85,6 +88,20 @@ public class PlaceService {
 
         return res;
     }
+    @Transactional
+    public List<PlaceDto.getPlaceListRes> getPlaceList(User user){
+        //장소이미지, 장소이름, 참여인원수, 등록된 식물 수 보여주기 List
+        List<Place> places = placeRepository.findAllByOwner(user);
+        List<PlaceDto.getPlaceListRes> placeList = new ArrayList<>();
+
+        for(Place place : places){
+            String member = belongRepository.countUserByPlace(place);
+            String plant = plantRepository.countPlantsByPlace(place);
+            placeList.add(0, new PlaceDto.getPlaceListRes(place, member, plant));
+        }
+
+        return placeList;
+    }
 
     public PlaceDto.getPlaceGridRes getPlaceGrid(User user, String code) {
         belongUserOnPlace(user, code);
@@ -104,7 +121,7 @@ public class PlaceService {
             throw new BadRequestException(IS_USER_ON_PLACE);
         }
         // 장소에 유저가 없는 경우
-        belongUserOnPlace(newUser, code);
+        //belongUserOnPlace(newUser, code);
 
         Belong belong = Belong.builder().user(newUser).place(place).build();
         belongRepository.save(belong);
