@@ -12,6 +12,8 @@ public enum ErrorResponseStatus {
     EXIST_USER(false, 4002, "이미 등록된 유저가 있습니다."),
     NOT_FOUND_USER(false, 4003, "등록된 유저가 없습니다."),
     EXPIRED_JWT(false, 4007, "만료된 토큰입니다."),
+    EXIST_NAME(false, 4004, "중복된 이름입니다."),
+    NOT_VALID_LENGTH(false, 4005, "이름은 특수문자를 포함하지 않은 2~10자리여야 합니다."),
 
     // 4100 : Place
     NOT_FOUND_PLACE_CODE(false, 4100, "등록된 code가 없습니다."),

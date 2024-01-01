@@ -42,4 +42,10 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getUser", user));
     }
+    @GetMapping("/user/{name}/exists")
+    public ResponseEntity<JsonResponse> checkNameDuplicate(@PathVariable String name){
+        boolean checkName = userService.checkNameDuplication(name);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "사용가능한 이름입니다.", checkName));
+    }
 }

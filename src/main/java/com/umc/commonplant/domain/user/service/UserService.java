@@ -1,5 +1,6 @@
 package com.umc.commonplant.domain.user.service;
 
+import com.google.cloud.grpc.BaseGrpcServiceException;
 import com.umc.commonplant.domain.Jwt.JwtService;
 import com.umc.commonplant.domain.user.dto.UserDto;
 import com.umc.commonplant.domain.user.entity.User;
@@ -8,10 +9,12 @@ import com.umc.commonplant.global.exception.BadRequestException;
 import com.umc.commonplant.global.utils.UuidUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.umc.commonplant.global.exception.ErrorResponseStatus.EXIST_USER;
-import static com.umc.commonplant.global.exception.ErrorResponseStatus.NOT_FOUND_USER;
+import java.util.List;
+
+import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 
 @RequiredArgsConstructor
 @Service
@@ -49,6 +52,15 @@ public class UserService {
 
             return jwtService.createToken(user.getUuid());
         }
+    }
+    @Transactional(readOnly = true)
+    public boolean checkNameDuplication(String name){
+        boolean nameDuplicate = userRepository.existsByname(name);
+        if(nameDuplicate)
+            throw new BadRequestException(EXIST_NAME);
+        if(name.length() < 2 || name.length() > 10)
+            throw new BadRequestException(NOT_VALID_LENGTH);
+        return nameDuplicate;
     }
 
 }
