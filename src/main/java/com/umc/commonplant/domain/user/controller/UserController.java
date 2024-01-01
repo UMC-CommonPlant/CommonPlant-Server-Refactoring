@@ -35,10 +35,10 @@ public class UserController {
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "login", token));
     }
-    @GetMapping("/user/{uuid}") // 회원정보 조회
-    public ResponseEntity<JsonResponse> getUser(@PathVariable String uuid){
+    @GetMapping("/user/{name}") // 회원정보 조회
+    public ResponseEntity<JsonResponse> getUser(@PathVariable String name){
         //String uuid = jwtService.resolveToken();
-        User user = userService.getUser(uuid);
+        User user = userService.getUser(name);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getUser", user));
     }
