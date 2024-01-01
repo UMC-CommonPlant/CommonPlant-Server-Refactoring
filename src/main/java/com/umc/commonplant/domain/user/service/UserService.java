@@ -22,8 +22,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    public User getUser(String uuid){ // User 조회
-        return userRepository.findByUuid(uuid).orElseThrow(() -> new BadRequestException((NOT_FOUND_USER)));
+    public User getUser(String name){ // User 조회
+        return userRepository.findByname(name).orElseThrow(() -> new BadRequestException((NOT_FOUND_USER)));
     }
     public User saveUser(UserDto.join req){
         User user = User.builder()
