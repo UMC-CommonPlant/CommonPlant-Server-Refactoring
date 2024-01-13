@@ -48,6 +48,11 @@ public class PlantService {
     @Transactional
     public String createPlant(User user, PlantDto.createPlantReq req, MultipartFile plantImage) {
 
+        // 식물 장소
+        // TODO: 식물이 있는 장소 -> 장소의 코드로 검색(추후 장소의 이름으로 바뀔 수 있음)
+        Place plantPlace = placeService.getPlaceByCode(req.getPlace());
+        placeService.belongUserOnPlace(user, plantPlace.getCode());
+
         // 식물 종
         // String plantName = infoService.findInfo(req.getPlantName()).getName();
         String plantName = req.getPlantName();
@@ -71,10 +76,6 @@ public class PlantService {
         } else {
             throw new BadRequestException(ErrorResponseStatus.NO_SELECTED_PLANT_IMAGE);
         }
-
-        // 식물 장소
-        // TODO: 식물이 있는 장소 -> 장소의 코드로 검색(추후 장소의 이름으로 바뀔 수 있음)
-        Place plantPlace = placeService.getPlaceByCode(req.getPlace());
 
         // 물주기 기간
         String waterCycle = null;
@@ -131,17 +132,13 @@ public class PlantService {
 
         List<Info> infoResponse = infoService.getOneInfo(plant.getPlantName());
 
-        // log.info("식물의 고유 정보는:" + infoResponse.getScientific_name() + infoResponse.getHumidity());
-
         // DateTimeFormatter
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         String parsedCreatedDate = plant.getCreatedAt().format(dateTimeFormatter);
-        // log.info("========parsedCreatedDate======== " + parsedCreatedDate);
         LocalDateTime createdDateTime = LocalDate.parse(parsedCreatedDate, dateTimeFormatter).atStartOfDay();
 
         String parsedCurrentDate = LocalDate.now().toString();
-        // log.info("========parsedCurrentDate======== " + parsedCurrentDate);
         LocalDateTime currentDateTime = LocalDate.parse(parsedCurrentDate, dateTimeFormatter).atStartOfDay();
 
         // countDate: 식물이 처음 온 날
@@ -189,20 +186,14 @@ public class PlantService {
 
         // WateredDate: 마지막으로 물 준 날짜, CurrentDate: 오늘 날짜
         String parsedWateredDate = plant.getWateredDate().format(dateTimeFormatter);
-        // log.info("========parsedWateredDate======== " + parsedWateredDate);
         LocalDateTime wateredDateTime = LocalDate.parse(parsedWateredDate, dateTimeFormatter).atStartOfDay();
 
         String parsedCurrentDate = LocalDate.now().toString();
-        // log.info("========parsedCurrentDate======== " + parsedCurrentDate);
         LocalDateTime currentDateTime = LocalDate.parse(parsedCurrentDate, dateTimeFormatter).atStartOfDay();
 
         // remainderDate: D-Day
-        Long remainderDate = (Long) infoResponse.get(0).getWater_day()
-                - (Long) Duration.between(wateredDateTime, currentDateTime).toDays();
-
-        // log.info(parsedWateredDate);
-        // log.info(parsedCurrentDate);
-        // log.info(String.valueOf(remainderDate));
+        Long remainderDate = (long) plant.getWaterCycle()
+                - (long) Duration.between(wateredDateTime, currentDateTime).toDays();
 
         return remainderDate;
     }
@@ -214,20 +205,17 @@ public class PlantService {
      * @return
      */
     @Transactional
-    public String updateWateredDate(Long plantIdx, User user) {
+    public String updateWateredDate(User user, Long plantIdx) {
 
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));
 
-        // log.info(" 물주기 리셋할 식물은: " + plant.getNickname());
+        // TODO: 식물이 있는 장소 -> 장소의 코드로 검색(추후 장소의 이름으로 바뀔 수 있음)
+        Place plantPlace = placeService.getPlaceByCode(plant.getPlace().getCode());
+        placeService.belongUserOnPlace(user, plantPlace.getCode());
 
         // TODO: 마지막으로 물 준 날짜
         plant.setWateredDate(LocalDateTime.now());
-
-//        getPlantInfo()의 인자는 식물 종 이름: 식물 조회할 때 식물 종 이름을 보내서 검색하면 됨
-//        InfoDto.InfoResponse infoResponse = infoService.findInfo(plant.getPlantName());
-//        Long resetRemainderDate = -1 * (Long) infoResponse.getWater_day();
-//        plant.setRemainderDate(resetRemainderDate);
 
         return plantRepository.save(plant).getNickname();
     }
@@ -331,10 +319,14 @@ public class PlantService {
      * @return
      */
     @Transactional
-    public String updatePlant(Long plantIdx, String nickname, MultipartFile plantImage) {
+    public String updatePlant(User user, Long plantIdx, String nickname, MultipartFile plantImage) {
 
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));
+
+        // TODO: 식물이 있는 장소 -> 장소의 코드로 검색(추후 장소의 이름으로 바뀔 수 있음)
+        Place plantPlace = placeService.getPlaceByCode(plant.getPlace().getCode());
+        placeService.belongUserOnPlace(user, plantPlace.getCode());
 
         // TODO: 식물의 애칭
         String plantNickname = null;
@@ -373,6 +365,10 @@ public class PlantService {
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));
 
+        // TODO: 식물이 있는 장소 -> 장소의 코드로 검색(추후 장소의 이름으로 바뀔 수 있음)
+        Place plantPlace = placeService.getPlaceByCode(plant.getPlace().getCode());
+        placeService.belongUserOnPlace(user, plantPlace.getCode());
+        
         return new PlantDto.updatePlantRes(
                 plant.getNickname(),
                 plant.getImgUrl()
@@ -391,6 +387,21 @@ public class PlantService {
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));
 
+        // TODO: 식물이 있는 장소 -> 장소의 코드로 검색(추후 장소의 이름으로 바뀔 수 있음)
+        Place plantPlace = placeService.getPlaceByCode(plant.getPlace().getCode());
+        placeService.belongUserOnPlace(user, plantPlace.getCode());
+
+        List<MemoDto.GetAllMemo> memoList = memoService.getAllMemoByPlant(plantIdx);
+
+        for(MemoDto.GetAllMemo memo : memoList) {
+            memoService.deleteMemo(user, memo.getMemo_idx());
+        }
+
+        imageService.deleteFileInS3(plant.getImgUrl());
+
+        plantRepository.deleteById(plantIdx);
+
         return plant.getNickname();
     }
+
 }
