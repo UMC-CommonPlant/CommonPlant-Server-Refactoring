@@ -39,7 +39,7 @@ public class UserService {
         }else{
             //join
             String uuid = UuidUtil.generateType1UUID();
-            //String imageUrl = firebaseService.uploadFiles(uuid, image);
+//            String imageUrl = firebaseService.uploadFiles(uuid, image);
 
             User user = User.builder()
                     .name(req.getName())

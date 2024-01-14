@@ -29,8 +29,7 @@ public class UserController {
     }
     @GetMapping("/login/{provider}")
     public ResponseEntity<JsonResponse> login(@RequestParam("accessToken") String accessToken, @PathVariable String provider){
-        log.info("accessToken" + accessToken);
-//        System.out.println("accessToken: " + accessToken);
+        log.info("accessToken :" + accessToken);
         String token = oAuthService.oAuthLogin(accessToken, provider);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "login", token));
