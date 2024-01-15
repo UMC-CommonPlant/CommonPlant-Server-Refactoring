@@ -1,4 +1,4 @@
-package com.umc.commonplant.domain.user.dto;
+package com.umc.commonplant.domain.oauth.dto;
 
 import lombok.Data;
 
