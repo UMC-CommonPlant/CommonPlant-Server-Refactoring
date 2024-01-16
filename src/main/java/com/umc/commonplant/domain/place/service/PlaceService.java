@@ -148,16 +148,26 @@ public class PlaceService {
         return belongList;
     }
 
+    public List<PlaceDto.getPlaceFriends> getPlaceFriends(String code) {
+        Place place = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
+        List<User> userList = belongRepository.getUserListByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
+
+        List<PlaceDto.getPlaceFriends> friends = new ArrayList<>();
+        for(User u : userList){
+            PlaceDto.getPlaceFriends user = new PlaceDto.getPlaceFriends(u.getImgUrl(), u.getName());
+            if(place.getOwner().getUuid().equals(u.getUuid()))
+                user.setLeader(true);
+            friends.add(user);
+        }
+        return friends;
+    }
+
     // ----- API 외 메서드 -----
 
     public void belongUserOnPlace(User user, String code)
     {
         if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
             throw new BadRequestException(NOT_FOUND_USER_ON_PLACE);
-    }
-
-    public void IsUserOnPlace(User user, String code){
-
     }
 
     public Place getPlaceByCode(String code){
