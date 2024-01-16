@@ -1,5 +1,6 @@
 package com.umc.commonplant.domain.place.entity;
 
+import com.umc.commonplant.domain.BaseTime;
 import com.umc.commonplant.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Table(name = "place")
 @NoArgsConstructor
 @Entity
-public class Place {
+public class Place extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "place_idx")

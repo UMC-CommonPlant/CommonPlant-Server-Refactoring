@@ -135,6 +135,19 @@ public class PlaceService {
         return users;
     }
 
+    public List<PlaceDto.getPlaceBelongUser> getPlaceBelongUser(User user) {
+        List<Belong> belongs = belongRepository.getPlaceBelongUser(user);
+        List<PlaceDto.getPlaceBelongUser> belongList = new ArrayList<>();
+        for(Belong b : belongs){
+            PlaceDto.getPlaceBelongUser belongUser = new PlaceDto.getPlaceBelongUser(
+                    b.getPlace().getImgUrl(),
+                    b.getPlace().getName(),
+                    b.getPlace().getCreatedAt());
+            belongList.add(belongUser);
+        }
+        return belongList;
+    }
+
     // ----- API 외 메서드 -----
 
     public void belongUserOnPlace(User user, String code)

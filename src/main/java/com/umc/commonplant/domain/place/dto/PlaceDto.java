@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PlaceDto {
@@ -99,4 +100,13 @@ public class PlaceDto {
         private List<getPlaceListRes> placeList;
         private List<PlantDto.getPlantListRes> plantList;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getPlaceBelongUser {
+        private String imgUrl;
+        private String name;
+        private LocalDateTime createdAt;
+    }
+
 }
