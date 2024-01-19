@@ -1,29 +1,53 @@
 package com.umc.commonplant.domain2.info.dto;
 
 import com.umc.commonplant.domain2.info.entity.Info;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 public class InfoDto {
 
     @NoArgsConstructor
     @Data
     public static class InfoRequest {
+        @NotNull
+        @Schema(description = "식물 이름", example = "식물")
         private String name;
+
+        @Schema(description = "습도", hidden = true)
         private String humidity;
+
+        @Schema(description = "관리 방법", hidden = true)
         private String management;
+
+        @Schema(description = "키우기 좋은 위치", hidden = true)
         private String place;
+
+        @Schema(description = "학술명", example = "plant", hidden = true)
         private String scientific_name;
+        @Schema(description = "물주는 주기", example = "10", hidden = true)
         private Long water_day;
+        @Schema(description = "빛의 강도", hidden = true)
         private String sunlight;
+        @Schema(description = "최대 온도", hidden = true)
         private Long temp_max;
+        @Schema(description = "최저 온도", hidden = true)
         private Long temp_min;
+        @Schema(description = "관리 팁", hidden = true)
         private String tip;
+        @Schema(description = "봄 관리법", hidden = true)
         private String water_spring;
+        @Schema(description = "가을 관리법", hidden = true)
         private String water_autumn;
+        @Schema(description = "겨울 관리법", hidden = true)
         private String water_winter;
+        @Schema(description = "여름 관리법", hidden = true)
         private String water_summer;
+        @Schema(description = "검증 여부", hidden = true)
         private Boolean verified;
 
         @Builder
