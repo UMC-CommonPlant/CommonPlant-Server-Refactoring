@@ -8,6 +8,7 @@ import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.global.dto.JsonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,14 +19,14 @@ import java.util.List;
 @RequestMapping("/memo")
 @RequiredArgsConstructor
 @RestController
-public class MemoController {
+public class MemoController implements MemoSwagger{
 
     private final MemoService memoService;
     private final JwtService jwtService;
     private final UserService userService;
 
-    @PostMapping("/add")
-    public ResponseEntity<JsonResponse> createMemo(@RequestPart("memoRequest")MemoDto.MemoRequest memoRequest, @RequestPart("image") MultipartFile multipartFile){
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JsonResponse> createMemo(@RequestPart("memoRequest")MemoDto.MemoRequest memoRequest, @RequestPart(value = "image", required = false) MultipartFile multipartFile){
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -34,8 +35,8 @@ public class MemoController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "createMemo", null));
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<JsonResponse> updateMemo(@RequestPart("memoRequest")MemoDto.MemoUpdateRequest memoUpdateRequest, @RequestPart("image") MultipartFile multipartFile) {
+    @PatchMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JsonResponse> updateMemo(@RequestPart("memoRequest")MemoDto.MemoUpdateRequest memoUpdateRequest, @RequestPart(value = "image", required = false) MultipartFile multipartFile) {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
