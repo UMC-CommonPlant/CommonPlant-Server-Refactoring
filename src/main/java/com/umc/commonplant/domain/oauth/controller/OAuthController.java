@@ -20,7 +20,11 @@ public class OAuthController {
     public ResponseEntity<JsonResponse> login(@RequestParam("accessToken") String accessToken, @PathVariable String provider){
         log.info("accessToken : " + accessToken);
         String token = oAuthService.oAuthLogin(accessToken, provider);
-
-        return ResponseEntity.ok(new JsonResponse(true, 200, "login", token));
+        String email = oAuthService.kakaoLogin(accessToken);
+        if(token != null){
+            return ResponseEntity.ok(new JsonResponse(true, 200, "login", token));
+        }else{
+            return ResponseEntity.ok(new JsonResponse(true, 2001, "no User Info", email));
+        }
     }
 }

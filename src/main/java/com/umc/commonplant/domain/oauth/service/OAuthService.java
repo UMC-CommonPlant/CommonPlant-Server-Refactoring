@@ -38,10 +38,9 @@ public class OAuthService {
             User user = userRepository.findByEmail(email, provider);
             String token = jwtService.createToken(user.getUuid());
             return token;
-        }else{
-            log.info("[REJECT]no info in DB, email = {}", email);
-            throw new BadRequestException(NOT_FOUND_USER);
-//            throw new IllegalArgumentException(email);
+        }
+        else{
+            return null;
         }
     }
     public String kakaoLogin(String accessToken){
