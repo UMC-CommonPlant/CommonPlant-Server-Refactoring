@@ -7,12 +7,14 @@ import com.umc.commonplant.global.dto.JsonResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Tag(name = "Memo Controller", description = "메모 관련 API")
 public interface MemoSwagger {
     @Operation(summary = "메모 작성", description = "메모 작성을 위해 내용을 입력한 뒤 호출하는 API")
     public ResponseEntity<JsonResponse> createMemo(
