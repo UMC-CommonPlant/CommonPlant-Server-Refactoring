@@ -42,10 +42,18 @@ public class InfoService {
             }
             throw new GlobalException(ErrorResponseStatus.ALREADY_EXIST_INFO);
         }
-        try {
-            if(info.getVerified() == null) {
-                info.setVerified(false);
+        if(info.getVerified() == null) {
+            info.setVerified(false);
+        }
+
+        String scientific_name = info.getScientificName();
+        if(!scientific_name.isEmpty() && !scientific_name.isBlank()) {
+            if(infoRepository.existsByScientificName(scientific_name)) {
+                throw new GlobalException(ErrorResponseStatus.ALREADY_EXIST_INFO);
             }
+        }
+
+        try {
             infoRepository.save(info);
         } catch (Exception e) {
             throw new GlobalException(ErrorResponseStatus.DATABASE_ERROR);
