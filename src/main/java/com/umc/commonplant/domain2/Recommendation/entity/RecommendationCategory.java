@@ -1,5 +1,7 @@
 package com.umc.commonplant.domain2.Recommendation.entity;
 
+import java.util.Arrays;
+
 public enum RecommendationCategory {
     STUDIO("원룸"),
     AIR_PURIFYING("공기정화"),
@@ -18,5 +20,12 @@ public enum RecommendationCategory {
 
     public String getDescription() {
         return description;
+    }
+
+    public static RecommendationCategory getByDescription(String description) {
+        return Arrays.stream(values())
+                .filter(category -> category.getDescription().equalsIgnoreCase(description))
+                .findFirst()
+                .orElse(null);
     }
 }
