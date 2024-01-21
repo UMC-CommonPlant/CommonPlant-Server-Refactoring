@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/recommend")
 @RequiredArgsConstructor
 @RestController
-public class RecommendationController {
+public class RecommendationController implements RecommendationSwagger{
     private final RecommendationService recommendationService;
     @PostMapping("/add")
     public ResponseEntity<JsonResponse> addRecommendation(@RequestParam("info_idx") Long info_idx,

@@ -6,6 +6,7 @@ import com.umc.commonplant.domain.image.service.ImageService;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.place.entity.PlaceRepository;
+import com.umc.commonplant.domain.plant.entity.PlantRepository;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.repository.UserRepository;
 import com.umc.commonplant.global.exception.BadRequestException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ public class PlaceService {
 
     private final OpenApiService openApiService;
     private final ImageService imageService;
+    private final PlantRepository plantRepository;
 
 
     @Transactional
@@ -60,7 +63,7 @@ public class PlaceService {
     public void userOnPlace(User user, String code)
     {
         if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
-            throw new BadRequestException(NOT_FOUNT_USER_ON_PLACE);
+            throw new BadRequestException(NOT_FOUND_USER_ON_PLACE);
     }
 
     @Transactional
@@ -85,6 +88,20 @@ public class PlaceService {
 
         return res;
     }
+    @Transactional
+    public List<PlaceDto.getPlaceListRes> getPlaceList(User user){
+        //장소이미지, 장소이름, 참여인원수, 등록된 식물 수 보여주기 List
+        List<Place> places = placeRepository.findAllByOwner(user);
+        List<PlaceDto.getPlaceListRes> placeList = new ArrayList<>();
+
+        for(Place place : places){
+            String member = belongRepository.countUserByPlace(place);
+            String plant = plantRepository.countPlantsByPlace(place);
+            placeList.add(0, new PlaceDto.getPlaceListRes(place, member, plant));
+        }
+
+        return placeList;
+    }
 
     public PlaceDto.getPlaceGridRes getPlaceGrid(User user, String code) {
         belongUserOnPlace(user, code);
@@ -95,9 +112,16 @@ public class PlaceService {
         User newUser = userRepository.findByname(name).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
         Place place = getPlaceByCode(code);
 
-        //장소에 이미 있을 경우 Exception
-        belongUserOnPlace(newUser, code);
+        List<PlaceDto.getPlaceResUser> userList = belongRepository.getUserListByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE))
+                .stream().map(u -> new PlaceDto.getPlaceResUser(u.getName(), u.getImgUrl())).collect(Collectors.toList());
 
+        // 장소에 이미 유저가 있을 경우 Exception
+        long userCount = userList.stream().filter(n -> n.getName().equals(name)).count();
+        if(userCount > 0){
+            throw new BadRequestException(IS_USER_ON_PLACE);
+        }
+        // 장소에 유저가 없는 경우
+        //belongUserOnPlace(newUser, code);
 
         Belong belong = Belong.builder().user(newUser).place(place).build();
         belongRepository.save(belong);
@@ -111,12 +135,39 @@ public class PlaceService {
         return users;
     }
 
+    public List<PlaceDto.getPlaceBelongUser> getPlaceBelongUser(User user) {
+        List<Belong> belongs = belongRepository.getPlaceBelongUser(user);
+        List<PlaceDto.getPlaceBelongUser> belongList = new ArrayList<>();
+        for(Belong b : belongs){
+            PlaceDto.getPlaceBelongUser belongUser = new PlaceDto.getPlaceBelongUser(
+                    b.getPlace().getImgUrl(),
+                    b.getPlace().getName(),
+                    b.getPlace().getCreatedAt());
+            belongList.add(belongUser);
+        }
+        return belongList;
+    }
+
+    public List<PlaceDto.getPlaceFriends> getPlaceFriends(String code) {
+        Place place = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
+        List<User> userList = belongRepository.getUserListByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
+
+        List<PlaceDto.getPlaceFriends> friends = new ArrayList<>();
+        for(User u : userList){
+            PlaceDto.getPlaceFriends user = new PlaceDto.getPlaceFriends(u.getImgUrl(), u.getName());
+            if(place.getOwner().getUuid().equals(u.getUuid()))
+                user.setLeader(true);
+            friends.add(user);
+        }
+        return friends;
+    }
+
     // ----- API 외 메서드 -----
 
     public void belongUserOnPlace(User user, String code)
     {
         if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
-            throw new BadRequestException(NOT_FOUNT_USER_ON_PLACE);
+            throw new BadRequestException(NOT_FOUND_USER_ON_PLACE);
     }
 
     public Place getPlaceByCode(String code){

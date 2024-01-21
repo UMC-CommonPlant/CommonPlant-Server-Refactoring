@@ -1,5 +1,6 @@
 package com.umc.commonplant.domain.plant.service;
 
+import com.umc.commonplant.domain.belong.entity.BelongRepository;
 import com.umc.commonplant.domain.image.service.ImageService;
 import com.umc.commonplant.domain.memo.dto.MemoDto;
 import com.umc.commonplant.domain.memo.service.MemoService;
@@ -31,7 +32,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class PlantService {
-    
+    private final BelongRepository belongRepository;
+
     private final PlantRepository plantRepository;
 
     private final PlaceService placeService;
@@ -234,11 +236,22 @@ public class PlantService {
 
         for(Place place : placeList){
             List<Plant> plantListByPlace = plantRepository.findAllByPlace(place);
+            String name = place.getName();
+            String member = belongRepository.countUserByPlace(place);
 
             for(Plant plant: plantListByPlace) {
-                plantList.add(new PlantDto.getPlantListRes(plant));
+                Long remainderDate = getRemainderDate(plant);
+                plantList.add(new PlantDto.getPlantListRes(plant, name, member, remainderDate));
             }
         }
+        plantList.sort((p1, p2) -> {
+            if (p1.getRemainderDate() > p2.getRemainderDate()) {
+                return 1;
+            } else if (p1.getRemainderDate() < p2.getRemainderDate()) {
+                return -1;
+            }
+            return 0;
+        });
 
         return plantList;
     }

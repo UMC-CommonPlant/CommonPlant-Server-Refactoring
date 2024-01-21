@@ -69,7 +69,9 @@ public class RecommendationService {
             recommendationCategory = RecommendationCategory.valueOf(category.toUpperCase());
 
         } catch (IllegalArgumentException e) {
-            throw new GlobalException(ErrorResponseStatus.INVALID_CATEGORY_INFO);
+            recommendationCategory = RecommendationCategory.getByDescription(category);
+            if(recommendationCategory == null)
+                throw new GlobalException(ErrorResponseStatus.INVALID_CATEGORY_INFO);
         }
 
         List<InfoDto.SearchInfoResponse> infoResponseList = new ArrayList<>();

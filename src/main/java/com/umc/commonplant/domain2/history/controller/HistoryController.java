@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/word")
 @RequiredArgsConstructor
 @RestController
-public class HistoryController {
+public class HistoryController implements HistorySwagger{
     private final HistoryService historyService;
 
     @GetMapping("/getWordList")

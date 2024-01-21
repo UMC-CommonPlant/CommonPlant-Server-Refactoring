@@ -1,11 +1,13 @@
 package com.umc.commonplant.domain.place.dto;
 
+import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.plant.dto.PlantDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PlaceDto {
@@ -29,7 +31,6 @@ public class PlaceDto {
         private boolean isOwner;
         private List<getPlaceResUser> userList;
         private List<PlantDto.getMyGardenPlantListRes> plantList;
-
     }
 
     @NoArgsConstructor
@@ -71,4 +72,56 @@ public class PlaceDto {
     public static class getFriendsReq{
         private String name;
     }
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Builder
+    public static class getPlaceListRes{
+        private String image;
+        private String code;
+        private String name;
+        private String member;
+        private String plant;
+        public getPlaceListRes(Place place, String member, String plant){
+            this.image = place.getImgUrl();
+            this.code = place.getCode();
+            this.name = place.getName();
+            this.member = member;
+            this.plant = plant;
+        }
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    @Builder
+    public static class getMainPage{
+        private String name;
+        private List<getPlaceListRes> placeList;
+        private List<PlantDto.getPlantListRes> plantList;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getPlaceBelongUser {
+        private String imgUrl;
+        private String name;
+        private LocalDateTime createdAt;
+    }
+
+    public static class getPlaceFriends {
+        private boolean isLeader = false;
+        private String image;
+        private String name;
+
+        public getPlaceFriends(String image, String name) {
+            this.image = image;
+            this.name = name;
+        }
+
+        public void setLeader(boolean leader) {
+            isLeader = leader;
+        }
+    }
+
 }

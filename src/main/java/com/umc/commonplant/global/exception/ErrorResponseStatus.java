@@ -12,12 +12,15 @@ public enum ErrorResponseStatus {
     EXIST_USER(false, 4002, "이미 등록된 유저가 있습니다."),
     NOT_FOUND_USER(false, 4003, "등록된 유저가 없습니다."),
     EXPIRED_JWT(false, 4007, "만료된 토큰입니다."),
+    EXIST_NAME(false, 4004, "중복된 이름입니다."),
+    NOT_VALID_LENGTH(false, 4005, "이름은 특수문자를 포함하지 않은 2~10자리여야 합니다."),
 
     // 4100 : Place
     NOT_FOUND_PLACE_CODE(false, 4100, "등록된 code가 없습니다."),
     NOT_FOUND_PLACE_NAME(false, 4101, "등록된 장소 이름이 없습니다."),
     GET_HUMIDITY_FAIL(false, 4103,"습도를 조회하는데 실패했습니다."),
-    NOT_FOUNT_USER_ON_PLACE(false, 4104,"place에 속하지 않은 유저입니다."),
+    NOT_FOUND_USER_ON_PLACE(false, 4104,"place에 속하지 않은 유저입니다."),
+    IS_USER_ON_PLACE(false, 4105, "place에 이미 있는 유저입니다."),
 
     // 4200 : Plant
     NOT_FOUND_PLANT(false, 4200, "등록된 식물이 없습니다."),
@@ -57,11 +60,6 @@ public enum ErrorResponseStatus {
     // 4600 : Calendar
 
     // 4700 : Alarm
-
-    // 4800 : Story
-    NO_SELECTED_STORY_IMAGE(false, 4300,"story의 이미지는 최소 1장, 최대 5장 입니다."),
-    NOT_FOUND_STORY(false, 4301, "등록된 스토리가 없습니다."),
-    NOT_FOUNT_PARENT_COMMENT(false, 4401, "등록된 댓글이 없습니다."),
 
     //5000 : Server connection 오류
     SERVER_ERROR(false, 5000, "서버와의 연결에 실패하였습니다."),
