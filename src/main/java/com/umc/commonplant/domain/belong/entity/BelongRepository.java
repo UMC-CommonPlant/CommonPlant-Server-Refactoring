@@ -19,4 +19,7 @@ public interface BelongRepository extends JpaRepository<Belong, Long> {
     Integer countUserOnPlace(String uuid, String code);
 
     String countUserByPlace(Place place);
+
+    @Query("select b from Belong b where b.user.uuid=?1")
+    List<Belong> getPlaceBelongUser(User user);
 }
