@@ -1,4 +1,4 @@
-package com.umc.commonplant.domain.user.dto;
+package com.umc.commonplant.domain.oauth.dto;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ public class KakaoProfile {
 
     @Data
     public static class Properties{
-        private String name;
+        private String nickname;
         private String profile_image;
         private String thumbnail_image;
     }
@@ -29,7 +29,7 @@ public class KakaoProfile {
 
     @Data
     public static class Profile{
-        private String name;
+        private String nickname;
         private String profile_image_url;
         private boolean is_default_image;
     }

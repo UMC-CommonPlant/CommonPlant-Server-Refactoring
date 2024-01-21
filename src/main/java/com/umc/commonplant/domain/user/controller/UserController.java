@@ -3,7 +3,6 @@ package com.umc.commonplant.domain.user.controller;
 import com.umc.commonplant.domain.Jwt.JwtService;
 import com.umc.commonplant.domain.user.dto.UserDto;
 import com.umc.commonplant.domain.user.entity.User;
-import com.umc.commonplant.domain.user.service.OAuthService;
 import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.global.dto.JsonResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class UserController {
     private final UserService userService;
-    private final OAuthService oAuthService;
     private final JwtService jwtService;
 
     @PostMapping("/user") //join
@@ -26,14 +24,6 @@ public class UserController {
         String token = userService.joinUser(req, image);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "join", token));
-    }
-    @GetMapping("/login/{provider}")
-    public ResponseEntity<JsonResponse> login(@RequestParam("accessToken") String accessToken, @PathVariable String provider){
-        log.info("accessToken" + accessToken);
-//        System.out.println("accessToken: " + accessToken);
-        String token = oAuthService.oAuthLogin(accessToken, provider);
-
-        return ResponseEntity.ok(new JsonResponse(true, 200, "login", token));
     }
     @GetMapping("/user/{name}") // 회원정보 조회
     public ResponseEntity<JsonResponse> getUser(@PathVariable String name){
