@@ -99,4 +99,25 @@ public class PlaceContoller implements PlaceSwagger{
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getMyGarden", mainPage));
     }
+
+    // 사용자가 속한 장소 리스트
+    @GetMapping("/user")
+    public ResponseEntity<JsonResponse> getPlaceBelongUser(){
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        List<PlaceDto.getPlaceBelongUser> placeList = placeService.getPlaceBelongUser(user);
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceBelongUser",placeList));
+    }
+
+    // 친구 리스트 조회
+    @GetMapping("/{code}/friends")
+    public ResponseEntity<JsonResponse> getPlaceFriends(@PathVariable String code){
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        placeService.userOnPlace(user, code);
+        List<PlaceDto.getPlaceFriends> userList = placeService.getPlaceFriends(code);
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceFriends", userList));
+    }
 }

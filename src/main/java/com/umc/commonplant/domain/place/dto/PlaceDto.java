@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PlaceDto {
@@ -99,4 +100,28 @@ public class PlaceDto {
         private List<getPlaceListRes> placeList;
         private List<PlantDto.getPlantListRes> plantList;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getPlaceBelongUser {
+        private String imgUrl;
+        private String name;
+        private LocalDateTime createdAt;
+    }
+
+    public static class getPlaceFriends {
+        private boolean isLeader = false;
+        private String image;
+        private String name;
+
+        public getPlaceFriends(String image, String name) {
+            this.image = image;
+            this.name = name;
+        }
+
+        public void setLeader(boolean leader) {
+            isLeader = leader;
+        }
+    }
+
 }

@@ -2,6 +2,7 @@ package com.umc.commonplant.domain.user.service;
 
 import com.google.cloud.grpc.BaseGrpcServiceException;
 import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.domain.image.service.ImageService;
 import com.umc.commonplant.domain.user.dto.UserDto;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.repository.UserRepository;
@@ -21,9 +22,10 @@ import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final ImageService imageService;
 
-    public User getUser(String name){ // User 조회
-        return userRepository.findByname(name).orElseThrow(() -> new BadRequestException((NOT_FOUND_USER)));
+    public User getUser(String uuid){ // User 조회
+        return userRepository.findByUuid(uuid).orElseThrow(() -> new BadRequestException((NOT_FOUND_USER)));
     }
     public User saveUser(UserDto.join req){
         User user = User.builder()
@@ -39,11 +41,11 @@ public class UserService {
         }else{
             //join
             String uuid = UuidUtil.generateType1UUID();
-            //String imageUrl = firebaseService.uploadFiles(uuid, image);
+            String imageUrl = imageService.saveImage(image);
 
             User user = User.builder()
                     .name(req.getName())
-                    //.imgUrl(imageUrl)
+                    .imgUrl(imageUrl)
                     .uuid(uuid)
                     .email(req.getEmail())
                     .provider(req.getProvider()).
@@ -61,6 +63,10 @@ public class UserService {
         if(name.length() < 2 || name.length() > 10)
             throw new BadRequestException(NOT_VALID_LENGTH);
         return nameDuplicate;
+    }
+
+    public User getUserByName(String name){
+        return userRepository.findByname(name).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
     }
 
 }

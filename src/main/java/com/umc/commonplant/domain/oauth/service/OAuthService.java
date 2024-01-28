@@ -1,11 +1,13 @@
-package com.umc.commonplant.domain.user.service;
+package com.umc.commonplant.domain.oauth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc.commonplant.domain.Jwt.JwtService;
-import com.umc.commonplant.domain.user.dto.KakaoProfile;
+import com.umc.commonplant.domain.oauth.dto.KakaoProfile;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.repository.UserRepository;
+import com.umc.commonplant.global.exception.BadRequestException;
+import com.umc.commonplant.global.exception.ErrorResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+
+import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 
 @Slf4j
 @Service
@@ -29,12 +34,13 @@ public class OAuthService {
         String email = "";
         email = kakaoLogin(accessToken);
 
-        if(userRepository.countUserByEmail(email, provider) > 0){
+        if(userRepository.countUserByEmail(email, provider) > 0){ // 로그인 성공
             User user = userRepository.findByEmail(email, provider);
             String token = jwtService.createToken(user.getUuid());
             return token;
-        }else{
-            throw new IllegalArgumentException(email);
+        }
+        else{
+            return null;
         }
     }
     public String kakaoLogin(String accessToken){

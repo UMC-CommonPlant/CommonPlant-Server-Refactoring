@@ -33,9 +33,6 @@ public class PlantController {
     @PostMapping("/plant/add")
     public ResponseEntity<JsonResponse> createPlant(@RequestPart("plant") PlantDto.createPlantReq createPlantReq,
                                                     @RequestPart("image") MultipartFile file) {
-
-        // log.info("=============CREATE PLANT===============");
-
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -50,9 +47,6 @@ public class PlantController {
      */
     @GetMapping("/plant/{plantIdx}")
     public ResponseEntity<JsonResponse> getPlantCard(@PathVariable Long plantIdx) {
-
-        // log.info("=============GET PLANT===============");
-
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -68,9 +62,6 @@ public class PlantController {
      */
     @GetMapping("/user/plantList")
     public ResponseEntity<JsonResponse> getPlantList() {
-
-        // log.info("=============GET PLANT LIST===============");
-
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -86,9 +77,6 @@ public class PlantController {
 //     */
 //    @GetMapping("/place/plantList/{placeCode}")
 //    public ResponseEntity<JsonResponse> getMyGardenPlantList(@PathVariable String placeCode) {
-//
-//        // log.info("=============GET PLANT LIST===============");
-//
 //        String uuid = jwtService.resolveToken();
 //        User user = userService.getUser(uuid);
 //
@@ -107,24 +95,20 @@ public class PlantController {
      */
     @PutMapping("/plant/update/wateredDate/{plantIdx}")
     public ResponseEntity<JsonResponse> updateWateredDate(@PathVariable Long plantIdx){
-
-        // System.out.println("=============UPDATE PLANT WATERED DATE===============");
-
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        String nickname = plantService.updateWateredDate(plantIdx, user);
+        String nickname = plantService.updateWateredDate(user, plantIdx);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "updateWateredDate", nickname));
     }
 
     /**
      * [GET] /plant/update
-     * @return 수정할 식물의 애칭
+     * @return 수정하기 전 식물의 애칭
      */
     @GetMapping("/plant/update/{plantIdx}")
     public ResponseEntity<JsonResponse> getUpdatedPlant(@PathVariable Long plantIdx){
-
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -141,15 +125,27 @@ public class PlantController {
     public ResponseEntity<JsonResponse> updatePlant(@PathVariable Long plantIdx,
                                                     @RequestPart("nickname") String nickname,
                                                     @RequestPart("image") MultipartFile file){
-
-        // log.info("=============UPDATE PLANT===============");
-
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        String updatedPlant = plantService.updatePlant(plantIdx, nickname, file);
+        String updatedPlant = plantService.updatePlant(user, plantIdx, nickname, file);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "updatePlant", updatedPlant));
+    }
+
+    /**
+     * [DELETE] /plant/delete
+     * @param plantIdx
+     * @return 삭제한 식물의 닉네임
+     */
+    @DeleteMapping("/plant/delete/{plantIdx}")
+    public ResponseEntity<JsonResponse> deletePlant(@PathVariable Long plantIdx){
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        String deletedPlant = plantService.deletePlant(user, plantIdx);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "deletePlant", deletedPlant));
     }
 
 }
