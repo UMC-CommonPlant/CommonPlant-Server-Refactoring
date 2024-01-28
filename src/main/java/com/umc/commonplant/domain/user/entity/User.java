@@ -1,18 +1,25 @@
 package com.umc.commonplant.domain.user.entity;
 
 import com.umc.commonplant.domain.BaseTime;
+import com.umc.commonplant.domain.user.Role;
+import com.umc.commonplant.global.security.UserDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Table(name = "user")
 @NoArgsConstructor
 @Entity
-public class User extends BaseTime {
+public class User extends BaseTime implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_idx")
@@ -45,6 +52,20 @@ public class User extends BaseTime {
     @Column(name = "uuid", nullable = false)
     private String uuid;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+
+        for(Role role : Role.values()){
+            authorities.add(new SimpleGrantedAuthority(role.getKey()));
+        }
+        return authorities;
+    }
+
     @Builder
     public User(String name, String email, String provider, String imgUrl, String uuid){
         this.name = name;
@@ -52,16 +73,20 @@ public class User extends BaseTime {
         this.provider = provider;
         this.imgUrl = imgUrl;
         this.uuid = uuid;
+        this.role = Role.USER;
     }
     // Set Profile Image
     public void setImgUrl(String imgUrl){
         this.imgUrl = imgUrl;
     }
     // Update User name
-    public User update(String name){
+    public User update(String name) {
         this.name = name;
 
         return this;
+    }
+    public String getRolekey(){
+        return Role.USER.getKey();
     }
 
 }
