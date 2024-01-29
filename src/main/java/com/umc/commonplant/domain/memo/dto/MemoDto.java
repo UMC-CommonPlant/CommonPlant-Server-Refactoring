@@ -3,6 +3,7 @@ package com.umc.commonplant.domain.memo.dto;
 import com.umc.commonplant.domain.memo.entity.Memo;
 import com.umc.commonplant.domain.plant.entity.Plant;
 import com.umc.commonplant.domain2.info.entity.Info;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,10 @@ public class MemoDto {
     @NoArgsConstructor
     @Data
     public static class MemoRequest {
+
+        @Schema(description = "메모를 작성할 식물 index", example = "1")
         private Long plant_idx;
+        @Schema(description = "메모 내용", example = "test")
         private String content;
 
         @Builder
@@ -28,9 +32,14 @@ public class MemoDto {
     @NoArgsConstructor
     @Data
     public static class MemoUpdateRequest {
+
+        @Schema(description = "수정할 메모의 index", example = "1")
         private Long memo_idx;
+        @Schema(description = "수정할 메모가 포함된 식물 index", example = "1")
         private Long plant_idx;
+        @Schema(description = "메모 내용", example = "test")
         private String content;
+        @Schema(description = "메모 이미지", example = "메모의 이미지를 수정하지 않고 유지하기 위해 전송하는 이전 메모 이미지 url")
         private String imgUrl;
 
         @Builder
