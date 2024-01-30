@@ -9,6 +9,7 @@ import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.global.dto.JsonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class PlantController {
+public class PlantController implements PlantSwagger {
 
     private final UserService userService;
     private final JwtService jwtService;
@@ -30,7 +31,7 @@ public class PlantController {
      * [POST] /plant/add
      * @return 추가한 식물의 애칭
      */
-    @PostMapping("/plant/add")
+    @PostMapping(value = "/plant/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<JsonResponse> createPlant(@RequestPart("plant") PlantDto.createPlantReq createPlantReq,
                                                     @RequestPart("image") MultipartFile file) {
         String uuid = jwtService.resolveToken();
