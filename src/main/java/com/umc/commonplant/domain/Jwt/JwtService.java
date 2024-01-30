@@ -105,12 +105,10 @@ public class JwtService {
     // 토큰 기반으로 인증정보를 가져오는 메서드
     public Authentication getAuthentication(String token){
         Claims claims = getClaims(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
 
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-//        return new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(claims.getSubject(),
-//                "", authorities), token, authorities);
+        return new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(claims.getSubject(),
+                "", authorities), token, authorities);
     }
     // 토큰 기반으로 유저 ID를 가져오는 메서드
     public Long getUserId(String token){
