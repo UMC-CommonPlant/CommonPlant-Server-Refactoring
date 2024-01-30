@@ -3,6 +3,7 @@ package com.umc.commonplant.domain.user.service;
 import com.google.cloud.grpc.BaseGrpcServiceException;
 import com.umc.commonplant.domain.Jwt.JwtService;
 import com.umc.commonplant.domain.image.service.ImageService;
+import com.umc.commonplant.domain.user.Role;
 import com.umc.commonplant.domain.user.dto.UserDto;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.repository.UserRepository;
@@ -48,8 +49,8 @@ public class UserService {
                     .imgUrl(imageUrl)
                     .uuid(uuid)
                     .email(req.getEmail())
-                    .provider(req.getProvider()).
-                    build();
+                    .provider(req.getProvider())
+                    .build();
             userRepository.save(user);
 
             return jwtService.createToken(user.getUuid());

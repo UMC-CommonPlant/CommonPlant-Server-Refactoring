@@ -1,8 +1,8 @@
 package com.umc.commonplant.domain.user.entity;
 
 import com.umc.commonplant.domain.BaseTime;
+import com.umc.commonplant.domain.oauth.SocialType;
 import com.umc.commonplant.domain.user.Role;
-import com.umc.commonplant.global.security.UserDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -52,19 +51,30 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "uuid", nullable = false)
     private String uuid;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private Role role;
-
+    //권한반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-
-        for(Role role : Role.values()){
-            authorities.add(new SimpleGrantedAuthority(role.getKey()));
-        }
-        return authorities;
+        return List.of(new SimpleGrantedAuthority("user"));
     }
+    // 사용자 id를 반환(고유한 값)
+    @Override
+    public String getUsername(){return email;}
+    @Override
+    public boolean isAccountNonLocked(){
+        // 계정 잠금되있는지 확인하는 로직
+        return true; // true -> 잠금되지 않았음
+    }
+    @Override
+    public boolean isAccountNonExpired(){
+        return true;
+    }
+    //계정 사용가능 여부 반환
+    @Override
+    public boolean isEnabled(){
+        // 계정이 사용가능한지 확인하는 로직
+        return true; // true -> 사용가능
+    }
+
 
     @Builder
     public User(String name, String email, String provider, String imgUrl, String uuid){
@@ -73,7 +83,6 @@ public class User extends BaseTime implements UserDetails {
         this.provider = provider;
         this.imgUrl = imgUrl;
         this.uuid = uuid;
-        this.role = Role.USER;
     }
     // Set Profile Image
     public void setImgUrl(String imgUrl){
@@ -84,9 +93,6 @@ public class User extends BaseTime implements UserDetails {
         this.name = name;
 
         return this;
-    }
-    public String getRolekey(){
-        return Role.USER.getKey();
     }
 
 }
