@@ -29,8 +29,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("FamilyMoments API Document")
-                .description("FamilyMoments 2 API 명세서")
-                .version("0.4.2");
+                .title("Common Plant API Document")
+                .description("Common Plant API 명세서")
+                .version("Version 1");
     }
 }

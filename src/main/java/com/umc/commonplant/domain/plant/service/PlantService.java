@@ -332,7 +332,7 @@ public class PlantService {
      * @return
      */
     @Transactional
-    public String updatePlant(User user, Long plantIdx, String nickname, MultipartFile plantImage) {
+    public String updatePlant(User user, Long plantIdx, PlantDto.updatePlantReq req, MultipartFile plantImage) {
 
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));
@@ -344,10 +344,10 @@ public class PlantService {
         // TODO: 식물의 애칭
         String plantNickname = null;
 
-        if (nickname.isBlank()) {
+        if (req.getNickname().isBlank()) {
             throw new BadRequestException(ErrorResponseStatus.NO_PLANT_NICKNAME);
-        } else if (nickname.length() <= 10) {
-            plantNickname = nickname;
+        } else if (req.getNickname().length() <= 10) {
+            plantNickname = req.getNickname();
         } else {
             throw new BadRequestException(ErrorResponseStatus.LONG_PLANT_NICKNAME);
         }
