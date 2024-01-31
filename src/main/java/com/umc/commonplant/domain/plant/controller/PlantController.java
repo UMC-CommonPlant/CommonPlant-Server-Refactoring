@@ -122,14 +122,14 @@ public class PlantController implements PlantSwagger {
      * [PUT] /plant/update
      * @return 수정한 식물의 애칭
      */
-    @PutMapping("/plant/update/{plantIdx}")
+    @PutMapping(value = "/plant/update/{plantIdx}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<JsonResponse> updatePlant(@PathVariable Long plantIdx,
-                                                    @RequestPart("nickname") String nickname,
+                                                    @RequestPart("plant") PlantDto.updatePlantReq updatePlantReq,
                                                     @RequestPart("image") MultipartFile file){
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        String updatedPlant = plantService.updatePlant(user, plantIdx, nickname, file);
+        String updatedPlant = plantService.updatePlant(user, plantIdx, updatePlantReq, file);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "updatePlant", updatedPlant));
     }

@@ -79,7 +79,7 @@ public interface PlantSwagger {
                     name = "nickname",
                     description = "식물의 새로운 닉네임",
                     required = true
-            ) @RequestPart("nickname") String nickname,
+            ) @RequestPart("plant") PlantDto.updatePlantReq updatePlantReq,
             @Parameter(
                     name = "image",
                     description = "식물의 새로운 이미지",

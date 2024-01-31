@@ -120,12 +120,12 @@ public class PlantDto {
         }
     }
 
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    @Data
-//    public static class updatePlantReq{
-//        private String nickname;
-//    }
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class updatePlantReq{
+        private String nickname;
+    }
 
     /**
      * 식물 수정할 때 불러올 화면
