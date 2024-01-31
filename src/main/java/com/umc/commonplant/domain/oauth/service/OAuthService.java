@@ -2,12 +2,10 @@ package com.umc.commonplant.domain.oauth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.global.Jwt.JwtService;
 import com.umc.commonplant.domain.oauth.dto.KakaoProfile;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.repository.UserRepository;
-import com.umc.commonplant.global.exception.BadRequestException;
-import com.umc.commonplant.global.exception.ErrorResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -18,9 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-
-import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 
 @Slf4j
 @Service

@@ -1,4 +1,4 @@
-package com.umc.commonplant.domain.Jwt;
+package com.umc.commonplant.global.Jwt;
 
 import com.umc.commonplant.domain.user.repository.UserRepository;
 import com.umc.commonplant.global.exception.BadRequestException;
@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,7 +15,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -27,7 +25,6 @@ import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 @Slf4j
 public class JwtService {
     private String secretKey= JwtSecret.SECRET;
-    private static final String BEARER = JwtSecret.BEARER;
     private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;
 

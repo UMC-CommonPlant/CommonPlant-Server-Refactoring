@@ -1,6 +1,6 @@
 package com.umc.commonplant.domain.memo.controller;
 
-import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.global.Jwt.JwtService;
 import com.umc.commonplant.domain.memo.dto.MemoDto;
 import com.umc.commonplant.domain.memo.service.MemoService;
 import com.umc.commonplant.domain.user.entity.User;

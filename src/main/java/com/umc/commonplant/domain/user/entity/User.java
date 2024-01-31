@@ -1,9 +1,6 @@
 package com.umc.commonplant.domain.user.entity;
 
 import com.umc.commonplant.domain.BaseTime;
-import com.umc.commonplant.domain.oauth.SocialType;
-import com.umc.commonplant.domain.user.Role;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

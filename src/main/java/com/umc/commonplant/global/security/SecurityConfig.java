@@ -1,21 +1,26 @@
-package com.umc.commonplant.global.config;
+package com.umc.commonplant.global.security;
 
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
-@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    // 스프링 시큐리티 기능 비활성화
+    @Bean
+    public WebSecurityCustomizer configure(){
+        return(web) -> web.ignoring()
+                .requestMatchers(new AntPathRequestMatcher("/static**"));
+    }
     // 특정 Http 요청에 대한 웹 기반 보안 구성
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -28,7 +33,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/info/**"),
                                 new AntPathRequestMatcher("/word/**")
                         ).permitAll()
-                .anyRequest().authenticated())
+                .anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }

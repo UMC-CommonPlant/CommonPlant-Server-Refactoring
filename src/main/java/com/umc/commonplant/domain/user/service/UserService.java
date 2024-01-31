@@ -1,9 +1,7 @@
 package com.umc.commonplant.domain.user.service;
 
-import com.google.cloud.grpc.BaseGrpcServiceException;
-import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.global.Jwt.JwtService;
 import com.umc.commonplant.domain.image.service.ImageService;
-import com.umc.commonplant.domain.user.Role;
 import com.umc.commonplant.domain.user.dto.UserDto;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.repository.UserRepository;
@@ -13,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 

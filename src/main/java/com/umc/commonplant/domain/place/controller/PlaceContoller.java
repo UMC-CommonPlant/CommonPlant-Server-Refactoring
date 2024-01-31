@@ -1,6 +1,6 @@
 package com.umc.commonplant.domain.place.controller;
 
-import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.global.Jwt.JwtService;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.service.PlaceService;
 import com.umc.commonplant.domain.plant.service.PlantService;
