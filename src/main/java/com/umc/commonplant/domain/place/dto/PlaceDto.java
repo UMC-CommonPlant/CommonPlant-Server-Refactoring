@@ -2,6 +2,7 @@ package com.umc.commonplant.domain.place.dto;
 
 import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.plant.dto.PlantDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +16,11 @@ public class PlaceDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
+    @Schema(description = "장소 생성 관련 Request")
     public static class createPlaceReq{
+        @Schema(description = "장소 이름" , example = "우리집 거실")
         private String name;
+        @Schema(description = "장소 주소" , example = "서울특별시 노원구 광운로 20")
         private String address;
     }
 
@@ -62,7 +66,9 @@ public class PlaceDto {
     @AllArgsConstructor
     @Data
     public static class newFriendsReq{
+        @Schema(description = "유저 이름" , example = "user1")
         private String name;
+        @Schema(description = "장소 코드" , example = "vErDfX")
         private String code;
     }
 
@@ -70,6 +76,7 @@ public class PlaceDto {
     @AllArgsConstructor
     @Data
     public static class getFriendsReq{
+        @Schema(description = "유저 이름" , example = "user1")
         private String name;
     }
     @AllArgsConstructor
@@ -103,12 +110,17 @@ public class PlaceDto {
 
     @NoArgsConstructor
     @AllArgsConstructor
+    @Data
     public static class getPlaceBelongUser {
-        private String imgUrl;
         private String name;
+        private String imgUrl;
         private LocalDateTime createdAt;
     }
 
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
     public static class getPlaceFriends {
         private boolean isLeader = false;
         private String image;
@@ -123,5 +135,6 @@ public class PlaceDto {
             isLeader = leader;
         }
     }
+
 
 }
