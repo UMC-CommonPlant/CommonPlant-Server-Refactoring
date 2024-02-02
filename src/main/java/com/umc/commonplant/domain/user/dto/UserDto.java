@@ -1,6 +1,7 @@
 package com.umc.commonplant.domain.user.dto;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +16,11 @@ public class UserDto {
     @AllArgsConstructor
     @Data
     public static class join{
+        @Schema(description = "회원가입할 사용자 email", example= "test@test.com")
         private String email;
+        @Schema(description = "회원가입할 사용자 이름", example= "커먼")
         private  String name;
+        @Schema(description = "소셜로그인", example = "kakao")
         private String provider;
     }
     @NotBlank(message = "사용할 이름을 입력해주세요.")
