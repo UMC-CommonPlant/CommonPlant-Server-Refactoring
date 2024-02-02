@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class OAuthController {
+public class OAuthController implements OAuthSwagger{
     private final OAuthService oAuthService;
 
     @GetMapping("/login/{provider}")
