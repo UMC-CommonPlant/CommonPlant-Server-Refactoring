@@ -8,8 +8,10 @@ import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.domain.weather.service.WeatherService;
 import com.umc.commonplant.global.dto.JsonResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,8 +33,9 @@ public class PlaceContoller implements PlaceSwagger{
     private final PlantService plantService;
 
     //장소 추가
-    @PostMapping("/create")
-    public ResponseEntity<JsonResponse> createPlace(@RequestPart("place") PlaceDto.createPlaceReq req, @RequestPart("image") MultipartFile image)
+    @PostMapping(value = "/create",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JsonResponse> createPlace(@RequestPart("place") PlaceDto.createPlaceReq req, @RequestPart(value = "image", required = false) MultipartFile image)
     {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
@@ -71,17 +74,17 @@ public class PlaceContoller implements PlaceSwagger{
         return ResponseEntity.ok(new JsonResponse(true, 200, "newFriend", placeCode));
     }
 
-    //친구 검색
-    @GetMapping("/friends")
-    public ResponseEntity<JsonResponse> getFriends(@RequestBody PlaceDto.getFriendsReq req){
-        String uuid = jwtService.resolveToken();
-        User user = userService.getUser(uuid);
-
-        String inputName = req.getName();
-        Optional<User> users = placeService.getFriends(inputName);
-
-        return ResponseEntity.ok(new JsonResponse(true, 200, "getFriends", users));
-    }
+//    //친구 검색
+//    @GetMapping("/friends")
+//    public ResponseEntity<JsonResponse> getFriends(@RequestBody PlaceDto.getFriendsReq req){
+//        String uuid = jwtService.resolveToken();
+//        User user = userService.getUser(uuid);
+//
+//        String inputName = req.getName();
+//        Optional<User> users = placeService.getFriends(inputName);
+//
+//        return ResponseEntity.ok(new JsonResponse(true, 200, "getFriends", users));
+//    }
     // 메인페이지
     @GetMapping("/myGarden")
     public ResponseEntity<JsonResponse> getMyGarden(){
@@ -96,7 +99,6 @@ public class PlaceContoller implements PlaceSwagger{
         //mainpage
         PlaceDto.getMainPage mainPage = new PlaceDto.getMainPage(name, placeList, plantList);
 
-
         return ResponseEntity.ok(new JsonResponse(true, 200, "getMyGarden", mainPage));
     }
 
@@ -106,8 +108,9 @@ public class PlaceContoller implements PlaceSwagger{
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        List<PlaceDto.getPlaceBelongUser> placeList = placeService.getPlaceBelongUser(user);
-        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceBelongUser",placeList));
+        List<PlaceDto.getPlaceBelongUser> belongList = placeService.getPlaceBelongUser(user);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceBelongUser",belongList));
     }
 
     // 친구 리스트 조회
@@ -118,6 +121,7 @@ public class PlaceContoller implements PlaceSwagger{
 
         placeService.userOnPlace(user, code);
         List<PlaceDto.getPlaceFriends> userList = placeService.getPlaceFriends(code);
+
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceFriends", userList));
     }
 }

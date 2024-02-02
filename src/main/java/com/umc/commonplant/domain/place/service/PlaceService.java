@@ -129,14 +129,14 @@ public class PlaceService {
         return place.getCode();
     }
 
-    public Optional<User> getFriends(String inputName) {
-        Optional<User> users = Optional.ofNullable(userRepository.findByname(inputName).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER)));
-
-        return users;
-    }
+//    public Optional<User> getFriends(String inputName) {
+//        Optional<User> users = Optional.ofNullable(userRepository.findByname(inputName).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER)));
+//
+//        return users;
+//    }
 
     public List<PlaceDto.getPlaceBelongUser> getPlaceBelongUser(User user) {
-        List<Belong> belongs = belongRepository.getPlaceBelongUser(user);
+        List<Belong> belongs = belongRepository.getPlaceBelongUser(user.getUuid());
         List<PlaceDto.getPlaceBelongUser> belongList = new ArrayList<>();
         for(Belong b : belongs){
             PlaceDto.getPlaceBelongUser belongUser = new PlaceDto.getPlaceBelongUser(
@@ -164,16 +164,19 @@ public class PlaceService {
 
     // ----- API 외 메서드 -----
 
+    // 장소에 속한 유저인지 확인하는 메서드
     public void belongUserOnPlace(User user, String code)
     {
         if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
             throw new BadRequestException(NOT_FOUND_USER_ON_PLACE);
     }
 
+    // code를 입력하여 Place 정보 반환
     public Place getPlaceByCode(String code){
         return placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
     }
 
+    // 유저가 속한 장소 리스트 반환
     public List<Place> getPlaceListByUser(User user){
         return belongRepository.getPlaceListByUser(user.getUuid());
     }
