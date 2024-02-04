@@ -3,22 +3,20 @@ package com.umc.commonplant.domain.place.controller;
 import com.umc.commonplant.domain.Jwt.JwtService;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.service.PlaceService;
+import com.umc.commonplant.domain.plant.dto.PlantDto;
 import com.umc.commonplant.domain.plant.service.PlantService;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.domain.weather.service.WeatherService;
 import com.umc.commonplant.global.dto.JsonResponse;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.umc.commonplant.domain.plant.dto.PlantDto;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Slf4j
@@ -31,6 +29,13 @@ public class PlaceContoller implements PlaceSwagger{
     private final JwtService jwtService;
     private final WeatherService weatherService;
     private final PlantService plantService;
+
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck(){
+        return ResponseEntity.ok("health check ok");
+    }
+
 
     //장소 추가
     @PostMapping(value = "/create",
