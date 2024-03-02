@@ -19,11 +19,11 @@ fi
 
 echo "> 새 애플리케이션 배포"
 
-JAR_NAME=$(ls $REPOSITORY/ | grep '*.jar' | tail -n 1)
+JAR_NAME=$(ls $REPOSITORY/ | grep 'jar' | tail -n 1)
 echo "Jar Name : $JAR_NAME"
 
 echo "$JAR_NAME 에 실행권한 추가"
-chmod +x $JAR_NAME
+chmod u+x $JAR_NAME
 
 
 JAR_PATH=$REPOSITORY/$JAR_NAME
