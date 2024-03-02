@@ -27,6 +27,11 @@ public class UserService {
     public User getUser(String uuid){ // User 조회
         return userRepository.findByUuid(uuid).orElseThrow(() -> new BadRequestException((NOT_FOUND_USER)));
     }
+
+    public User getUserByProviderId(String providerId){
+        return userRepository.findByProviderId(providerId).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+    }
+
     public User saveUser(UserDto.join req){
         User user = User.builder()
                 .name(req.getName())
@@ -48,8 +53,9 @@ public class UserService {
                     .imgUrl(imageUrl)
                     .uuid(uuid)
                     .email(req.getEmail())
-                    .provider(req.getProvider()).
-                    build();
+                    .provider(req.getProvider())
+                    .providerId(req.getProviderId())
+                    .build();
             userRepository.save(user);
 
             return jwtService.createToken(user.getUuid());
