@@ -22,6 +22,8 @@ public class UserDto {
         private  String name;
         @Schema(description = "소셜로그인", example = "kakao")
         private String provider;
+        @Schema(description = "회원번호", example = "0123456789")
+        private String providerId;
     }
     @NotBlank(message = "사용할 이름을 입력해주세요.")
     @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,10}$" , message = "이름은 특수문자를 포함하지 않은 2~10자리여야 합니다.")
