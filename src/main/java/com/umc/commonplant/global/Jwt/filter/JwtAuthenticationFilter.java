@@ -25,9 +25,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)throws
             ServletException, IOException{
         // 요청 헤더의 Authorization 키의 값 조회
-        String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
+//        String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
         // 가져온 값에서 접두사 제거
-        String token = getAccessToken(authorizationHeader);
+//        String token = getAccessToken(authorizationHeader);
+        String token = jwtService.getJwt();
         // 가져온 토큰이 유효한지 확인하고, 유효할 때는 인증정보를 설정
         if(jwtService.validateToken(token)){
             Authentication authentication = jwtService.getAuthentication(token);

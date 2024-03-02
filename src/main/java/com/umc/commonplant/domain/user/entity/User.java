@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -56,6 +57,7 @@ public class User extends BaseTime implements UserDetails {
     // 사용자 id를 반환(고유한 값)
     @Override
     public String getUsername(){return email;}
+
     @Override
     public boolean isAccountNonLocked(){
         // 계정 잠금되있는지 확인하는 로직
@@ -71,6 +73,15 @@ public class User extends BaseTime implements UserDetails {
         // 계정이 사용가능한지 확인하는 로직
         return true; // true -> 사용가능
     }
+    @Override
+    public String getPassword(){return null;}
+
+    //패스워드가 만료되었는지 여부
+    @Override
+    public boolean isCredentialsNonExpired(){
+        return true;
+    }
+
 
 
     @Builder
