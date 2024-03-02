@@ -324,6 +324,22 @@ public class PlantService {
         return plantList;
     }
 
+    @Transactional(readOnly = true)
+    public List<PlantDto.getMyCalendarPlantListRes> getPlantListByPlace(User user, String placeCode){
+
+        Place plantPlace = placeService.getPlaceByCode(placeCode);
+
+        List<Plant> plants = plantRepository.findAllByPlace(plantPlace);
+
+        List<PlantDto.getMyCalendarPlantListRes> plantList = new ArrayList<>();
+
+        for(Plant plant: plants){
+            plantList.add(new PlantDto.getMyCalendarPlantListRes(plant));
+        }
+
+        return plantList;
+    }
+
     /**
      * updatePlant: 식물 수정
      * @param plantIdx
