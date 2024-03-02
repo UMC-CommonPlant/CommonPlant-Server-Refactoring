@@ -23,7 +23,7 @@ JAR_NAME=$(ls $REPOSITORY/ | grep 'jar' | tail -n 1)
 echo "Jar Name : $JAR_NAME"
 
 echo "$JAR_NAME 에 실행권한 추가"
-chmod u+x $JAR_NAME
+sudo chmod +x $JAR_NAME
 
 
 JAR_PATH=$REPOSITORY/$JAR_NAME
