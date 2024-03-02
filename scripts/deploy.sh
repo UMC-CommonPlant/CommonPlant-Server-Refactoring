@@ -30,7 +30,7 @@ JAR_PATH=$REPOSITORY/$JAR_NAME
 echo "Jar Path : $JAR_PATH"
 
 echo "> $JAR_PATH deploy"
-nohup java -jar \
+sudo nohup java -jar \
         -Duser.timezone=Asia/Seoul \
         -Dspring.profiles.active=prod \
         $JAR_NAME >> $REPOSITORY/logs/log_$(date +\%Y\%m\%d).log 2>&1 &
