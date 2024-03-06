@@ -28,6 +28,7 @@ public class FCMMessageDto {
         private Notification notification;
         private String token;
         private Data data;
+        private Apns apns;
     }
 
     /**
@@ -53,6 +54,30 @@ public class FCMMessageDto {
     public static class Data {
         private String name;
         private String description;
+    }
+
+    /**
+     * iOS 알림 추가 설정: 소리 등등
+     */
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Aps {
+        private String sound;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Payload {
+        private Aps aps;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Apns {
+        private Payload payload;
     }
 
 }
