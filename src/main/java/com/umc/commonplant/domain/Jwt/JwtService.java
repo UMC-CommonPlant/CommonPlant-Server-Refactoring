@@ -1,10 +1,16 @@
 package com.umc.commonplant.domain.Jwt;
 
 import com.umc.commonplant.domain.user.repository.UserRepository;
+import com.umc.commonplant.domain.user.service.UserDetailService;
 import com.umc.commonplant.global.exception.BadRequestException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -13,7 +19,9 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 
 import static com.umc.commonplant.global.exception.ErrorResponseStatus.EXPIRED_JWT;
 import static com.umc.commonplant.global.exception.ErrorResponseStatus.FAILED_TO_LOGIN_JWT;
@@ -24,6 +32,7 @@ import static com.umc.commonplant.global.exception.ErrorResponseStatus.FAILED_TO
 public class JwtService {
     private String secretKey= JwtSecret.SECRET;
     private final UserRepository userRepository;
+    private final UserDetailService userDetailsService;
 
 
     //객체 초기화, secretKey를 Base64로 인코딩한다.
@@ -99,5 +108,31 @@ public class JwtService {
         return false;
     }
 
+    // 토큰 기반으로 인증정보를 가져오는 메서드
+    public Authentication getAuthentication(String token){
+//        Claims claims = getUserPk(token);
+        Claims claims = getClaims(token);
+        log.info(token);
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
+//        log.info(userDetails.getUsername());
+
+//        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(claims.getSubject(),
+                "", authorities), token, authorities);
+    }
+    public String resolveTokenForFilter(){
+        String token = getJwt();
+        validateToken(token);
+        String uuid = getUserPk(token);
+        userRepository.findByUuid(uuid).orElseThrow(()->new BadRequestException(FAILED_TO_LOGIN_JWT));
+        return token;
+    }
+    private Claims getClaims(String token){
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
 }

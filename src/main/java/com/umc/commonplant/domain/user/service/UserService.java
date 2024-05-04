@@ -66,7 +66,18 @@ public class UserService {
     }
 
     public User getUserByName(String name){
-        return userRepository.findByname(name).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+        return userRepository.findByname(name)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+    }
+
+    public User getUserByUuid(String uuid){
+        return userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+    }
+
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
     }
 
 }

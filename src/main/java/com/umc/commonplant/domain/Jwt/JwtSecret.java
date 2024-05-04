@@ -2,6 +2,8 @@ package com.umc.commonplant.domain.Jwt;
 
 import lombok.Getter;
 
+import java.time.Duration;
+
 @Getter
 public class JwtSecret {
     public static String SECRET = "commontplantcommontplantcommontplantcommontplantcommontplantcommontplantcommontplantcommontplantcommontplant";
