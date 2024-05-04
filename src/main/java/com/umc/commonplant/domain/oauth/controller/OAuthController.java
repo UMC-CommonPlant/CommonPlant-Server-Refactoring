@@ -37,8 +37,6 @@ public class OAuthController implements OAuthSwagger{
         String token = jwtService.getJwt();
         boolean isValid = jwtService.validateToken(token);
 
-        return isValid ?
-                ResponseEntity.ok(new JsonResponse(true, 200, "유효한 토큰입니다", isValid))
-                : ResponseEntity.ok(new JsonResponse(false, 2004, "토큰을 확인하세요", null));
+        return ResponseEntity.ok(new JsonResponse(true, 200, "유효한 토큰입니다", isValid));
     }
 }

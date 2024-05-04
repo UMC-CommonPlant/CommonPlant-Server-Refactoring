@@ -16,7 +16,7 @@ public class UserDto {
     @AllArgsConstructor
     @Data
     public static class join{
-        @Schema(description = "회원가입할 사용자 email", example= "test@test.com")
+        @Schema(description = "회원가입할 사용자 email", example= "common@test.com")
         private String email;
         @Schema(description = "회원가입할 사용자 이름", example= "커먼")
         private  String name;
