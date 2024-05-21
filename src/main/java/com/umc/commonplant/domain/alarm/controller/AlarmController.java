@@ -22,13 +22,14 @@ public class AlarmController {
     @PostMapping("/api/fcm")
     public ResponseEntity<ErrorResponse> pushMessage(@RequestBody FCMMessageTestDto fcmTestDto) throws IOException {
 
-        // log.info(fcmTestDto.getTargetToken() + " " +fcmTestDto.getTitle() + " " + fcmTestDto.getBody());
-        log.info(fcmTestDto.getTitle() + " " + fcmTestDto.getBody());
+        log.info(fcmTestDto.getTargetToken() + " " +fcmTestDto.getTitle() + " " + fcmTestDto.getBody());
+        // log.info(fcmTestDto.getTitle() + " " + fcmTestDto.getBody());
 
         fcmService.sendMessageTo(
-                //fcmTestDto.getTargetToken(),
+                fcmTestDto.getTargetToken(),
                 fcmTestDto.getTitle(),
-                fcmTestDto.getBody());
+                fcmTestDto.getBody()
+        );
 
         return ResponseEntity.ok().build();
     }

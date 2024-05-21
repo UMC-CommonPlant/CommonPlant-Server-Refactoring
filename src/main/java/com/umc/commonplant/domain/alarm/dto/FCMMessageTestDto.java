@@ -11,9 +11,6 @@ public class FCMMessageTestDto {
 
     private String title;
     private String body;
-    // private String targetToken;
+    private String targetToken;
 
-    public FCMMessageTestDto(){
-
-    }
 }
