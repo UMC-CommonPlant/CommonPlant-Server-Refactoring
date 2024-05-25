@@ -138,4 +138,23 @@ public class InfoDto {
         }
 
     }
+
+    @NoArgsConstructor
+    @Data
+    public static class SearchInfoWithWaterResponse {
+        private String name;
+        private String scientific_name;
+        private String imgUrl;
+
+        private Long water_day;
+
+        @Builder
+        public SearchInfoWithWaterResponse(String name, String scientific_name, String imgUrl, Long water_day) {
+            this.name = name;
+            this.scientific_name = scientific_name;
+            this.imgUrl = imgUrl;
+            this.water_day = water_day;
+        }
+
+    }
 }
