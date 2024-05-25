@@ -57,4 +57,11 @@ public class InfoController implements InfoSwagger{
         return ResponseEntity.ok(new JsonResponse(true, 200, "searchInfo", infoList));
     }
 
+    @GetMapping("/searchInfoPlus")
+    public ResponseEntity<JsonResponse> searchPlusInfo(@RequestParam("name") String name) {
+
+        List<InfoDto.SearchInfoWithWaterResponse> infoList = infoService.searchPlusInfo(name);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "searchInfo", infoList));
+    }
 }
