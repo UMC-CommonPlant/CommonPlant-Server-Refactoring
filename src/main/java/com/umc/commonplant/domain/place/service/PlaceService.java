@@ -140,8 +140,8 @@ public class PlaceService {
         List<PlaceDto.getPlaceBelongUser> belongList = new ArrayList<>();
         for(Belong b : belongs){
             PlaceDto.getPlaceBelongUser belongUser = new PlaceDto.getPlaceBelongUser(
-                    b.getPlace().getImgUrl(),
                     b.getPlace().getName(),
+                    b.getPlace().getImgUrl(),
                     b.getPlace().getCreatedAt());
             belongList.add(belongUser);
         }
@@ -162,6 +162,15 @@ public class PlaceService {
         return friends;
     }
 
+//    public String update(User user, String code, PlaceDto.updatePlaceReq req, MultipartFile image) {
+//        userOnPlace(user, code);
+//        Place oldPlace = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
+//
+//
+//    }
+
+
+
     // ----- API 외 메서드 -----
 
     // 장소에 속한 유저인지 확인하는 메서드
@@ -180,5 +189,6 @@ public class PlaceService {
     public List<Place> getPlaceListByUser(User user){
         return belongRepository.getPlaceListByUser(user.getUuid());
     }
+
 
 }

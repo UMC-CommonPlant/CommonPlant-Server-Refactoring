@@ -129,4 +129,35 @@ public class PlaceContoller implements PlaceSwagger{
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceFriends", userList));
     }
+
+    // 장소 수정
+//    @PutMapping("/update/{code}")
+//    public ResponseEntity<JsonResponse> updatePlace(@PathVariable String code,
+//                                                    @RequestPart(value = "place") PlaceDto.updatePlaceReq req,
+//                                                    @RequestPart(value = "image") MultipartFile image){
+//        String uuid = jwtService.resolveToken();
+//        User user = userService.getUser(uuid);
+//
+//        String placeCode = placeService.update(user, code, req, image);
+//        return ResponseEntity.ok(new JsonResponse(true, 200, "createPlace", placeCode));
+//
+//    }
+
+    // 장소 삭제
+    // - 장소 탈퇴시
+    //    - 팀원이 탈퇴시
+    //        - 사용자가 등록한 메모, 캘린더 일정
+    //            → 사용자 null 로 설정 후 장소에서 팀원 삭제
+    //            → 사용자 id 를 어떻게 보여줄지 벤치마킹
+    //    - 팀짱이 탈퇴시
+    //        - 팀원이 등록된 순서대로 팀짱 넘겨주기!!
+    //        - 장소 수정에서 팀장을 넘겨줄 수 있게!! (일단 디자인 반영!!)
+    //        → 모든 사용자가 장소 탈퇴시 장소는 삭제
+//    @DeleteMapping("/delete/{code}")
+//    public ResponseEntity<JsonResponse> deletePlace(@PathVariable String code){
+//
+//    }
+
+
+
 }
