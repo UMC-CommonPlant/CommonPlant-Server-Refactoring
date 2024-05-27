@@ -140,9 +140,9 @@ public class PlaceService {
         List<PlaceDto.getPlaceBelongUser> belongList = new ArrayList<>();
         for(Belong b : belongs){
             PlaceDto.getPlaceBelongUser belongUser = new PlaceDto.getPlaceBelongUser(
+                    b.getPlace().getPlaceIdx(),
                     b.getPlace().getName(),
-                    b.getPlace().getImgUrl(),
-                    b.getPlace().getCreatedAt());
+                    b.getPlace().getImgUrl());
             belongList.add(belongUser);
         }
         return belongList;
