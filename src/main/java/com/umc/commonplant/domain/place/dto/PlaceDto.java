@@ -123,7 +123,7 @@ public class PlaceDto {
     @AllArgsConstructor
     @Data
     public static class getPlaceBelongUser {
-        private Long placeId;
+        private String code;
         private String name;
         private String imgUrl;
     }
