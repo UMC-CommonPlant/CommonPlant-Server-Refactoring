@@ -46,7 +46,12 @@ public class UserService {
         }else{
             //join
             String uuid = UuidUtil.generateType1UUID();
-            String imageUrl = imageService.saveImage(image);
+            String imageUrl = "";
+            if(!image.isEmpty())
+                imageUrl = imageService.saveImage(image);
+
+//            String uuid = UuidUtil.generateType1UUID();
+//            String imageUrl = imageService.saveImage(image);
 
             User user = User.builder()
                     .name(req.getName())
