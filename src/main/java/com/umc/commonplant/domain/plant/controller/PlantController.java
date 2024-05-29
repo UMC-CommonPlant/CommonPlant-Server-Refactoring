@@ -99,28 +99,28 @@ public class PlantController implements PlantSwagger {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        String nickname = plantService.updateWateredDate(user, plantIdx);
+        PlantDto.updateWateredDateRes wateredDateUpdatedPlant = plantService.updateWateredDate(user, plantIdx);
 
-        return ResponseEntity.ok(new JsonResponse(true, 200, "updateWateredDate", nickname));
+        return ResponseEntity.ok(new JsonResponse(true, 200, "wateredDateUpdatedPlant", wateredDateUpdatedPlant));
     }
 
     /**
      * [GET] /plant/update
-     * @return 수정하기 전 식물의 애칭
+     * @return 수정하기 전 식물의 정보
      */
     @GetMapping("/plant/update/{plantIdx}")
     public ResponseEntity<JsonResponse> getUpdatedPlant(@PathVariable Long plantIdx){
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        String nickname = plantService.getUpdatedPlant(user, plantIdx).getNickname();
+        PlantDto.updatePlantRes beforeUpdatedPlant = plantService.getUpdatedPlant(user, plantIdx);
 
-        return ResponseEntity.ok(new JsonResponse(true, 200, "getUpdatedPlant", nickname));
+        return ResponseEntity.ok(new JsonResponse(true, 200, "beforeUpdatedPlant", beforeUpdatedPlant));
     }
 
     /**
      * [PUT] /plant/update
-     * @return 수정한 식물의 애칭
+     * @return 수정한 식물의 정보
      */
     @PutMapping(value = "/plant/update/{plantIdx}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<JsonResponse> updatePlant(@PathVariable Long plantIdx,
@@ -129,7 +129,7 @@ public class PlantController implements PlantSwagger {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        String updatedPlant = plantService.updatePlant(user, plantIdx, updatePlantReq, file);
+        PlantDto.updatePlantRes updatedPlant = plantService.updatePlant(user, plantIdx, updatePlantReq, file);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "updatePlant", updatedPlant));
     }
