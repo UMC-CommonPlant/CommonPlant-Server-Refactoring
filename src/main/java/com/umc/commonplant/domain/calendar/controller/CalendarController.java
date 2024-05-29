@@ -1,6 +1,7 @@
 package com.umc.commonplant.domain.calendar.controller;
 
 import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.domain.calendar.dto.CalendarDto;
 import com.umc.commonplant.domain.calendar.service.CalendarService;
 import com.umc.commonplant.domain.memo.dto.MemoDto;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
@@ -34,12 +35,19 @@ public class CalendarController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "getCalendarByDate", null));
     }
 
+    @GetMapping("/{year}/{month}")
+    public ResponseEntity<JsonResponse> getCalendarByMonth(@RequestParam("year") String year,
+                                                          @RequestParam("month") String month) {
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "getCalendarByMonth", null));
+    }
+
     @GetMapping("/place")
     public ResponseEntity<JsonResponse> getCalendarByPlace() {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        List<PlaceDto.getMyCalendarPlaceListRes> placeList = calendarService.getMyCalendarPlaceList(user);
+        List<CalendarDto.getMyCalendarPlaceListRes> placeList = calendarService.getPlaceNameListByUser(user);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceList", placeList));
     }
@@ -49,7 +57,7 @@ public class CalendarController {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        List<PlantDto.getMyCalendarPlantListRes> plantList = calendarService.getMyCalendarPlantList(user, code);
+        List<CalendarDto.getMyCalendarPlantListRes> plantList = calendarService.getPlantListByPlace(user, code);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlantList", plantList));
     }
@@ -60,7 +68,7 @@ public class CalendarController {
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        List<MemoDto.GetAllMemo> memoList = calendarService.getMyCalendarMemoList(plantIdx);
+        List<CalendarDto.getMyCalendarMemoRes> memoList = calendarService.getAllMemoByPlant(plantIdx);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getMemoList", memoList));
     }

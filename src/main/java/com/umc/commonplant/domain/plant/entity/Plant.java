@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class Plant extends BaseTime {
     @Column(nullable = false)
     private String imgUrl;
     private int waterCycle;
+    @Audited
     private LocalDateTime wateredDate;
 
     @Builder
