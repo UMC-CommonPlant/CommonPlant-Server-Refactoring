@@ -46,7 +46,12 @@ public class UserService {
         }else{
             //join
             String uuid = UuidUtil.generateType1UUID();
-            String imageUrl = imageService.saveImage(image);
+            String imageUrl = "";
+            if(!image.isEmpty())
+                imageUrl = imageService.saveImage(image);
+
+//            String uuid = UuidUtil.generateType1UUID();
+//            String imageUrl = imageService.saveImage(image);
 
             User user = User.builder()
                     .name(req.getName())
@@ -63,12 +68,12 @@ public class UserService {
     }
     @Transactional(readOnly = true)
     public boolean checkNameDuplication(String name){
-        boolean nameDuplicate = userRepository.existsByname(name);
+        boolean nameDuplicate = userRepository.existsByname(name); // 검색안되면 false (사용가능한 이름)
         if(nameDuplicate)
             throw new BadRequestException(EXIST_NAME);
         if(name.length() < 2 || name.length() > 10)
             throw new BadRequestException(NOT_VALID_LENGTH);
-        return nameDuplicate;
+        return !nameDuplicate;
     }
 
     public User getUserByName(String name){
