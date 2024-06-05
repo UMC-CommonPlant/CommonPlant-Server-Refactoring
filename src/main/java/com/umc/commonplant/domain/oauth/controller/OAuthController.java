@@ -22,6 +22,7 @@ public class OAuthController implements OAuthSwagger{
 
     @GetMapping("/login/{provider}")
     public ResponseEntity<JsonResponse> login(@RequestParam("accessToken") String accessToken, @PathVariable String provider){
+        log.info("[API] Social Login");
         log.info("accessToken : " + accessToken);
         String token = oAuthService.oAuthLogin(accessToken, provider);
         String email = oAuthService.kakaoLogin(accessToken);
@@ -34,6 +35,7 @@ public class OAuthController implements OAuthSwagger{
 
     @GetMapping("/api/token")
     public ResponseEntity<JsonResponse> validToken(){
+        log.info("[API] Validate Token");
         String token = jwtService.getJwt();
         boolean isValid = jwtService.validateToken(token);
 
