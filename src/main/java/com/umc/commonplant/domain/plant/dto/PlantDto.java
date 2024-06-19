@@ -66,6 +66,8 @@ public class PlantDto {
         private String scientificName;
         @Schema(description = "식물의 물주는 주기 (Information 에 저장된 권장 주기)", example = "10")
         private Long waterDay;
+        @Schema(description = "관리 팁", example = "물을 좋아하나 과습에 주의하세요!")
+        private String tip;
         @Schema(description = "빛의 강도", example = "밝은 곳을 좋아해요!")
         private String sunlight;
         @Schema(description = "최저 온도", example = "16")
