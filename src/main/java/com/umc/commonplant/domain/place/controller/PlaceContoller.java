@@ -41,9 +41,10 @@ public class PlaceContoller implements PlaceSwagger{
     //장소 추가
     @PostMapping(value = "/create",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JsonResponse> createPlace(@RequestPart("place") PlaceDto.createPlaceReq req, @RequestPart(value = "image", required = false) MultipartFile image)
+    public ResponseEntity<JsonResponse> createPlace(@RequestPart("place") PlaceDto.createPlaceReq req,
+                                                    @RequestPart(value = "image", required = false) MultipartFile image)
     {
-        log.info("[API] createPlace");
+        log.info("[API] createPlace" + req.toString());
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
         String placeCode = placeService.create(user, req, image);
@@ -53,7 +54,7 @@ public class PlaceContoller implements PlaceSwagger{
     @GetMapping("/{code}")
     public ResponseEntity<JsonResponse> getPlace(@PathVariable("code") String code)
     {
-        log.info("[API] getPlace");
+        log.info("[API] getPlace : "+code);
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
         placeService.userOnPlace(user, code);
@@ -65,7 +66,7 @@ public class PlaceContoller implements PlaceSwagger{
     @GetMapping("/weather/{code}")
     public ResponseEntity<JsonResponse> getPlaceWeather(@PathVariable("code") String code)
     {
-        log.info("[API] getPlaceWeather");
+        log.info("[API] getPlaceWeather : " + code);
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
         PlaceDto.getPlaceGridRes placeGrid = placeService.getPlaceGrid(user, code);
@@ -75,7 +76,7 @@ public class PlaceContoller implements PlaceSwagger{
 //    //친구 요청
     @PostMapping("/friends")
     public ResponseEntity<JsonResponse> newFriends(@RequestBody PlaceDto.newFriendsReq req){
-        log.info("[API] newFriends");
+        log.info("[API] newFriends " + req.toString());
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -128,7 +129,7 @@ public class PlaceContoller implements PlaceSwagger{
     // 친구 리스트 조회
     @GetMapping("/{code}/friends")
     public ResponseEntity<JsonResponse> getPlaceFriends(@PathVariable String code){
-        log.info("[API] getPlaceFriends");
+        log.info("[API] getPlaceFriends : " + code);
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 

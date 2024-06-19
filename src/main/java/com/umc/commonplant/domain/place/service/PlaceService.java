@@ -74,7 +74,6 @@ public class PlaceService {
         List<PlaceDto.getPlaceResUser> userList = belongRepository.getUserListByPlaceCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE))
                 .stream().map(u -> new PlaceDto.getPlaceResUser(u.getName(), u.getImgUrl())).collect(Collectors.toList());
 
-        System.out.println("placeDto");
         PlaceDto.getPlaceRes res = PlaceDto.getPlaceRes.builder()
                 .name(place.getName())
                 .address(place.getAddress())
