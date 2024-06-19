@@ -154,6 +154,12 @@ public class PlantService {
 
         // log.info("getMemoList: " + getAllMemoList);
 
+        String tip = null;
+
+        if(!infoResponse.get(0).getTip().isEmpty()) {
+            tip = infoResponse.get(0).getTip();
+        }
+
         PlantDto.getPlantRes getPlantRes = new PlantDto.getPlantRes(
                 plant.getPlantIdx(),
                 plant.getPlantName(),
@@ -165,6 +171,7 @@ public class PlantService {
                 getAllMemoList,
                 infoResponse.get(0).getScientificName(),
                 infoResponse.get(0).getWater_day(),
+                tip,
                 infoResponse.get(0).getSunlight(),
                 infoResponse.get(0).getTemp_min(),
                 infoResponse.get(0).getTemp_max(),
