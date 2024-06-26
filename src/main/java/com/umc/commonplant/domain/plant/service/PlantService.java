@@ -43,6 +43,7 @@ public class PlantService {
 
     /**
      * createPlant: 식물 추가
+     * @param user
      * @param req
      * @param plantImage
      * @return
@@ -122,8 +123,8 @@ public class PlantService {
 
     /**
      * getPlant: 식물 조회
-     * @param plantIdx
      * @param user
+     * @param plantIdx
      * @return
      */
     @Transactional
@@ -153,7 +154,14 @@ public class PlantService {
 
         // log.info("getMemoList: " + getAllMemoList);
 
+        String tip = null;
+
+        if(!infoResponse.get(0).getTip().isEmpty()) {
+            tip = infoResponse.get(0).getTip();
+        }
+
         PlantDto.getPlantRes getPlantRes = new PlantDto.getPlantRes(
+                plant.getPlantIdx(),
                 plant.getPlantName(),
                 plant.getNickname(),
                 plant.getPlace().getName(),
@@ -163,6 +171,7 @@ public class PlantService {
                 getAllMemoList,
                 infoResponse.get(0).getScientificName(),
                 infoResponse.get(0).getWater_day(),
+                tip,
                 infoResponse.get(0).getSunlight(),
                 infoResponse.get(0).getTemp_min(),
                 infoResponse.get(0).getTemp_max(),
@@ -202,12 +211,12 @@ public class PlantService {
 
     /**
      * updateWateredDate: 식물의 D-Day 업데이트
-     * @param plantIdx
      * @param user
+     * @param plantIdx
      * @return
      */
     @Transactional
-    public String updateWateredDate(User user, Long plantIdx) {
+    public PlantDto.updateWateredDateRes updateWateredDate(User user, Long plantIdx) {
 
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));
@@ -218,8 +227,14 @@ public class PlantService {
 
         // TODO: 마지막으로 물 준 날짜
         plant.setWateredDate(LocalDateTime.now());
+        plantRepository.save(plant);
 
-        return plantRepository.save(plant).getNickname();
+        Long remainderDate = getRemainderDate(plant);
+
+        return new PlantDto.updateWateredDateRes(
+                plant.getPlantIdx(),
+                remainderDate
+        );
     }
 
     /**
@@ -342,13 +357,14 @@ public class PlantService {
 
     /**
      * updatePlant: 식물 수정
+     * @param user
      * @param plantIdx
-     * @param nickname
+     * @param req
      * @param plantImage
      * @return
      */
     @Transactional
-    public String updatePlant(User user, Long plantIdx, PlantDto.updatePlantReq req, MultipartFile plantImage) {
+    public PlantDto.updatePlantRes updatePlant(User user, Long plantIdx, PlantDto.updatePlantReq req, MultipartFile plantImage) {
 
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
                 .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));
@@ -378,8 +394,13 @@ public class PlantService {
         }
 
         plant.updatePlant(imgUrl, plantNickname);
+        plantRepository.save(plant);
 
-        return plantRepository.save(plant).getNickname();
+        return new PlantDto.updatePlantRes(
+                plant.getPlantIdx(),
+                plantNickname,
+                imgUrl
+        );
     }
 
     /**
@@ -388,7 +409,7 @@ public class PlantService {
      * @param plantIdx
      * @return
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public PlantDto.updatePlantRes getUpdatedPlant(User user, Long plantIdx) {
 
         Plant plant = plantRepository.findByPlantIdx(plantIdx)
@@ -399,6 +420,7 @@ public class PlantService {
         placeService.belongUserOnPlace(user, plantPlace.getCode());
         
         return new PlantDto.updatePlantRes(
+                plant.getPlantIdx(),
                 plant.getNickname(),
                 plant.getImgUrl()
         );

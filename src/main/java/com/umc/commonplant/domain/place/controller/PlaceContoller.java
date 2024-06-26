@@ -33,6 +33,7 @@ public class PlaceContoller implements PlaceSwagger{
 
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck(){
+        log.info("[API] healthCheck");
         return ResponseEntity.ok("health check ok");
     }
 
@@ -42,6 +43,7 @@ public class PlaceContoller implements PlaceSwagger{
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JsonResponse> createPlace(@RequestPart("place") PlaceDto.createPlaceReq req, @RequestPart(value = "image", required = false) MultipartFile image)
     {
+        log.info("[API] createPlace");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
         String placeCode = placeService.create(user, req, image);
@@ -51,6 +53,7 @@ public class PlaceContoller implements PlaceSwagger{
     @GetMapping("/{code}")
     public ResponseEntity<JsonResponse> getPlace(@PathVariable("code") String code)
     {
+        log.info("[API] getPlace");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
         placeService.userOnPlace(user, code);
@@ -62,6 +65,7 @@ public class PlaceContoller implements PlaceSwagger{
     @GetMapping("/weather/{code}")
     public ResponseEntity<JsonResponse> getPlaceWeather(@PathVariable("code") String code)
     {
+        log.info("[API] getPlaceWeather");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
         PlaceDto.getPlaceGridRes placeGrid = placeService.getPlaceGrid(user, code);
@@ -71,6 +75,7 @@ public class PlaceContoller implements PlaceSwagger{
 //    //친구 요청
     @PostMapping("/friends")
     public ResponseEntity<JsonResponse> newFriends(@RequestBody PlaceDto.newFriendsReq req){
+        log.info("[API] newFriends");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -93,6 +98,7 @@ public class PlaceContoller implements PlaceSwagger{
     // 메인페이지
     @GetMapping("/myGarden")
     public ResponseEntity<JsonResponse> getMyGarden(){
+        log.info("[API] getMyGarden");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
         String name = user.getName();
@@ -110,6 +116,7 @@ public class PlaceContoller implements PlaceSwagger{
     // 사용자가 속한 장소 리스트
     @GetMapping("/user")
     public ResponseEntity<JsonResponse> getPlaceBelongUser(){
+        log.info("[API] getPlaceBelongUser");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -121,6 +128,7 @@ public class PlaceContoller implements PlaceSwagger{
     // 친구 리스트 조회
     @GetMapping("/{code}/friends")
     public ResponseEntity<JsonResponse> getPlaceFriends(@PathVariable String code){
+        log.info("[API] getPlaceFriends");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
@@ -129,4 +137,35 @@ public class PlaceContoller implements PlaceSwagger{
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceFriends", userList));
     }
+
+    // 장소 수정
+//    @PutMapping("/update/{code}")
+//    public ResponseEntity<JsonResponse> updatePlace(@PathVariable String code,
+//                                                    @RequestPart(value = "place") PlaceDto.updatePlaceReq req,
+//                                                    @RequestPart(value = "image") MultipartFile image){
+//        String uuid = jwtService.resolveToken();
+//        User user = userService.getUser(uuid);
+//
+//        String placeCode = placeService.update(user, code, req, image);
+//        return ResponseEntity.ok(new JsonResponse(true, 200, "createPlace", placeCode));
+//
+//    }
+
+    // 장소 삭제
+    // - 장소 탈퇴시
+    //    - 팀원이 탈퇴시
+    //        - 사용자가 등록한 메모, 캘린더 일정
+    //            → 사용자 null 로 설정 후 장소에서 팀원 삭제
+    //            → 사용자 id 를 어떻게 보여줄지 벤치마킹
+    //    - 팀짱이 탈퇴시
+    //        - 팀원이 등록된 순서대로 팀짱 넘겨주기!!
+    //        - 장소 수정에서 팀장을 넘겨줄 수 있게!! (일단 디자인 반영!!)
+    //        → 모든 사용자가 장소 탈퇴시 장소는 삭제
+//    @DeleteMapping("/delete/{code}")
+//    public ResponseEntity<JsonResponse> deletePlace(@PathVariable String code){
+//
+//    }
+
+
+
 }

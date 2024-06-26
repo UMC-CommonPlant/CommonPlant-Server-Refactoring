@@ -48,4 +48,8 @@ public interface InfoSwagger {
     @Operation(summary = "식물도감 검색", description = "식물 이름(또는 학술명)의 일부로 식물을 찾습니다.")
     @Parameter(name = "name", description = "식물 이름(또는 학술명)의 일부", example = "mons", required = true)
     public ResponseEntity<JsonResponse> searchInfo(@RequestParam("name") String name);
+
+    @Operation(summary = "식물도감 검색 w 물주기 정보", description = "식물 이름(또는 학술명)의 일부로 식물을 찾습니다. SearchInfo에 식물 물주기 정보가 포함된 형태입니다.")
+    @Parameter(name = "name", description = "식물 이름(또는 학술명)의 일부", example = "mons", required = true)
+    public ResponseEntity<JsonResponse> searchPlusInfo(@RequestParam("name") String name);
 }
