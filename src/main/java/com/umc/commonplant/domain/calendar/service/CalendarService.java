@@ -34,7 +34,6 @@ public class CalendarService {
 
     private final PlaceRepository placeRepository;
     private final PlantRepository plantRepository;
-    private final PlantAuditRepository plantAuditRepository;
     private final MemoRepository memoRepository;
     private final BelongRepository belongRepository;
 
