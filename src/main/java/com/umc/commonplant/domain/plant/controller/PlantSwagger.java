@@ -77,7 +77,7 @@ public interface PlantSwagger {
             ) @PathVariable Long plantIdx,
             @Parameter(
                     name = "nickname",
-                    description = "식물의 새로운 닉네임",
+                    description = "식물의 새로운 닉네임과 물 주기 기간 값",
                     required = true
             ) @RequestPart("plant") PlantDto.updatePlantReq updatePlantReq,
             @Parameter(

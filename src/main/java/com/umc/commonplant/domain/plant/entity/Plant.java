@@ -49,9 +49,10 @@ public class Plant extends BaseTime {
     /**
      * 식물 수정 API 관련 메소드
      */
-    public void updatePlant(String imgUrl, String nickname) {
+    public void updatePlant(String imgUrl, String nickname, int waterCycle) {
         this.imgUrl = imgUrl;
         this.nickname = nickname;
+        this.waterCycle = waterCycle;
     }
 
     /**

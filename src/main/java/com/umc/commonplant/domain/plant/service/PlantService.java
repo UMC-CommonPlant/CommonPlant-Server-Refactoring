@@ -91,11 +91,11 @@ public class PlantService {
             waterCycle = req.getWaterCycle();
 
             if(waterCycle.charAt(0) == 0) {
-                throw new BadRequestException(ErrorResponseStatus.REGEX_VALIDATION_ERROR);
+                throw new BadRequestException(ErrorResponseStatus.PLANT_WATERED_DATE_REGEX_VALIDATION_ERROR);
             } else if(req.getWaterCycle().matches("^[1-9]\\d*$")){
                 castedWaterCycle = Integer.parseInt(waterCycle);
             } else {
-                throw new BadRequestException(ErrorResponseStatus.REGEX_VALIDATION_ERROR);
+                throw new BadRequestException(ErrorResponseStatus.PLANT_WATERED_DATE_REGEX_VALIDATION_ERROR);
             }
         }
 
@@ -368,6 +368,24 @@ public class PlantService {
             throw new BadRequestException(ErrorResponseStatus.LONG_PLANT_NICKNAME);
         }
 
+        // TODO: 식물의 물 주기 기간
+        String waterCycle = null;
+        int castedWaterCycle = 0;
+
+        if(String.valueOf(req.getWaterCycle()).isEmpty()){
+            throw new BadRequestException(ErrorResponseStatus.EMPTY_PLANT_WATERED_DATE);
+        } else {
+            waterCycle = req.getWaterCycle();
+
+            if(waterCycle.charAt(0) == 0) {
+                throw new BadRequestException(ErrorResponseStatus.PLANT_WATERED_DATE_REGEX_VALIDATION_ERROR);
+            } else if(req.getWaterCycle().matches("^[1-9]\\d*$")){
+                castedWaterCycle = Integer.parseInt(waterCycle);
+            } else {
+                throw new BadRequestException(ErrorResponseStatus.PLANT_WATERED_DATE_REGEX_VALIDATION_ERROR);
+            }
+        }
+
         // TODO: imgUrl
         String imgUrl = null;
 
@@ -377,12 +395,13 @@ public class PlantService {
             throw new BadRequestException(ErrorResponseStatus.NO_SELECTED_PLANT_IMAGE);
         }
 
-        plant.updatePlant(imgUrl, plantNickname);
+        plant.updatePlant(imgUrl, plantNickname, castedWaterCycle);
         plantRepository.save(plant);
 
         return new PlantDto.updatePlantRes(
                 plant.getPlantIdx(),
                 plantNickname,
+                castedWaterCycle,
                 imgUrl
         );
     }
@@ -406,6 +425,7 @@ public class PlantService {
         return new PlantDto.updatePlantRes(
                 plant.getPlantIdx(),
                 plant.getNickname(),
+                plant.getWaterCycle(),
                 plant.getImgUrl()
         );
     }

@@ -27,8 +27,8 @@ public enum ErrorResponseStatus {
     NO_PLANT_NICKNAME(false, 4201, "식물의 애칭을 입력해 주세요!"),
     LONG_PLANT_NICKNAME(false, 4202, "식물의 애칭은 10자 이하로 설정해주세요!"),
     NO_SELECTED_PLANT_IMAGE(false,4203, "식물의 이미지를 선택해주세요!"),
-    REGEX_VALIDATION_ERROR(false, 4204, "정확한 물 주기 값을 입력해주세요!"),
-
+    EMPTY_PLANT_WATERED_DATE(false, 4204, "식물의 새로운 물 주기 기간을 입력해주세요!"),
+    PLANT_WATERED_DATE_REGEX_VALIDATION_ERROR(false, 4205, "정확한 물 주기 기간 값을 입력해주세요!"),
 
     // 4300 : Memo
     PLANT_NOT_FOUND(false, 4300, "등록되지 않은 식물입니다."),
