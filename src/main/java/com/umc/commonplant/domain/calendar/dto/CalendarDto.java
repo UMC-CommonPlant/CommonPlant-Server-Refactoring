@@ -1,6 +1,5 @@
 package com.umc.commonplant.domain.calendar.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.umc.commonplant.domain.plant.entity.Plant;
 import lombok.*;
 
@@ -12,14 +11,20 @@ public class CalendarDto {
     /**
      * 최종 My Calendar Response
      */
-    @AllArgsConstructor
     @NoArgsConstructor
     @Getter
     public static class getMyCalendarRes{
         private String year;
         private String month;
 
-        private List<getMyCalendarDateListRes> dateList;
+        private List<getMyCalendarEventRes> dateList;
+
+        @Builder
+        public getMyCalendarRes(String year, String month, List<getMyCalendarEventRes> dateList) {
+            this.year = year;
+            this.month = month;
+            this.dateList = dateList;
+        }
     }
 
     /**
@@ -27,9 +32,10 @@ public class CalendarDto {
      */
     @NoArgsConstructor
     @Getter
-    public static class getMyCalendarDateListRes{
-        @JsonFormat(pattern = "yyyy.MM.dd")
-        private LocalDateTime date;
+    public static class getMyCalendarEventRes {
+        private int parsedDate;
+//        @JsonFormat(pattern = "yyyy.MM.dd")
+//        private LocalDateTime date;
 
         private boolean nextWatered;
         private boolean prevWatered;
@@ -37,9 +43,9 @@ public class CalendarDto {
         private boolean writeMemo;
 
         @Builder
-        public getMyCalendarDateListRes(LocalDateTime date, boolean nextWatered, boolean prevWatered,
-                                        boolean joinPlant, boolean writeMemo) {
-            this.date = date;
+        public getMyCalendarEventRes(int parsedDate, boolean nextWatered, boolean prevWatered,
+                                     boolean joinPlant, boolean writeMemo) {
+            this.parsedDate = parsedDate;
             this.nextWatered = nextWatered;
             this.prevWatered = prevWatered;
             this.joinPlant = joinPlant;

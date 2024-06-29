@@ -2,11 +2,9 @@ package com.umc.commonplant.domain.calendar.service;
 
 import com.umc.commonplant.domain.belong.entity.BelongRepository;
 import com.umc.commonplant.domain.calendar.dto.CalendarDto;
-import com.umc.commonplant.domain.memo.dto.MemoDto;
 import com.umc.commonplant.domain.memo.entity.Memo;
 import com.umc.commonplant.domain.memo.entity.MemoRepository;
 import com.umc.commonplant.domain.memo.service.MemoService;
-import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.place.entity.PlaceRepository;
 import com.umc.commonplant.domain.place.service.PlaceService;
@@ -36,6 +34,7 @@ public class CalendarService {
 
     private final PlaceRepository placeRepository;
     private final PlantRepository plantRepository;
+    private final PlantAuditRepository plantAuditRepository;
     private final MemoRepository memoRepository;
     private final BelongRepository belongRepository;
 
@@ -49,13 +48,46 @@ public class CalendarService {
         int parsedMonth = Integer.parseInt(month);
 
         YearMonth yearMonth = YearMonth.of(parsedYear, parsedMonth);
+        int lengthOfMonth = yearMonth.lengthOfMonth();
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
         
-        LocalDateTime start = startDate.atStartOfDay();
-        LocalDateTime end = endDate.atTime(LocalTime.MAX);
+        LocalDateTime firstDate = startDate.atStartOfDay();
+        LocalDateTime lastDate = endDate.atTime(LocalTime.MAX);
 
         // TODO: 날짜 정보 별로 각 Repo에 boolean으로 접근해서 정보 설정
+        // TODO: 식물을 처음 데려온 날
+        List<LocalDateTime> createdAtOfPlantList = plantRepository.getDateListOfPlant(firstDate, lastDate);
+        List<Boolean> joinPlantList = new ArrayList<>(lengthOfMonth + 1);
+
+        for (LocalDateTime createdAt : createdAtOfPlantList) {
+            int date = createdAt.toLocalDate().getDayOfMonth();
+
+            joinPlantList.set(date, true);
+        }
+
+        // TODO: 월 정보 반환
+        List<CalendarDto.getMyCalendarEventRes> getMyCalendarEventList = new ArrayList<>(lengthOfMonth + 1);
+
+        for(int parsedDate = 1; parsedDate <= lengthOfMonth; parsedDate++){
+            CalendarDto.getMyCalendarEventRes getMyCalendarEventRes = CalendarDto.getMyCalendarEventRes.builder()
+                    .parsedDate(parsedDate)
+                    .joinPlant(joinPlantList.get(parsedDate))
+                    .prevWatered(false)
+                    .nextWatered(false)
+                    .writeMemo(false)
+                    .build();
+
+            getMyCalendarEventList.add(getMyCalendarEventRes);
+        }
+
+        CalendarDto.getMyCalendarRes getMyCalendarRes = CalendarDto.getMyCalendarRes.builder()
+                .year(year)
+                .month(month)
+                .dateList(getMyCalendarEventList)
+                .build();
+
+        return getMyCalendarRes;
     }
 
     @Transactional(readOnly = true)

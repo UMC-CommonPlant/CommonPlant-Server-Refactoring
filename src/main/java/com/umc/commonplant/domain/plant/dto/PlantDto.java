@@ -152,12 +152,14 @@ public class PlantDto {
     @NoArgsConstructor
     @Getter
     public static class getMyCalendarPlantListRes{
+        private Long plantIdx;
         private String plantName;
         private String nickname;
         private String imgUrl;
 
         @Builder
         public getMyCalendarPlantListRes(Plant plant){
+            this.plantIdx = plant.getPlantIdx();
             this.plantName = plant.getPlantName();
             this.nickname = plant.getNickname();
             this.imgUrl = plant.getImgUrl();
