@@ -390,7 +390,9 @@ public class PlantService {
         String imgUrl = null;
 
         if (plantImage.getSize() > 0) {
-            imgUrl = plant.getImgUrl();
+            imageService.deleteFileInS3(plant.getImgUrl());
+
+            imgUrl = imageService.saveImage(plantImage);
         } else {
             throw new BadRequestException(ErrorResponseStatus.NO_SELECTED_PLANT_IMAGE);
         }
