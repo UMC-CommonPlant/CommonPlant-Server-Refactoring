@@ -66,6 +66,8 @@ public class PlantDto {
         private String scientificName;
         @Schema(description = "식물의 물주는 주기 (Information 에 저장된 권장 주기)", example = "10")
         private Long waterDay;
+        @Schema(description = "관리 팁", example = "물을 좋아하나 과습에 주의하세요!")
+        private String tip;
         @Schema(description = "빛의 강도", example = "밝은 곳을 좋아해요!")
         private String sunlight;
         @Schema(description = "최저 온도", example = "16")
@@ -147,8 +149,12 @@ public class PlantDto {
     @NoArgsConstructor
     @Data
     public static class updatePlantReq{
+        @Schema(description = "수정하는 식물의 인덱스 값")
         private Long plantIdx;
+        @Schema(description = "식물의 새로운 닉네임", example = "머니볼")
         private String nickname;
+        @Schema(description = "식물의 새로운 물주기 기간 값. 입력은 문자열로 받음.", example = "15")
+        private String waterCycle;
     }
 
     /**
@@ -160,6 +166,7 @@ public class PlantDto {
     public static class updatePlantRes{
         private Long plantIdx;
         private String nickname;
+        private int waterCycle;
         private String imgUrl;
     }
 
