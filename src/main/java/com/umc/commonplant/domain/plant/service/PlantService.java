@@ -154,6 +154,9 @@ public class PlantService {
 
         // log.info("getMemoList: " + getAllMemoList);
 
+        int waterCycle = plant.getWaterCycle();
+        Long castedWaterCycle = Long.valueOf(waterCycle);
+
         String tip = null;
 
         if(!infoResponse.get(0).getTip().isEmpty()) {
@@ -170,7 +173,8 @@ public class PlantService {
                 remainderDate,
                 getAllMemoList,
                 infoResponse.get(0).getScientificName(),
-                infoResponse.get(0).getWater_day(),
+                // infoResponse.get(0).getWater_day(),
+                castedWaterCycle,
                 tip,
                 infoResponse.get(0).getSunlight(),
                 infoResponse.get(0).getTemp_min(),
