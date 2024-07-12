@@ -170,8 +170,12 @@ public class PlantDto {
     @NoArgsConstructor
     @Data
     public static class updatePlantReq{
+        @Schema(description = "수정하는 식물의 인덱스 값")
         private Long plantIdx;
+        @Schema(description = "식물의 새로운 닉네임", example = "머니볼")
         private String nickname;
+        @Schema(description = "식물의 새로운 물주기 기간 값. 입력은 문자열로 받음.", example = "15")
+        private String waterCycle;
     }
 
     /**
@@ -183,6 +187,7 @@ public class PlantDto {
     public static class updatePlantRes{
         private Long plantIdx;
         private String nickname;
+        private int waterCycle;
         private String imgUrl;
     }
 

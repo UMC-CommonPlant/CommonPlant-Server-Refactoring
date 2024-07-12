@@ -80,4 +80,10 @@ public class UserService {
         return userRepository.findByname(name).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
     }
 
+    public String getUserProfileImage(User user){
+        String userProfileImgUrl = user.getImgUrl();
+
+        return userProfileImgUrl;
+    }
+
 }
