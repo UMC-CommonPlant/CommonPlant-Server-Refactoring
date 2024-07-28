@@ -41,6 +41,19 @@ public class CalendarService {
     private final PlantService plantService;
     private final MemoService memoService;
 
+    private final AuditReader auditReader;
+
+    private List<LocalDateTime> getWateredDateByPlantIdx(Long plantIdx) {
+        List wateredDateHistory = auditReader.createQuery()
+                .forRevisionsOfEntity(Plant.class, false, true)
+                .add(AuditEntity.id().eq(plantIdx))
+                //.add(AuditEntity.property("wateredDate").hasChanged())
+                .addProjection(AuditEntity.property("wateredDate"))
+                .getResultList();
+
+        return wateredDateHistory;
+    }
+
     @Transactional(readOnly = true)
     public CalendarDto.getMyCalendarRes getMyCalendar(User user, String year, String month){
         int parsedYear = Integer.parseInt(year);
@@ -66,6 +79,31 @@ public class CalendarService {
             joinPlantList.set(date, true);
         }
 
+        // TODO: 물을 준 날
+        List<Place> placeListByUser = placeService.getPlaceListByUser(user);
+        List<PlantDto.getMyCalendarPlantListRes> myCalendarPlantList = new ArrayList<>();
+
+        for(Place place : placeListByUser) {
+            String placeCode = place.getCode();
+            myCalendarPlantList.addAll(plantService.getPlantListByPlace(user, placeCode));
+        }
+
+        List<LocalDateTime> wateredDateOfPlantList = new ArrayList<>();
+
+        for(PlantDto.getMyCalendarPlantListRes plant: myCalendarPlantList) {
+            Long plantIdx = plant.getPlantIdx();
+            List<LocalDateTime> revisionList = getWateredDateByPlantIdx(plantIdx);
+
+            wateredDateOfPlantList.addAll(revisionList);
+        }
+
+        List<Boolean> prevWateredList = new ArrayList<>(Collections.nCopies(lengthOfMonth + 1, false));
+
+        for(LocalDateTime prevWatered : wateredDateOfPlantList) {
+            int date = prevWatered.toLocalDate().getDayOfMonth();
+            prevWateredList.set(date, true);
+        }
+
         // TODO: 월 정보 반환
         List<CalendarDto.getMyCalendarEventRes> getMyCalendarEventList = new ArrayList<>();
 
@@ -73,7 +111,7 @@ public class CalendarService {
             CalendarDto.getMyCalendarEventRes getMyCalendarEventRes = CalendarDto.getMyCalendarEventRes.builder()
                     .parsedDate(parsedDate)
                     .joinPlant(joinPlantList.get(parsedDate))
-                    .prevWatered(false)
+                    .prevWatered(prevWateredList.get(parsedDate))
                     .nextWatered(false)
                     .writeMemo(false)
                     .build();
