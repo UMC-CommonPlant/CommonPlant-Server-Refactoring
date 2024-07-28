@@ -15,6 +15,8 @@ import com.umc.commonplant.domain.plant.service.PlantService;
 import com.umc.commonplant.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.query.AuditEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -47,17 +47,18 @@ public class CalendarService {
         int parsedMonth = Integer.parseInt(month);
 
         YearMonth yearMonth = YearMonth.of(parsedYear, parsedMonth);
+
         int lengthOfMonth = yearMonth.lengthOfMonth();
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
-        
+
         LocalDateTime firstDate = startDate.atStartOfDay();
         LocalDateTime lastDate = endDate.atTime(LocalTime.MAX);
 
         // TODO: 날짜 정보 별로 각 Repo에 boolean으로 접근해서 정보 설정
         // TODO: 식물을 처음 데려온 날
         List<LocalDateTime> createdAtOfPlantList = plantRepository.getDateListOfPlant(firstDate, lastDate);
-        List<Boolean> joinPlantList = new ArrayList<>(lengthOfMonth + 1);
+        List<Boolean> joinPlantList = new ArrayList<>(Collections.nCopies(lengthOfMonth + 1, false));
 
         for (LocalDateTime createdAt : createdAtOfPlantList) {
             int date = createdAt.toLocalDate().getDayOfMonth();
@@ -66,7 +67,7 @@ public class CalendarService {
         }
 
         // TODO: 월 정보 반환
-        List<CalendarDto.getMyCalendarEventRes> getMyCalendarEventList = new ArrayList<>(lengthOfMonth + 1);
+        List<CalendarDto.getMyCalendarEventRes> getMyCalendarEventList = new ArrayList<>();
 
         for(int parsedDate = 1; parsedDate <= lengthOfMonth; parsedDate++){
             CalendarDto.getMyCalendarEventRes getMyCalendarEventRes = CalendarDto.getMyCalendarEventRes.builder()
