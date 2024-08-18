@@ -148,10 +148,10 @@ public class CalendarService {
         List<LocalDateTime> nextWateredDateList = new ArrayList<>();
 
         for(LocalDateTime prevWatered : wateredDateOfPlantList) {
-            YearMonth prevWateredMonth = YearMonth.from(prevWatered);
+            YearMonth prevWateredYearMonth = YearMonth.from(prevWatered);
             int date = prevWatered.toLocalDate().getDayOfMonth();
 
-            if(prevWateredMonth.equals(yearMonth)) {
+            if(prevWateredYearMonth.equals(yearMonth)) {
                 prevWateredList.set(date, true);
             }
         }
@@ -183,10 +183,10 @@ public class CalendarService {
         }
 
         for(LocalDateTime nextWatered : nextWateredDateList) {
-            YearMonth nextWateredMonth = YearMonth.from(nextWatered);
+            YearMonth nextWateredYearMonth = YearMonth.from(nextWatered);
             int date = nextWatered.toLocalDate().getDayOfMonth();
 
-            if(nextWateredMonth.equals(yearMonth)) {
+            if(nextWateredYearMonth.equals(yearMonth)) {
                 nextWateredList.set(date, true);
             }
         }
