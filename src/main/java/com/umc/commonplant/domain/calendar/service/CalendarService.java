@@ -129,7 +129,11 @@ public class CalendarService {
 
         for(LocalDateTime prevWatered : wateredDateOfPlantList) {
             int date = prevWatered.toLocalDate().getDayOfMonth();
-            prevWateredList.set(date, true);
+            int prevWateredMonth = prevWatered.toLocalDate().getMonthValue();
+
+            if(prevWateredMonth == parsedMonth) {
+                prevWateredList.set(date, true);
+            }
         }
 
         for(int i = 0; i < lastWateredDateofPlantList.size(); i++) {
