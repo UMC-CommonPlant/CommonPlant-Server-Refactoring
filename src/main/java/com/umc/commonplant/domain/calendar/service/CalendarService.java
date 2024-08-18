@@ -13,6 +13,8 @@ import com.umc.commonplant.domain.plant.entity.Plant;
 import com.umc.commonplant.domain.plant.entity.PlantRepository;
 import com.umc.commonplant.domain.plant.service.PlantService;
 import com.umc.commonplant.domain.user.entity.User;
+import com.umc.commonplant.global.exception.BadRequestException;
+import com.umc.commonplant.global.exception.ErrorResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditReader;
@@ -20,6 +22,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -52,6 +55,18 @@ public class CalendarService {
                 .getResultList();
 
         return wateredDateHistory;
+    }
+
+    private List<LocalDateTime> getLastWateredDateByPlantIdx(Long plantIdx) {
+        List lastWateredDate = auditReader.createQuery()
+                .forRevisionsOfEntity(Plant.class, false, true)
+                .add(AuditEntity.id().eq(plantIdx))
+                .addProjection(AuditEntity.property("wateredDate"))
+                .addOrder(AuditEntity.revisionNumber().desc())
+                .setMaxResults(1)
+                .getResultList();
+
+        return lastWateredDate;
     }
 
     @Transactional(readOnly = true)
@@ -90,18 +105,66 @@ public class CalendarService {
 
         List<LocalDateTime> wateredDateOfPlantList = new ArrayList<>();
 
-        for(PlantDto.getMyCalendarPlantListRes plant: myCalendarPlantList) {
-            Long plantIdx = plant.getPlantIdx();
-            List<LocalDateTime> revisionList = getWateredDateByPlantIdx(plantIdx);
+        List<LocalDateTime> lastWateredDateofPlantList = new ArrayList<>();
+        List<Integer> waterCycleOfPlantList = new ArrayList<>();
 
-            wateredDateOfPlantList.addAll(revisionList);
+        for(PlantDto.getMyCalendarPlantListRes plantOfPlace: myCalendarPlantList) {
+            Long plantIdx = plantOfPlace.getPlantIdx();
+
+            Plant plant = plantRepository.findByPlantIdx(plantIdx)
+                    .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));;
+
+            List<LocalDateTime> wateredDateRevisionList = getWateredDateByPlantIdx(plantIdx);
+            wateredDateOfPlantList.addAll(wateredDateRevisionList);
+
+            List<LocalDateTime> lastWateredDateRevisionList = getLastWateredDateByPlantIdx(plantIdx);
+            lastWateredDateofPlantList.addAll(lastWateredDateRevisionList);
+
+            waterCycleOfPlantList.add(plant.getWaterCycle());
         }
 
         List<Boolean> prevWateredList = new ArrayList<>(Collections.nCopies(lengthOfMonth + 1, false));
+        List<Boolean> nextWateredList = new ArrayList<>(Collections.nCopies(lengthOfMonth + 1, false));
+        List<LocalDateTime> nextWateredDateList = new ArrayList<>();
 
         for(LocalDateTime prevWatered : wateredDateOfPlantList) {
             int date = prevWatered.toLocalDate().getDayOfMonth();
             prevWateredList.set(date, true);
+        }
+
+        for(int i = 0; i < lastWateredDateofPlantList.size(); i++) {
+            LocalDateTime nextWatered = lastWateredDateofPlantList.get(i);
+            Calendar calendar = Calendar.getInstance();
+            // calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH));
+            Date lastWateredDate = Timestamp.valueOf(nextWatered);
+            calendar.setTime(lastWateredDate);
+
+            Calendar limit = Calendar.getInstance();
+            limit.add(Calendar.MONTH, 2);
+            limit.set(Calendar.DAY_OF_MONTH, limit.getActualMaximum(Calendar.DAY_OF_MONTH));
+            // limit.add(Calendar.MONTH, 2);
+
+            int waterCycle = waterCycleOfPlantList.get(i);
+
+            while(calendar.before(limit)) {
+                calendar.add(Calendar.DAY_OF_MONTH, waterCycle);
+
+                if(calendar.before(limit)) {
+                    Date tempDate = calendar.getTime();
+                    LocalDateTime tempLDTime = new Timestamp(tempDate.getTime()).toLocalDateTime();
+                    nextWateredDateList.add(tempLDTime);
+                }
+            }
+
+        }
+
+        for(LocalDateTime nextWatered : nextWateredDateList) {
+            int date = nextWatered.toLocalDate().getDayOfMonth();
+            int nextWateredMonth = nextWatered.toLocalDate().getMonthValue();
+
+            if(nextWateredMonth == parsedMonth) {
+                nextWateredList.set(date, true);
+            }
         }
 
         // TODO: 월 정보 반환
@@ -112,7 +175,7 @@ public class CalendarService {
                     .parsedDate(parsedDate)
                     .joinPlant(joinPlantList.get(parsedDate))
                     .prevWatered(prevWateredList.get(parsedDate))
-                    .nextWatered(false)
+                    .nextWatered(nextWateredList.get(parsedDate))
                     .writeMemo(false)
                     .build();
 
