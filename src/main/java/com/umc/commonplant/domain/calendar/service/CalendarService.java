@@ -94,13 +94,27 @@ public class CalendarService {
         
         // TODO: 날짜 정보 별로 각 Repo에 boolean으로 접근해서 정보 설정
         // TODO: 식물을 처음 데려온 날
-        List<LocalDateTime> createdAtOfPlantList = plantRepository.getDateListOfPlant(firstDate, lastDate);
+        // List<LocalDateTime> createdAtOfPlantList = plantRepository.getDateListOfPlant(firstDate, lastDate);
         List<Boolean> joinPlantList = new ArrayList<>(Collections.nCopies(lengthOfMonth + 1, false));
+        List<LocalDateTime> createdAtOfPlantList = new ArrayList<>();
+
+        for(PlantDto.getMyCalendarPlantListRes plantOfPlace : myCalendarPlantList) {
+            Long plantIdx = plantOfPlace.getPlantIdx();
+
+            Plant plant = plantRepository.findByPlantIdx(plantIdx)
+                    .orElseThrow(() -> new BadRequestException(ErrorResponseStatus.NOT_FOUND_PLANT));;
+
+            LocalDateTime createdAt = plant.getCreatedAt();
+            createdAtOfPlantList.add(createdAt);
+        }
 
         for (LocalDateTime createdAt : createdAtOfPlantList) {
             int date = createdAt.toLocalDate().getDayOfMonth();
+            int joinPlantMonth = createdAt.toLocalDate().getMonthValue();
 
-            joinPlantList.set(date, true);
+            if (joinPlantMonth == parsedMonth) {
+                joinPlantList.set(date, true);
+            }
         }
 
         // TODO: 물을 준 날
