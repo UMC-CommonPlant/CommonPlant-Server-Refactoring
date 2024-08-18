@@ -83,6 +83,15 @@ public class CalendarService {
         LocalDateTime firstDate = startDate.atStartOfDay();
         LocalDateTime lastDate = endDate.atTime(LocalTime.MAX);
 
+        // TODO: 유저가 속한 장소 리스트
+        List<Place> placeListByUser = placeService.getPlaceListByUser(user);
+        List<PlantDto.getMyCalendarPlantListRes> myCalendarPlantList = new ArrayList<>();
+
+        for(Place place : placeListByUser) {
+            String placeCode = place.getCode();
+            myCalendarPlantList.addAll(plantService.getPlantListByPlace(user, placeCode));
+        }
+        
         // TODO: 날짜 정보 별로 각 Repo에 boolean으로 접근해서 정보 설정
         // TODO: 식물을 처음 데려온 날
         List<LocalDateTime> createdAtOfPlantList = plantRepository.getDateListOfPlant(firstDate, lastDate);
@@ -95,14 +104,6 @@ public class CalendarService {
         }
 
         // TODO: 물을 준 날
-        List<Place> placeListByUser = placeService.getPlaceListByUser(user);
-        List<PlantDto.getMyCalendarPlantListRes> myCalendarPlantList = new ArrayList<>();
-
-        for(Place place : placeListByUser) {
-            String placeCode = place.getCode();
-            myCalendarPlantList.addAll(plantService.getPlantListByPlace(user, placeCode));
-        }
-
         List<LocalDateTime> wateredDateOfPlantList = new ArrayList<>();
 
         List<LocalDateTime> lastWateredDateofPlantList = new ArrayList<>();
