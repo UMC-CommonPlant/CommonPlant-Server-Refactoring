@@ -2,6 +2,7 @@ package com.umc.commonplant.domain.calendar.service;
 
 import com.umc.commonplant.domain.belong.entity.BelongRepository;
 import com.umc.commonplant.domain.calendar.dto.CalendarDto;
+import com.umc.commonplant.domain.memo.dto.MemoDto;
 import com.umc.commonplant.domain.memo.entity.Memo;
 import com.umc.commonplant.domain.memo.entity.MemoRepository;
 import com.umc.commonplant.domain.memo.service.MemoService;
@@ -97,6 +98,7 @@ public class CalendarService {
         // List<LocalDateTime> createdAtOfPlantList = plantRepository.getDateListOfPlant(firstDate, lastDate);
         List<Boolean> joinPlantList = new ArrayList<>(Collections.nCopies(lengthOfMonth + 1, false));
         List<LocalDateTime> createdAtOfPlantList = new ArrayList<>();
+        List<MemoDto.GetAllMemo> memoList = new ArrayList<>();
 
         for(PlantDto.getMyCalendarPlantListRes plantOfPlace : myCalendarPlantList) {
             Long plantIdx = plantOfPlace.getPlantIdx();
@@ -106,6 +108,9 @@ public class CalendarService {
 
             LocalDateTime createdAt = plant.getCreatedAt();
             createdAtOfPlantList.add(createdAt);
+
+            List<MemoDto.GetAllMemo> memoOfPlantList = memoService.getAllMemoByPlant(plantIdx);
+            memoList.addAll(memoOfPlantList);
         }
 
         for (LocalDateTime createdAt : createdAtOfPlantList) {
@@ -186,6 +191,25 @@ public class CalendarService {
             }
         }
 
+        // TODO: 메모 있는 날
+        List<Boolean> writeMemoList = new ArrayList<>(Collections.nCopies(lengthOfMonth + 1, false));
+        List<LocalDateTime> createdDateOfMemoList = new ArrayList<>();
+
+        for(MemoDto.GetAllMemo memo : memoList) {
+            LocalDateTime writeMemo = memo.getCreated_at();
+
+            createdDateOfMemoList.add(writeMemo);
+        }
+
+        for(LocalDateTime writeMemo : createdDateOfMemoList) {
+            YearMonth writeMemoYearMonth = YearMonth.from(writeMemo);
+            int date = writeMemo.toLocalDate().getDayOfMonth();
+
+            if(writeMemoYearMonth.equals(yearMonth)) {
+                writeMemoList.set(date, true);
+            }
+        }
+
         // TODO: 월 정보 반환
         List<CalendarDto.getMyCalendarEventRes> getMyCalendarEventList = new ArrayList<>();
 
@@ -195,7 +219,7 @@ public class CalendarService {
                     .joinPlant(joinPlantList.get(parsedDate))
                     .prevWatered(prevWateredList.get(parsedDate))
                     .nextWatered(nextWateredList.get(parsedDate))
-                    .writeMemo(false)
+                    .writeMemo(writeMemoList.get(parsedDate))
                     .build();
 
             getMyCalendarEventList.add(getMyCalendarEventRes);
