@@ -93,7 +93,7 @@ public class PlantDto {
     }
 
     /**
-     * Main Page, My Calendar에 보여줄 Plant 리스트
+     * Main Page에 보여줄 Plant 리스트
      */
     @AllArgsConstructor
     @NoArgsConstructor
@@ -142,6 +142,27 @@ public class PlantDto {
             this.wateredDate = plant.getWateredDate();
             this.remainderDate = remainderDate;
             this.recentMemo = recentMemo;
+        }
+    }
+
+    /**
+     * My Calendar에 보여줄 Plant 리스트
+     */
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class getMyCalendarPlantListRes{
+        private Long plantIdx;
+        private String plantName;
+        private String nickname;
+        private String imgUrl;
+
+        @Builder
+        public getMyCalendarPlantListRes(Plant plant){
+            this.plantIdx = plant.getPlantIdx();
+            this.plantName = plant.getPlantName();
+            this.nickname = plant.getNickname();
+            this.imgUrl = plant.getImgUrl();
         }
     }
 
