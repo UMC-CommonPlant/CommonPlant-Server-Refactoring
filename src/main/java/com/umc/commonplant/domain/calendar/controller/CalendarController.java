@@ -35,7 +35,7 @@ public class CalendarController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "getCalendarByDate", null));
     }
 
-    @GetMapping("/month")
+    @GetMapping("/monthly")
     public ResponseEntity<JsonResponse> getCalendarByMonth(@RequestParam("year") String year,
                                                            @RequestParam("month") String month) {
         String uuid = jwtService.resolveToken();
