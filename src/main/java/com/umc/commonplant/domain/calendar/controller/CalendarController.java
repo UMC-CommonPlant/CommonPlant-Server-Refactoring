@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/calendar")
 @RequiredArgsConstructor
 @RestController
-public class CalendarController {
+public class CalendarController implements CalendarSwagger {
 
     private final CalendarService calendarService;
     private final JwtService jwtService;
