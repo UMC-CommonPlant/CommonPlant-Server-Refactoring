@@ -35,9 +35,15 @@ public class CalendarController {
         return ResponseEntity.ok(new JsonResponse(true, 200, "getCalendarByDate", null));
     }
 
+    /**
+     * [GET] 캘린더 조회 (월별)
+     * @return 월별 캘린더 정보
+     */
     @GetMapping("/monthly")
     public ResponseEntity<JsonResponse> getCalendarByMonth(@RequestParam("year") String year,
                                                            @RequestParam("month") String month) {
+        log.info("[API] getCalendarByMonth - 캘린더 조회 (월별)");
+
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
