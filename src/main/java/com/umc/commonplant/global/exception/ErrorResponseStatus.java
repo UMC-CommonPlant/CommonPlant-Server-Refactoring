@@ -58,6 +58,7 @@ public enum ErrorResponseStatus {
     // 4500 : QnA
 
     // 4600 : Calendar
+    INVALID_MONTH_VALUE(false, 4600, "유효하지 않은 값입니다."),
 
     // 4700 : Alarm
 

@@ -75,6 +75,10 @@ public class CalendarService {
         int parsedYear = Integer.parseInt(year);
         int parsedMonth = Integer.parseInt(month);
 
+        if(parsedMonth < 1 || parsedMonth > 12) {
+            throw new BadRequestException(ErrorResponseStatus.INVALID_MONTH_VALUE);
+        }
+
         YearMonth yearMonth = YearMonth.of(parsedYear, parsedMonth);
 
         int lengthOfMonth = yearMonth.lengthOfMonth();
