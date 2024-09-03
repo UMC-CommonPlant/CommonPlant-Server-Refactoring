@@ -40,4 +40,15 @@ public class UserController implements  UserSwagger{
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "사용가능한 이름입니다.", checkName));
     }
+
+    @GetMapping("/user/profileImg")
+    public ResponseEntity<JsonResponse> getUserProfileImg(){
+        log.info("[API] Get User Profile Img");
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        String profileImg = userService.getUserProfileImage(user);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "profile_img", profileImg));
+    }
 }
