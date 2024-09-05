@@ -10,6 +10,7 @@ import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.global.dto.JsonResponse;
 import io.swagger.v3.core.util.Json;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class CalendarController implements CalendarSwagger {
     private final JwtService jwtService;
     private final UserService userService;
 
+    @Operation(hidden = true)
     @GetMapping
     public ResponseEntity<JsonResponse> getCalendarByDate(@RequestParam("year") String year,
                                                           @RequestParam("month") String month,
@@ -56,6 +58,7 @@ public class CalendarController implements CalendarSwagger {
         return ResponseEntity.ok(new JsonResponse(true, 200, "getCalendarByMonth", monthlyCalendar));
     }
 
+    @Operation(hidden = true)
     @GetMapping("/place")
     public ResponseEntity<JsonResponse> getCalendarByPlace() {
         String uuid = jwtService.resolveToken();
@@ -66,6 +69,7 @@ public class CalendarController implements CalendarSwagger {
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceList", placeList));
     }
 
+    @Operation(hidden = true)
     @GetMapping("/place/plant")
     public ResponseEntity<JsonResponse> getCalendarByPlaceAndPlant(@RequestParam("code") String code) {
         String uuid = jwtService.resolveToken();
@@ -76,6 +80,7 @@ public class CalendarController implements CalendarSwagger {
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlantList", plantList));
     }
 
+    @Operation(hidden = true)
     @GetMapping("/place/plant/memo")
     public ResponseEntity<JsonResponse> getCalendarByPlaceAndPlantAndMemo(@RequestParam("code") String code,
                                                                           @RequestParam("plant") Long plantIdx) {
