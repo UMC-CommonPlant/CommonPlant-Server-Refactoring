@@ -31,6 +31,10 @@ public class CalendarController implements CalendarSwagger {
     public ResponseEntity<JsonResponse> getCalendarByDate(@RequestParam("year") String year,
                                                           @RequestParam("month") String month,
                                                           @RequestParam("day") String day) {
+        log.info("[API] getCalendarByMonth - 캘린더 조회 (일별)");
+
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "getCalendarByDate", null));
     }
