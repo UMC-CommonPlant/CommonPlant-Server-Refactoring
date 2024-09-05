@@ -52,7 +52,28 @@ public class CalendarDto {
             this.writeMemo = writeMemo;
         }
     }
-    
+
+    /**
+     * 최종 My Calendar (By Date) Response
+     */
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    public static class getMyCalendarByDateRes {
+        private int year;
+        private int month;
+        private int day;
+
+        private List<getMyCalendarPlaceListRes> placesByDate;
+
+        @Builder
+        public getMyCalendarByDateRes(int year, int month, int day){
+            this.year = year;
+            this.month = month;
+            this.day = day;
+        }
+    }
+
     /**
      * My Calendar에 보여줄 Place 리스트
      */
@@ -61,6 +82,13 @@ public class CalendarDto {
     @Getter
     public static class getMyCalendarPlaceListRes{
         private String name;
+
+        private List<getMyCalendarPlantListRes> plantsByPlace;
+
+        @Builder
+        public getMyCalendarPlaceListRes(String name){
+            this.name = name;
+        }
     }
 
     /**
@@ -70,12 +98,16 @@ public class CalendarDto {
     @NoArgsConstructor
     @Getter
     public static class getMyCalendarPlantListRes{
+        private Long plantIdx;
         private String plantName;
         private String nickname;
         private String imgUrl;
 
+        private List<getMyCalendarMemoRes> memosByPlant;
+
         @Builder
         public getMyCalendarPlantListRes(Plant plant){
+            this.plantIdx = plant.getPlantIdx();
             this.plantName = plant.getPlantName();
             this.nickname = plant.getNickname();
             this.imgUrl = plant.getImgUrl();
