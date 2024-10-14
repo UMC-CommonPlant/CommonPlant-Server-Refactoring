@@ -27,7 +27,7 @@ public class PlaceDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
-    @Schema(description = "장소 생성 관련 Request")
+    @Schema(description = "장소 수정 관련 Request")
     public static class updatePlaceReq{
         @Schema(description = "장소 이름" , example = "우리집 거실")
         private String name;
@@ -38,7 +38,7 @@ public class PlaceDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
-    @Schema(description = "장소 생성 관련 Response")
+    @Schema(description = "장소 수정 관련 Response")
     public static class updatePlaceRes{
         @Schema(description = "장소 코드" , example = "aBcDeF")
         private String code;
