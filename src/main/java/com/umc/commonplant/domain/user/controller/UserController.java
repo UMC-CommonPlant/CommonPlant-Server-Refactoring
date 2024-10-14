@@ -5,6 +5,7 @@ import com.umc.commonplant.domain.user.dto.UserDto;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.global.dto.JsonResponse;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -50,5 +51,15 @@ public class UserController implements  UserSwagger{
         String profileImg = userService.getUserProfileImage(user);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "profile_img", profileImg));
+    }
+
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<JsonResponse> deleteUser() {
+        log.info("[API] Delete User");
+        String uuid = jwtService.resolveToken();
+        userService.deleteUser(uuid);
+        System.out.println(userService.getUser(uuid));
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "delete", uuid));
     }
 }

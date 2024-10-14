@@ -50,7 +50,8 @@ public class UserService {
             if(!image.isEmpty())
                 imageUrl = imageService.saveImage(image);
 
-//            String uuid = UuidUtil.generateType1UUID();
+//            String uuid = UuidUtil.generateType
+//            1UUID();
 //            String imageUrl = imageService.saveImage(image);
 
             User user = User.builder()
@@ -84,6 +85,17 @@ public class UserService {
         String userProfileImgUrl = user.getImgUrl();
 
         return userProfileImgUrl;
+    }
+
+    public void deleteUser(String uuid) {
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+        try {
+            // 사용자 삭제
+            userRepository.delete(user);
+        } catch (Exception e) {
+            throw new BadRequestException(DELETE_ERROR);
+        }
     }
 
 }
