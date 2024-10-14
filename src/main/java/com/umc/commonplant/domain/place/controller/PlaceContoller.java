@@ -139,17 +139,17 @@ public class PlaceContoller implements PlaceSwagger{
     }
 
     // 장소 수정
-//    @PutMapping("/update/{code}")
-//    public ResponseEntity<JsonResponse> updatePlace(@PathVariable String code,
-//                                                    @RequestPart(value = "place") PlaceDto.updatePlaceReq req,
-//                                                    @RequestPart(value = "image") MultipartFile image){
-//        String uuid = jwtService.resolveToken();
-//        User user = userService.getUser(uuid);
-//
-//        String placeCode = placeService.update(user, code, req, image);
-//        return ResponseEntity.ok(new JsonResponse(true, 200, "createPlace", placeCode));
-//
-//    }
+    @PutMapping("/update/{code}")
+    public ResponseEntity<JsonResponse> updatePlace(@PathVariable String code,
+                                                    @RequestPart(value = "place") PlaceDto.updatePlaceReq req,
+                                                    @RequestPart(value = "image") MultipartFile image){
+        log.info("[API] updatePlace");
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        PlaceDto.updatePlaceRes updatedPlace = placeService.updatePlace(user, code, req, image);
+        return ResponseEntity.ok(new JsonResponse(true, 200, "updatePlace", updatedPlace));
+    }
 
     // 장소 삭제
     // - 장소 탈퇴시
