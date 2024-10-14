@@ -20,6 +20,13 @@ public interface PlaceSwagger {
             @Parameter(description = "장소 대표 이미지") @RequestPart(value = "image", required = false) MultipartFile image
     );
 
+    @Operation(summary = "updatePlace", description = "장소 수정")
+    public ResponseEntity<JsonResponse> updatePlace(
+            @Parameter(description = "place code", example = "XFGEDS") @PathVariable("code") String code,
+            @Parameter(description = "장소 수정 요청 정보", required = true) @RequestPart("place") PlaceDto.updatePlaceReq updatePlaceReq,
+            @Parameter(description = "장소 대표 이미지") @RequestPart(value = "image", required = false) MultipartFile image
+    );
+
     @Operation(summary = "getPlace", description = "장소 코드로 장소 정보 조회")
     public ResponseEntity<JsonResponse> getPlace(
             @Parameter(description = "place code", example = "XFGEDS") @PathVariable("code") String code
