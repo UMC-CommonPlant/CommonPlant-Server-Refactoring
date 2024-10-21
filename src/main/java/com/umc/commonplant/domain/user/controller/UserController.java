@@ -58,8 +58,16 @@ public class UserController implements  UserSwagger{
         log.info("[API] Delete User");
         String uuid = jwtService.resolveToken();
         userService.deleteUser(uuid);
-        System.out.println(userService.getUser(uuid));
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "delete", uuid));
+    }
+
+    @PostMapping(value = "/user/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JsonResponse> updateUser(@RequestPart("user") UserDto.updateUserDto req, @RequestParam(value ="image", required = false)MultipartFile image){
+        log.info("[API] Update User");
+        String uuid = jwtService.resolveToken();
+        userService.updateUser(uuid, req, image);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "update", null));
     }
 }

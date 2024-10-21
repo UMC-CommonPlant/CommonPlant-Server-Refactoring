@@ -65,4 +65,12 @@ public class User extends BaseTime {
         return this;
     }
 
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

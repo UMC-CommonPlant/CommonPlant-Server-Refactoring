@@ -98,4 +98,26 @@ public class UserService {
         }
     }
 
+    public void updateUser(String uuid, UserDto.updateUserDto req, MultipartFile image) {
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+
+        if (image.isEmpty()) {
+            if(!(req.getImageStatus()==null) && req.getImageStatus()){
+                //delete image
+                user.setImgUrl(null);
+            } else {
+                //maintain image
+
+            }
+        } else {
+            String imageUrl = imageService.saveImage(image);
+            user.setImgUrl(imageUrl);
+        }
+
+        user.setName(req.getName());
+        user.setIntroduction(req.getIntroduction());
+
+        userRepository.save(user);
+    }
 }
