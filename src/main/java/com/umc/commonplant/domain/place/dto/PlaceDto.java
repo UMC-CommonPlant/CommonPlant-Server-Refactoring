@@ -27,12 +27,27 @@ public class PlaceDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
-    @Schema(description = "장소 생성 관련 Request")
+    @Schema(description = "장소 수정 관련 Request")
     public static class updatePlaceReq{
         @Schema(description = "장소 이름" , example = "우리집 거실")
         private String name;
         @Schema(description = "장소 주소" , example = "서울특별시 노원구 광운로 20")
         private String address;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Schema(description = "장소 수정 관련 Response")
+    public static class updatePlaceRes{
+        @Schema(description = "장소 코드" , example = "aBcDeF")
+        private String code;
+        @Schema(description = "장소 이름" , example = "우리집 거실")
+        private String name;
+        @Schema(description = "장소 주소" , example = "서울특별시 노원구 광운로 20")
+        private String address;
+        @Schema(description = "장소 이미지")
+        private String imgUrl;
     }
 
     @AllArgsConstructor

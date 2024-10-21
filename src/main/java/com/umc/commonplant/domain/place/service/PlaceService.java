@@ -162,12 +162,34 @@ public class PlaceService {
         return friends;
     }
 
-//    public String update(User user, String code, PlaceDto.updatePlaceReq req, MultipartFile image) {
-//        userOnPlace(user, code);
-//        Place oldPlace = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
-//
-//
-//    }
+    @Transactional
+    public PlaceDto.updatePlaceRes updatePlace(User user, String code, PlaceDto.updatePlaceReq req, MultipartFile image) {
+        Place place = getPlaceByCode(code);
+        belongUserOnPlace(user, code);
+
+        HashMap<String, String> gridXY = openApiService.getGridXYFromAddress(req.getAddress());
+
+        String imgUrl = imageService.saveImage(image);
+
+        Place newPlaceInfo = Place.builder()
+                .name(req.getName())
+                .address(req.getAddress())
+                .code(code)
+                .gridX(gridXY.get("x"))
+                .gridY(gridXY.get("y"))
+                .imgUrl(imgUrl)
+                .owner(place.getOwner())
+                .build();
+        newPlaceInfo.setPlaceIdx(place.getPlaceIdx());
+        placeRepository.save(newPlaceInfo);
+
+        return new PlaceDto.updatePlaceRes(
+                newPlaceInfo.getCode(),
+                newPlaceInfo.getName(),
+                newPlaceInfo.getAddress(),
+                newPlaceInfo.getImgUrl()
+        );
+    }
 
 
 
