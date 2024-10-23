@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/place")
 @RequiredArgsConstructor
 @RestController
-public class PlaceContoller implements PlaceSwagger{
+public class PlaceController implements PlaceSwagger{
     private final PlaceService placeService;
     private final UserService userService;
     private final JwtService jwtService;
