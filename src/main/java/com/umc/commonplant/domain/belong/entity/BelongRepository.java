@@ -22,4 +22,7 @@ public interface BelongRepository extends JpaRepository<Belong, Long> {
 
     @Query("select b from Belong b where b.user.uuid=?1")
     List<Belong> getPlaceBelongUser(String uuid);
+
+    @Query("select b from Belong b where b.user.uuid = ?1 and b.place.code = ?2")
+    Optional<Belong> getBelongByUserAndPlace(String uuid, String code);
 }
