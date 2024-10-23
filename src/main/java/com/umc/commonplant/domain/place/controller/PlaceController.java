@@ -163,7 +163,7 @@ public class PlaceController implements PlaceSwagger{
     //        → 모든 사용자가 장소 탈퇴시 장소는 삭제
     @DeleteMapping("/delete/{code}")
     public ResponseEntity<JsonResponse> deletePlace(@PathVariable String code){
-        log.info("[API] leavePlace");
+        log.info("[API] deletePlace");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
