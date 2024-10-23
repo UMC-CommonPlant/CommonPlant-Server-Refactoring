@@ -228,6 +228,13 @@ public class PlaceService {
         }
 
         belongRepository.delete(belong);
+
+        if(belongRepository.getNumberOfUserInPlace(code) == 0) {
+            // TODO: 장소 완전 삭제
+        } else {
+            changeOwnerOfPlace(user, place.getCode());
+        }
+
     }
 
     // ----- API 외 메서드 -----
@@ -262,6 +269,19 @@ public class PlaceService {
             return unknownUser;
         } else {
             return user.get();
+        }
+    }
+
+    // 팀짱 넘겨주기
+    public void changeOwnerOfPlace(User user, String code) {
+        Place place = getPlaceByCode(code);
+
+        if(place.getOwner().equals(user)) {
+            List<User> users = belongRepository.getUserListByPlaceCodeOrderByCreatedAt(place.getCode())
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));;
+            place.setOwner(users.get(0));
+
+            placeRepository.save(place);
         }
     }
 

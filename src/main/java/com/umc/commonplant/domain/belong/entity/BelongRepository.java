@@ -12,6 +12,9 @@ public interface BelongRepository extends JpaRepository<Belong, Long> {
     @Query("select b.user from Belong b where b.place.code=?1")
     Optional<List<User>> getUserListByPlaceCode(String code);
 
+    @Query("select b.user from Belong b where b.place.code=?1 order by b.createdAt")
+    Optional<List<User>> getUserListByPlaceCodeOrderByCreatedAt(String code);
+
     @Query("select b.place from Belong b where b.user.uuid=?1")
     List<Place> getPlaceListByUser(String uuid);
 
@@ -25,4 +28,7 @@ public interface BelongRepository extends JpaRepository<Belong, Long> {
 
     @Query("select b from Belong b where b.user.uuid = ?1 and b.place.code = ?2")
     Optional<Belong> getBelongByUserAndPlace(String uuid, String code);
+
+    @Query("select count(b.belongIdx) from Belong b where b.place.code = ?1")
+    Integer getNumberOfUserInPlace(String code);
 }
