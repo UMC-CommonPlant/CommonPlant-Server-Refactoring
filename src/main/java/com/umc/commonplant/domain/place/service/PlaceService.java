@@ -229,12 +229,45 @@ public class PlaceService {
 
         belongRepository.delete(belong);
 
+        /**
+         * 장소 탈퇴 후
+         * 1. 장소에 남아있는 사람이 아무도 없게 된다면 장소 완전 삭제 (deletePlace)
+         * 2. 장소에 누군가가 남아 있다면 팀원이 등록된 순서대로 팀짱 넘겨주기 (changeOwnerOfPlace)
+         */
         if(belongRepository.getNumberOfUserInPlace(code) == 0) {
-            // TODO: 장소 완전 삭제
+            deletePlace(place.getCode());
         } else {
             changeOwnerOfPlace(user, place.getCode());
         }
+    }
 
+    /**
+     * deletePlace: 장소 완전 삭제
+     * 장소 -> 식물 -> 메모 순으로 조회 후, 메모 -> 식물 -> 장소 순으로 삭제
+     * @param code
+     */
+    @Transactional
+    public void deletePlace(String code) {
+        Place place = getPlaceByCode(code);
+        Long placeIdx = place.getPlaceIdx();
+
+        List<Long> plants = plantRepository.findAllByPlace(place).stream()
+                .map(Plant::getPlantIdx)
+                .collect(Collectors.toList());
+
+        for(Long plantIdx : plants) {
+            List<Memo> memos = memoRepository.findByPlantIdx(plantIdx);
+
+            for(Memo memo : memos) {
+                Long memoIdx = memo.getMemoIdx();
+
+                memoRepository.deleteById(memoIdx);
+            }
+
+            plantRepository.deleteById(plantIdx);
+        }
+
+        placeRepository.deleteById(placeIdx);
     }
 
     // ----- API 외 메서드 -----
