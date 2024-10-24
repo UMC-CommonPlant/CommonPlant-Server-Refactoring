@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/place")
 @RequiredArgsConstructor
 @RestController
-public class PlaceContoller implements PlaceSwagger{
+public class PlaceController implements PlaceSwagger{
     private final PlaceService placeService;
     private final UserService userService;
     private final JwtService jwtService;
@@ -161,11 +161,15 @@ public class PlaceContoller implements PlaceSwagger{
     //        - 팀원이 등록된 순서대로 팀짱 넘겨주기!!
     //        - 장소 수정에서 팀장을 넘겨줄 수 있게!! (일단 디자인 반영!!)
     //        → 모든 사용자가 장소 탈퇴시 장소는 삭제
-//    @DeleteMapping("/delete/{code}")
-//    public ResponseEntity<JsonResponse> deletePlace(@PathVariable String code){
-//
-//    }
+    @DeleteMapping("/delete/{code}")
+    public ResponseEntity<JsonResponse> deletePlace(@PathVariable String code){
+        log.info("[API] deletePlace");
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
 
+        placeService.leavePlace(user, code);
 
+        return ResponseEntity.ok(new JsonResponse(true, 200, "leavePlace", null));
+    }
 
 }

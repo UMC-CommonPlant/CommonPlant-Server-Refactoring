@@ -3,13 +3,17 @@ package com.umc.commonplant.domain.place.service;
 import com.umc.commonplant.domain.belong.entity.Belong;
 import com.umc.commonplant.domain.belong.entity.BelongRepository;
 import com.umc.commonplant.domain.image.service.ImageService;
+import com.umc.commonplant.domain.memo.entity.Memo;
+import com.umc.commonplant.domain.memo.entity.MemoRepository;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.entity.Place;
 import com.umc.commonplant.domain.place.entity.PlaceRepository;
+import com.umc.commonplant.domain.plant.entity.Plant;
 import com.umc.commonplant.domain.plant.entity.PlantRepository;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.repository.UserRepository;
 import com.umc.commonplant.global.exception.BadRequestException;
+import com.umc.commonplant.global.utils.UuidUtil;
 import com.umc.commonplant.global.utils.openAPI.OpenApiService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -35,6 +39,7 @@ public class PlaceService {
     private final OpenApiService openApiService;
     private final ImageService imageService;
     private final PlantRepository plantRepository;
+    private final MemoRepository memoRepository;
 
 
     @Transactional
@@ -191,7 +196,79 @@ public class PlaceService {
         );
     }
 
+    @Transactional
+    public void leavePlace(User user, String code) {
+        Place place = getPlaceByCode(code);
 
+        Optional<Belong> belongInfo = belongRepository.getBelongByUserAndPlace(user.getUuid(), place.getCode());
+        if(belongInfo.isEmpty()) throw new BadRequestException(NOT_FOUND_USER_ON_PLACE);
+        Belong belong = belongInfo.get();
+
+        List<Long> plants = plantRepository.findAllByPlace(place).stream()
+                .map(Plant::getPlantIdx)
+                .collect(Collectors.toList());
+
+        User unknownUser = createUnknownUser();
+
+        for(Long plantIdx : plants) {
+            List<Memo> memos = memoRepository.findByPlantIdx(plantIdx);
+
+            for(Memo memo : memos) {
+                if(memo.getUser().equals(user)) {
+                    Memo unknownMemo = Memo.builder()
+                            .memoIdx(memo.getMemoIdx())
+                            .user(unknownUser)
+                            .plant(memo.getPlant())
+                            .imgUrl(memo.getImgUrl())
+                            .content(memo.getContent())
+                            .build();
+                    memoRepository.save(unknownMemo);
+                }
+            }
+        }
+
+        belongRepository.delete(belong);
+
+        /**
+         * 장소 탈퇴 후
+         * 1. 장소에 남아있는 사람이 아무도 없게 된다면 장소 완전 삭제 (deletePlace)
+         * 2. 장소에 누군가가 남아 있다면 팀원이 등록된 순서대로 팀짱 넘겨주기 (changeOwnerOfPlace)
+         */
+        if(belongRepository.getNumberOfUserInPlace(code) == 0) {
+            deletePlace(place.getCode());
+        } else {
+            changeOwnerOfPlace(user, place.getCode());
+        }
+    }
+
+    /**
+     * deletePlace: 장소 완전 삭제
+     * 장소 -> 식물 -> 메모 순으로 조회 후, 메모 -> 식물 -> 장소 순으로 삭제
+     * @param code
+     */
+    @Transactional
+    public void deletePlace(String code) {
+        Place place = getPlaceByCode(code);
+        Long placeIdx = place.getPlaceIdx();
+
+        List<Long> plants = plantRepository.findAllByPlace(place).stream()
+                .map(Plant::getPlantIdx)
+                .collect(Collectors.toList());
+
+        for(Long plantIdx : plants) {
+            List<Memo> memos = memoRepository.findByPlantIdx(plantIdx);
+
+            for(Memo memo : memos) {
+                Long memoIdx = memo.getMemoIdx();
+
+                memoRepository.deleteById(memoIdx);
+            }
+
+            plantRepository.deleteById(plantIdx);
+        }
+
+        placeRepository.deleteById(placeIdx);
+    }
 
     // ----- API 외 메서드 -----
 
@@ -212,5 +289,33 @@ public class PlaceService {
         return belongRepository.getPlaceListByUser(user.getUuid());
     }
 
+    // 장소에서 탈퇴한 팀원을 '알 수 없음'으로 변환
+    public User createUnknownUser() {
+        Optional<User> user = userRepository.findByname("알 수 없음");
+
+        if(!userRepository.existsByname("알 수 없음")) {
+            String uuid = UuidUtil.generateType1UUID();
+            User unknownUser = new User("알 수 없음", "unknown@unknown.com", null, null, null, uuid);
+
+            userRepository.save(unknownUser);
+
+            return unknownUser;
+        } else {
+            return user.get();
+        }
+    }
+
+    // 팀짱 넘겨주기
+    public void changeOwnerOfPlace(User user, String code) {
+        Place place = getPlaceByCode(code);
+
+        if(place.getOwner().equals(user)) {
+            List<User> users = belongRepository.getUserListByPlaceCodeOrderByCreatedAt(place.getCode())
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));;
+            place.setOwner(users.get(0));
+
+            placeRepository.save(place);
+        }
+    }
 
 }
