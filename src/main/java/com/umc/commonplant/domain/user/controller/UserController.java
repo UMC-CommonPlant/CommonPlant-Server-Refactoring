@@ -1,10 +1,13 @@
 package com.umc.commonplant.domain.user.controller;
 
 import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.domain.place.entity.Place;
+import com.umc.commonplant.domain.place.service.PlaceService;
 import com.umc.commonplant.domain.user.dto.UserDto;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
 import com.umc.commonplant.global.dto.JsonResponse;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -12,11 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController implements  UserSwagger{
     private final UserService userService;
+    private final PlaceService placeService;
     private final JwtService jwtService;
 
     @PostMapping(value = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) //join
@@ -50,5 +56,29 @@ public class UserController implements  UserSwagger{
         String profileImg = userService.getUserProfileImage(user);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "profile_img", profileImg));
+    }
+
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<JsonResponse> deleteUser() {
+        log.info("[API] Delete User");
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        List<Place> placeList = placeService.getPlaceListByUser(user);
+        for (Place place : placeList) {
+            placeService.leavePlace(user, place.getCode());
+        }
+        userService.deleteUser(uuid);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "delete", uuid));
+    }
+
+    @PostMapping(value = "/user/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JsonResponse> updateUser(@RequestPart("user") UserDto.updateUserDto req, @RequestParam(value ="image", required = false)MultipartFile image){
+        log.info("[API] Update User");
+        String uuid = jwtService.resolveToken();
+        userService.updateUser(uuid, req, image);
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "update", null));
     }
 }

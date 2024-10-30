@@ -50,7 +50,8 @@ public class UserService {
             if(!image.isEmpty())
                 imageUrl = imageService.saveImage(image);
 
-//            String uuid = UuidUtil.generateType1UUID();
+//            String uuid = UuidUtil.generateType
+//            1UUID();
 //            String imageUrl = imageService.saveImage(image);
 
             User user = User.builder()
@@ -86,4 +87,37 @@ public class UserService {
         return userProfileImgUrl;
     }
 
+    public void deleteUser(String uuid) {
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+        try {
+            // 사용자 삭제
+            userRepository.delete(user);
+        } catch (Exception e) {
+            throw new BadRequestException(DELETE_ERROR);
+        }
+    }
+
+    public void updateUser(String uuid, UserDto.updateUserDto req, MultipartFile image) {
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+
+        if (image.isEmpty()) {
+            if(!(req.getImageStatus()==null) && req.getImageStatus()){
+                //delete image
+                user.setImgUrl(null);
+            } else {
+                //maintain image
+
+            }
+        } else {
+            String imageUrl = imageService.saveImage(image);
+            user.setImgUrl(imageUrl);
+        }
+
+        user.setName(req.getName());
+        user.setIntroduction(req.getIntroduction());
+
+        userRepository.save(user);
+    }
 }

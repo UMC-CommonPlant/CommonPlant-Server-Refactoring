@@ -25,6 +25,18 @@ public class UserDto {
         @Schema(description = "회원번호", example = "0123456789")
         private String providerId;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class updateUserDto{
+        @Schema(description = "수정할 사용자 이름", example= "커먼")
+        private String name;
+        @Schema(description = "수정할 introduction", example = "안녕하세요")
+        private String introduction;
+
+        private Boolean imageStatus;
+    }
     @NotBlank(message = "사용할 이름을 입력해주세요.")
     @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,10}$" , message = "이름은 특수문자를 포함하지 않은 2~10자리여야 합니다.")
     private  String name;
