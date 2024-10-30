@@ -1,6 +1,8 @@
 package com.umc.commonplant.domain.user.controller;
 
 import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.domain.place.entity.Place;
+import com.umc.commonplant.domain.place.service.PlaceService;
 import com.umc.commonplant.domain.user.dto.UserDto;
 import com.umc.commonplant.domain.user.entity.User;
 import com.umc.commonplant.domain.user.service.UserService;
@@ -13,11 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController implements  UserSwagger{
     private final UserService userService;
+    private final PlaceService placeService;
     private final JwtService jwtService;
 
     @PostMapping(value = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) //join
@@ -57,6 +62,12 @@ public class UserController implements  UserSwagger{
     public ResponseEntity<JsonResponse> deleteUser() {
         log.info("[API] Delete User");
         String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+
+        List<Place> placeList = placeService.getPlaceListByUser(user);
+        for (Place place : placeList) {
+            placeService.leavePlace(user, place.getCode());
+        }
         userService.deleteUser(uuid);
 
         return ResponseEntity.ok(new JsonResponse(true, 200, "delete", uuid));
