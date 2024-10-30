@@ -46,10 +46,11 @@ public class User extends BaseTime {
     private String uuid;
 
     @Builder
-    public User(String name, String email, String provider, String imgUrl, String uuid){
+    public User(String name, String email, String provider, String providerId, String imgUrl, String uuid){
         this.name = name;
         this.email = email;
         this.provider = provider;
+        this.providerId = providerId;
         this.imgUrl = imgUrl;
         this.uuid = uuid;
     }

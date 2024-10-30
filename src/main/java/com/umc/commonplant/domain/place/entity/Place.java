@@ -54,4 +54,12 @@ public class Place extends BaseTime {
         this.imgUrl = imgUrl;
         this.code = code;
     }
+
+    public void setPlaceIdx(Long placeIdx) {
+        this.placeIdx = placeIdx;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 }

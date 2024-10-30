@@ -14,4 +14,7 @@ public interface OAuthSwagger {
     @Parameter(name = "accessToken", description = "OAuth 서버가 발급한 액세스토큰", required = true)
     @Parameter(name = "provider", description = "소셜로그인", example = "kakao", required = true)
     public ResponseEntity<JsonResponse> login(@RequestParam("accessToken") String accessToken, @PathVariable String provider);
+
+    @Operation(summary = "토큰 유효성 검증", description = "토큰 유효성 검증")
+    public ResponseEntity<JsonResponse> validToken();
 }

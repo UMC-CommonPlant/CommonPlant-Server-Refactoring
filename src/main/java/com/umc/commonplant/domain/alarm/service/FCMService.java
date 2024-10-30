@@ -55,19 +55,23 @@ public class FCMService {
      * @return
      * @throws JsonProcessingException
      */
-    // private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
-    private String makeMessage(String title, String body) throws JsonProcessingException {
+    private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
+    // private String makeMessage(String title, String body) throws JsonProcessingException {
         FCMMessageDto fcmMessage = FCMMessageDto.builder()
                 .message(FCMMessageDto.Message.builder()
-                        //.token(targetToken)
+                        .token(targetToken)
                         .notification(FCMMessageDto.Notification.builder()
                                 .title(title)
                                 .body(body)
                                 .image(null)
                                 .build()
                         )
-                        .build()
-                )
+                        .apns(FCMMessageDto.Apns.builder()
+                                .payload(FCMMessageDto.Payload.builder()
+                                        .aps(FCMMessageDto.Aps.builder().sound("default").build())
+                                        .build())
+                                .build())
+                        .build())
                 .validate_only(false)
                 .build();
 
@@ -81,10 +85,10 @@ public class FCMService {
      * @param body
      * @throws IOException
      */
-    // public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-    public void sendMessageTo(String title, String body) throws IOException {
-        // String message = makeMessage(targetToken, title, body);
-        String message = makeMessage(title, body);
+    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
+    // public void sendMessageTo(String title, String body) throws IOException {
+        String message = makeMessage(targetToken, title, body);
+        // String message = makeMessage(title, body);
 
         OkHttpClient client = new OkHttpClient();
 

@@ -27,6 +27,11 @@ public class UserService {
     public User getUser(String uuid){ // User 조회
         return userRepository.findByUuid(uuid).orElseThrow(() -> new BadRequestException((NOT_FOUND_USER)));
     }
+
+    public User getUserByProviderId(String providerId){
+        return userRepository.findByProviderId(providerId).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+    }
+
     public User saveUser(UserDto.join req){
         User user = User.builder()
                 .name(req.getName())
@@ -41,15 +46,21 @@ public class UserService {
         }else{
             //join
             String uuid = UuidUtil.generateType1UUID();
-            String imageUrl = imageService.saveImage(image);
+            String imageUrl = "";
+            if(!image.isEmpty())
+                imageUrl = imageService.saveImage(image);
+
+//            String uuid = UuidUtil.generateType1UUID();
+//            String imageUrl = imageService.saveImage(image);
 
             User user = User.builder()
                     .name(req.getName())
                     .imgUrl(imageUrl)
                     .uuid(uuid)
                     .email(req.getEmail())
-                    .provider(req.getProvider()).
-                    build();
+                    .provider(req.getProvider())
+                    .providerId(req.getProviderId())
+                    .build();
             userRepository.save(user);
 
             return jwtService.createToken(user.getUuid());
@@ -57,16 +68,22 @@ public class UserService {
     }
     @Transactional(readOnly = true)
     public boolean checkNameDuplication(String name){
-        boolean nameDuplicate = userRepository.existsByname(name);
+        boolean nameDuplicate = userRepository.existsByname(name); // 검색안되면 false (사용가능한 이름)
         if(nameDuplicate)
             throw new BadRequestException(EXIST_NAME);
         if(name.length() < 2 || name.length() > 10)
             throw new BadRequestException(NOT_VALID_LENGTH);
-        return nameDuplicate;
+        return !nameDuplicate;
     }
 
     public User getUserByName(String name){
         return userRepository.findByname(name).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
+    }
+
+    public String getUserProfileImage(User user){
+        String userProfileImgUrl = user.getImgUrl();
+
+        return userProfileImgUrl;
     }
 
 }

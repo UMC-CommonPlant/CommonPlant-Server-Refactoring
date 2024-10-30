@@ -139,4 +139,17 @@ public class InfoService {
         List<Info> infoList = infoRepository.findByName(name);
         return infoList;
     }
+
+    public List<InfoDto.SearchInfoWithWaterResponse> searchPlusInfo(String name) {
+        List<Info> infoList = infoRepository.findByNameOrScientificNameContainingAndVerified(name);
+
+        return infoList.stream()
+                .map(info -> InfoDto.SearchInfoWithWaterResponse.builder()
+                        .name(info.getName())
+                        .scientific_name(info.getScientificName())
+                        .imgUrl(info.getImgUrl())
+                        .water_day(info.getWater_day())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

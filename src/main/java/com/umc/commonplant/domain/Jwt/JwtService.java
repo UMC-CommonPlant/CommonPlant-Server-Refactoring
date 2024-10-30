@@ -93,6 +93,7 @@ public class JwtService {
             log.info("Unsupported JWT token.");
         } catch (IllegalArgumentException e) {
             log.info("JWT token compact of handler are invalid.");
+            throw new BadRequestException(FAILED_TO_LOGIN_JWT);
         }catch (Exception e) {
             return false;
         }
