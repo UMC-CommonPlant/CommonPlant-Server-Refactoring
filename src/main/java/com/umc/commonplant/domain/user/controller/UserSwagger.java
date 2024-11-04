@@ -23,7 +23,7 @@ public interface UserSwagger {
             @Parameter(
                     name = "image",
                     description = "프로필 이미지"
-            )@RequestParam(value = "image", required = false)MultipartFile image
+            )@RequestPart(value = "image", required = false)MultipartFile image
             );
     @Operation(summary = "유저 조회", description = "유저조회 API 호출")
     @Parameter(name = "name", description="조회할 유저 이름",example = "김커먼", required = true)

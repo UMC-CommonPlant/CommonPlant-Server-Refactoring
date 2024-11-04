@@ -1,5 +1,6 @@
 package com.umc.commonplant.domain.place.controller;
 
+import com.umc.commonplant.domain.friend.dto.FriendDto;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.global.dto.JsonResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,14 @@ public interface PlaceSwagger {
     public ResponseEntity<JsonResponse> createPlace(
             @Parameter(description = "장소 생성 요청 정보", required = true) @RequestPart("place") PlaceDto.createPlaceReq req,
             @Parameter(description = "장소 대표 이미지") @RequestPart(value = "image", required = false) MultipartFile image
+    );
+
+    // TODO: 스웨거 이미지탭 생성 안됨
+    @Operation(summary = "registerPlaceAndSendFriendReq", description = "장소 등록 및 친구 요청보내기")
+    public ResponseEntity<JsonResponse> createPlaceAndSendFriendRequest(
+            @Parameter(description = "장소 생성 요청 정보", required = true) @RequestPart("place") PlaceDto.createPlaceReq placeReq,
+            @Parameter(description = "장소 대표 이미지") @RequestPart(value = "image", required = false) MultipartFile image,
+            @Parameter(description = "친구 요청 리스트") @RequestPart("friendList") FriendDto.sendFriendReq friendReq
     );
 
     @Operation(summary = "updatePlace", description = "장소 수정")
