@@ -1,6 +1,7 @@
 package com.umc.commonplant.domain.place.controller;
 
 import com.umc.commonplant.domain.Jwt.JwtService;
+import com.umc.commonplant.domain.friend.dto.FriendDto;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.service.PlaceService;
 import com.umc.commonplant.domain.plant.dto.PlantDto;
@@ -48,6 +49,17 @@ public class PlaceContoller implements PlaceSwagger{
         User user = userService.getUser(uuid);
         String placeCode = placeService.create(user, req, image);
         return ResponseEntity.ok(new JsonResponse(true, 200, "createPlace", placeCode));
+    }
+    @PostMapping(value = "/friend/request",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<JsonResponse> createPlaceAndSendFriendRequest(@RequestPart("place") PlaceDto.createPlaceReq placeReq, @RequestPart(value= "image", required = false) MultipartFile image, @RequestPart("friendList")FriendDto.sendFriendReq friendReq){
+        //장소 코드 필요
+        log.info("[API] registerPlace and Send FriendReq");
+        String uuid = jwtService.resolveToken();
+        User user = userService.getUser(uuid);
+        FriendDto.placeCodeAndFriendResponse  res = placeService.registerPlace(user, placeReq, image, friendReq); // 중첩 API 호출
+
+        return ResponseEntity.ok(new JsonResponse(true, 200, "creratePlaceAndSendFriendRequest", res));
     }
 
     @GetMapping("/{code}")

@@ -20,7 +20,7 @@ public class UserController implements  UserSwagger{
     private final JwtService jwtService;
 
     @PostMapping(value = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) //join
-    public ResponseEntity<JsonResponse> join(@RequestPart("user") UserDto.join req, @RequestParam(value ="image", required = false)MultipartFile image){
+    public ResponseEntity<JsonResponse> join(@RequestPart("user") UserDto.join req, @RequestPart(value ="image", required = false)MultipartFile image){
         log.info("[API] Join User");
         String token = userService.joinUser(req, image);
 
@@ -43,7 +43,7 @@ public class UserController implements  UserSwagger{
 
     @GetMapping("/user/profileImg")
     public ResponseEntity<JsonResponse> getUserProfileImg(){
-        log.info("[API] Get User Profile Img");
+        log.info("[API] Get User Profile Imgw");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 

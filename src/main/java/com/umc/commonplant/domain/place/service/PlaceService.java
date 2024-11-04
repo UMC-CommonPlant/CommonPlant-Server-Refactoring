@@ -2,6 +2,8 @@ package com.umc.commonplant.domain.place.service;
 
 import com.umc.commonplant.domain.belong.entity.Belong;
 import com.umc.commonplant.domain.belong.entity.BelongRepository;
+import com.umc.commonplant.domain.friend.dto.FriendDto;
+import com.umc.commonplant.domain.friend.service.FriendService;
 import com.umc.commonplant.domain.image.service.ImageService;
 import com.umc.commonplant.domain.place.dto.PlaceDto;
 import com.umc.commonplant.domain.place.entity.Place;
@@ -34,6 +36,7 @@ public class PlaceService {
 
     private final OpenApiService openApiService;
     private final ImageService imageService;
+    private final FriendService friendService;
     private final PlantRepository plantRepository;
 
 
@@ -59,7 +62,18 @@ public class PlaceService {
         belongRepository.save(belong);
         return newCode;
     }
-
+    // NOTE: 중첩 API 호출
+    public FriendDto.placeCodeAndFriendResponse registerPlace(User user, PlaceDto.createPlaceReq placeReq, MultipartFile image, FriendDto.sendFriendReq friendReq){
+        // 1. 장소 생성
+        String placeCode = create(user, placeReq, image);
+        List<String> receiverList = new ArrayList<>();
+        // 2. 장소코드가 존재하면, 친구요청처리
+        if(placeCode != null){
+            receiverList = friendService.sendFriendRequest(user.getName(), friendReq.getReceiverName(), placeCode);
+        }
+        FriendDto.placeCodeAndFriendResponse res = new FriendDto.placeCodeAndFriendResponse(placeCode, receiverList);
+        return res;
+    }
     public void userOnPlace(User user, String code)
     {
         if(belongRepository.countUserOnPlace(user.getUuid(), code) < 1)
