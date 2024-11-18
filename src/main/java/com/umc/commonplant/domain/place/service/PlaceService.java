@@ -3,6 +3,8 @@ package com.umc.commonplant.domain.place.service;
 import com.umc.commonplant.domain.belong.entity.Belong;
 import com.umc.commonplant.domain.belong.entity.BelongRepository;
 import com.umc.commonplant.domain.friend.dto.FriendDto;
+import com.umc.commonplant.domain.friend.entity.Friend;
+import com.umc.commonplant.domain.friend.entity.FriendRepository;
 import com.umc.commonplant.domain.friend.service.FriendService;
 import com.umc.commonplant.domain.image.service.ImageService;
 import com.umc.commonplant.domain.memo.entity.Memo;
@@ -43,6 +45,7 @@ public class PlaceService {
     private final FriendService friendService;
     private final PlantRepository plantRepository;
     private final MemoRepository memoRepository;
+    private final FriendRepository friendRepository;
 
 
     @Transactional
@@ -127,7 +130,7 @@ public class PlaceService {
         Place place = placeRepository.getPlaceByCode(code).orElseThrow(() -> new BadRequestException(NOT_FOUND_PLACE_CODE));
         return new PlaceDto.getPlaceGridRes(place.getGridX(), place.getGridY());
     }
-    public String newFriend(String name, String code){
+    public String addFriendInPlace(String name, String code){
         User newUser = userRepository.findByname(name).orElseThrow(() -> new BadRequestException(NOT_FOUND_USER));
         Place place = getPlaceByCode(code);
 
@@ -332,4 +335,18 @@ public class PlaceService {
         }
     }
 
+    // NOTE: 장소 초대 요청 수락(PENDING -> ACCEPTED) && 장소 초대 완료
+    @Transactional
+    public String acceptFriendRequest(String sender, String receiver) {
+        Friend friendreq = friendRepository
+                .findBySenderAndReceiverAndStatus(sender, receiver, "PENDING")
+                .orElseThrow(() -> new BadRequestException(IS_USER_ON_PLACE)); // NOTE: 이미 장소에 초대된 경우
+        friendreq.setStatus("ACCEPTED");
+        friendRepository.save(friendreq);
+
+        // receiver 장소코드 -> 장소에 추가
+        String placeCode = friendreq.getPlaceCode();
+
+        return addFriendInPlace(receiver, placeCode);
+    }
 }

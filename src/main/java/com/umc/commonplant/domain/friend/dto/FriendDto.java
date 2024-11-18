@@ -33,4 +33,5 @@ public class FriendDto {
         @Schema(description = "친구요청 받는 사람", example = "[\"커먼2\", \"커먼3\"]")
         private List<String> receiverList;
     }
+
 }
