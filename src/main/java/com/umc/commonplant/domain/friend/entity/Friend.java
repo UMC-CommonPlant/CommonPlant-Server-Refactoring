@@ -42,6 +42,9 @@ public class Friend extends BaseTime {
         this.placeCode = placeCode;
         this.status = status; // WAITING, ACCEPTED, REJECTED
     }
+    public void setStatus(String status){
+        this.status = status;
+    }
 
 //    @ManyToOne(fetch = LAZY)
 //    @JoinColumn(name = "user_idx", nullable = false)

@@ -84,16 +84,16 @@ public class PlaceController implements PlaceSwagger{
         PlaceDto.getWeatherRes res = weatherService.getPlaceWeather(placeGrid);
         return ResponseEntity.ok(new JsonResponse(true, 200, "getPlaceWeather", res));
     }
-//    //친구 요청
-    @PostMapping("/friends")
-    public ResponseEntity<JsonResponse> newFriends(@RequestBody PlaceDto.newFriendsReq req){
-        log.info("[API] newFriends");
+//    //친구 요청 수락 및 장소 초대
+    @PostMapping("/friend/response")
+    public ResponseEntity<JsonResponse> acceptFriendAndInvitedPlace(@RequestBody PlaceDto.acceptFriendsReq req){
+        log.info("[API] accept Friend And Invited place");
         String uuid = jwtService.resolveToken();
         User user = userService.getUser(uuid);
 
-        String placeCode = placeService.newFriend(req.getName(), req.getCode());
+        String placeCode = placeService.acceptFriendRequest(req.getSender(), user.getName());
 
-        return ResponseEntity.ok(new JsonResponse(true, 200, "newFriend", placeCode));
+        return ResponseEntity.ok(new JsonResponse(true, 200, "acceptFriend and Invited place", placeCode));
     }
 
 //    //친구 검색

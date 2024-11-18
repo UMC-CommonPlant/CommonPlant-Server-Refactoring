@@ -1,6 +1,7 @@
 package com.umc.commonplant.domain.friend.service;
 
 import com.umc.commonplant.domain.belong.entity.BelongRepository;
+import com.umc.commonplant.domain.friend.dto.FriendDto;
 import com.umc.commonplant.domain.friend.entity.Friend;
 import com.umc.commonplant.domain.friend.entity.FriendRepository;
 import com.umc.commonplant.domain.user.entity.User;
@@ -9,9 +10,11 @@ import com.umc.commonplant.global.exception.BadRequestException;
 import com.umc.commonplant.global.exception.ErrorResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.umc.commonplant.global.exception.ErrorResponseStatus.*;
 

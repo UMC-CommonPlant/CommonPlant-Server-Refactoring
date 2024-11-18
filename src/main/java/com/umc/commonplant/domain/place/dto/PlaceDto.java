@@ -91,9 +91,9 @@ public class PlaceDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
-    public static class newFriendsReq{
-        @Schema(description = "유저 이름" , example = "user1")
-        private String name;
+    public static class acceptFriendsReq{
+        @Schema(description = "초대 보낸 사람" , example = "common1")
+        private String sender;
         @Schema(description = "장소 코드" , example = "vErDfX")
         private String code;
     }

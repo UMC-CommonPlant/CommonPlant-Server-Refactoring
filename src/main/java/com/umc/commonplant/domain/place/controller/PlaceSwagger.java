@@ -46,8 +46,8 @@ public interface PlaceSwagger {
             @Parameter(description = "place code", example = "XFGEDS") @PathVariable("code") String code
     );
 
-    @Operation(summary = "newFriends", description = "장소에 유저 추가")
-    public ResponseEntity<JsonResponse> newFriends(@RequestBody PlaceDto.newFriendsReq req);
+    @Operation(summary = "acceptFriendAndInvitedPlace", description = "친구요청 수락 후 장소초대 완료")
+    public ResponseEntity<JsonResponse> acceptFriendAndInvitedPlace(@RequestBody PlaceDto.acceptFriendsReq req);
 
 //    @Operation(summary = "getFriends", description = "친구 검색")
 //    public ResponseEntity<JsonResponse> getFriends(@RequestBody PlaceDto.getFriendsReq req);
